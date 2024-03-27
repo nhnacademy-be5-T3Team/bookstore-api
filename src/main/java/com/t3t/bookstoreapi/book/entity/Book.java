@@ -1,9 +1,12 @@
 package com.t3t.bookstoreapi.book.entity;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Getter
 @Entity
 @Table(name="books")
 public class Book {
