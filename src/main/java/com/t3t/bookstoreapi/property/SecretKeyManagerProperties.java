@@ -1,0 +1,21 @@
+package com.t3t.bookstoreapi.property;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.io.Resource;
+
+/**
+ * @apiNote Secret Key Manager 에서 사용될 속성을 저장하는 프로퍼티 클래스
+ * @author woody35545(구건모)
+ */
+@Getter
+@Setter
+@ConfigurationProperties(prefix = "t3t.secret-key-manager")
+public class SecretKeyManagerProperties {
+    private String appKey;
+    private String password;
+    private String certKeyType;
+    private String certKeyPath;
+    @Value("${t3t.secretKeyManager.certKeyPath}")
+    private Resource certKey;
+}
