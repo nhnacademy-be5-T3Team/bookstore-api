@@ -1,24 +1,25 @@
 package com.t3t.bookstoreapi.book.entity;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Entity
-@Table(name="publishers")
+@Table(name = "publishers")
 public class Publisher {
     @Id
-    @Column(name="publisher_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "publisher_id")
     private Long publisherId;
 
-    @Column(name="publisher_name")
+    @NotNull
+    @Column(name = "publisher_name")
     private String publisherName;
 
-    @Column(name="publisher_email")
+    @NotNull
+    @Column(name = "publisher_email")
     private String publisherEmail;
 
 }
