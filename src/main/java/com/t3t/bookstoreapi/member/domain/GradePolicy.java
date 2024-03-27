@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.domain;
+package com.t3t.bookstoreapi.member.domain;
 
 import lombok.Getter;
 

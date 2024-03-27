@@ -1,7 +1,6 @@
-package com.t3t.bookstoreapi.domain;
+package com.t3t.bookstoreapi.member.domain;
 
 import lombok.Getter;
-import net.bytebuddy.asm.Advice;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

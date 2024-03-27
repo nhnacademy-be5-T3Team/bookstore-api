@@ -1,7 +1,6 @@
-package com.t3t.bookstoreapi.domain;
+package com.t3t.bookstoreapi.member.domain;
 
 import lombok.Getter;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
