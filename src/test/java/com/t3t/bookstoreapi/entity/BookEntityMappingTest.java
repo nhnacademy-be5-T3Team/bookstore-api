@@ -42,10 +42,10 @@ public class BookEntityMappingTest {
         String publisherName = "TestPublisher";
         String publisherEmail = "TestPublisher@example.com";
 
-        Publisher publisher = Publisher.builder().
-                publisherName(publisherName).
-                publisherEmail(publisherEmail).
-                build();
+        Publisher publisher = Publisher.builder()
+                .publisherName(publisherName)
+                .publisherEmail(publisherEmail)
+                .build();
 
         publisherRepository.save(publisher);
 
@@ -62,9 +62,9 @@ public class BookEntityMappingTest {
 
         String tagName = "TestTagName";
 
-        Tag tag = Tag.builder().
-                tagName(tagName).
-                build();
+        Tag tag = Tag.builder()
+                .tagName(tagName)
+                .build();
 
         tagRepository.save(tag);
 
@@ -100,8 +100,8 @@ public class BookEntityMappingTest {
 
         categoryRepository.save(parentCategory);
 
-        Category childCategory = Category.builder().
-                parentCategoryId(parentCategory.getParentCategoryId())
+        Category childCategory = Category.builder()
+                .parentCategoryId(parentCategory.getParentCategoryId())
                 .categoryName(categoryName)
                 .build();
 
@@ -120,9 +120,10 @@ public class BookEntityMappingTest {
         String participantName = "TestParticipantName";
         String participantEmail = "TestParticipantEmail@example.com";
 
-        Participant participant = Participant.builder().
-                participantName(participantName).
-                participantEmail(participantEmail).build();
+        Participant participant = Participant.builder()
+                .participantName(participantName)
+                .participantEmail(participantEmail)
+                .build();
 
         participantRepository.save(participant);
 
@@ -147,5 +148,7 @@ public class BookEntityMappingTest {
 
         assertNotNull(savedParticipantRole);
         assertEquals(participantRoleName, savedParticipantRole.getParticipantRoleName());
+
     }
+
 }
