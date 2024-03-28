@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.bytebuddy.asm.Advice;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "members")
 @Getter
+@Setter
 public class Member {
 
     @Id
@@ -17,7 +19,7 @@ public class Member {
     private Long id;
 
 
-    @JoinColumn(name = "grade_id")
+    @JoinColumn(name = "member_grade_id")
     @ManyToOne
     private Grade gradeId;
 
@@ -44,4 +46,6 @@ public class Member {
 
     @Column(name = "member_role")
     private byte role;
+
+
 }

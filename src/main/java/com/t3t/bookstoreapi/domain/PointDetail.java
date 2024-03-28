@@ -14,7 +14,7 @@ public class PointDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "point_detail_id")
+    @Column(name = "point_details_id")
     private Long pointDetailId;
 
     @JoinColumn(name = "member_id")
@@ -27,7 +27,7 @@ public class PointDetail {
     @Column(name = "point_detail_type")
     private String PointDetailType;
 
-    @Column(name = "point_details_date")
+    @Column(name = "point_detail_date")
     private LocalDateTime PointDetailDate;
 
     @Column(name = "point_amount")

@@ -15,12 +15,12 @@ public class GradePolicy {
     @Column(name = "member_grade_policy_id")
     private int policyId;
 
-    @Column(name = "base_start_amount")
+    @Column(name = "member_base_start_amount")
     private BigDecimal startAmount;
 
-    @Column(name = "base_end_amount")
+    @Column(name = "member_base_end_amount")
     private BigDecimal endAmount;
 
-    @Column(name = "point_rate")
+    @Column(name = "member_point_rate")
     private int rate;
 }

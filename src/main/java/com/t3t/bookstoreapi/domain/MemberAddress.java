@@ -22,9 +22,9 @@ public class MemberAddress {
     @ManyToOne
     private Addresses memberId;
 
-    @Column(name = "members_address_nickname")
+    @Column(name = "member_address_nickname")
     private String addressNickname;
 
-    @Column(name = "members_address_detail")
+    @Column(name = "member_address_detail")
     private String addressDetail;
 }
