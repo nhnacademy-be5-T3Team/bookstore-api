@@ -1,11 +1,15 @@
-package com.t3t.bookstoreapi.book.entity;
+package com.t3t.bookstoreapi.review.entity;
 
 import com.sun.istack.NotNull;
-import lombok.Getter;
+import com.t3t.bookstoreapi.book.entity.Book;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "reviews")
@@ -33,4 +37,5 @@ public class Review {
 
     @Column(name = "review_updated_at")
     private LocalDateTime reviewUpdatedAt;
+
 }

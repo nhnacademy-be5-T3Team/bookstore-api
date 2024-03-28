@@ -1,10 +1,13 @@
-package com.t3t.bookstoreapi.book.entity;
+package com.t3t.bookstoreapi.tag.entity;
 
 import com.sun.istack.NotNull;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "tags")

@@ -1,10 +1,13 @@
-package com.t3t.bookstoreapi.book.entity;
+package com.t3t.bookstoreapi.participant.entity;
 
 import com.sun.istack.NotNull;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "participants")
@@ -21,4 +24,5 @@ public class Participant {
     @NotNull
     @Column(name = "participant_email")
     private String participantEmail;
+
 }

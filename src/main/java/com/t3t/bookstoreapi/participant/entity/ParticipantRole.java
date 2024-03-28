@@ -1,13 +1,16 @@
-package com.t3t.bookstoreapi.book.entity;
+package com.t3t.bookstoreapi.participant.entity;
 
 import com.sun.istack.NotNull;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
-@Table(name = "paticipant_roles")
+@Table(name = "participant_roles")
 public class ParticipantRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,4 +20,5 @@ public class ParticipantRole {
     @NotNull
     @Column(name = "participant_role_name")
     private String participantRoleName;
+
 }
