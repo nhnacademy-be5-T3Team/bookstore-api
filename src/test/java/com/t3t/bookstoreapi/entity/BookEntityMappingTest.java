@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
@@ -38,8 +39,7 @@ public class BookEntityMappingTest {
 
         Publisher savedPublisher = publisherRepository.findById(publisher.getPublisherId()).orElse(null);
 
-        assert savedPublisher != null;
-
+        assertNotNull(savedPublisher);
         assertEquals("TestPublisher", savedPublisher.getPublisherName());
         assertEquals("TestPublisher@example.com", savedPublisher.getPublisherEmail());
     }
@@ -55,8 +55,7 @@ public class BookEntityMappingTest {
 
         Tag savedTag = tagRepository.findById(tag.getTagId()).orElse(null);
 
-        assert savedTag != null;
-
+        assertNotNull(savedTag);
         assertEquals("TestTagName", savedTag.getTagName());
     }
 
@@ -69,8 +68,7 @@ public class BookEntityMappingTest {
 
         Category savedCategory = categoryRepository.findById(category.getCategoryId()).orElse(null);
 
-        assert savedCategory != null;
-
+        assertNotNull(savedCategory);
         assertEquals("TestCategoryName", savedCategory.getCategoryName());
     }
 
@@ -86,11 +84,11 @@ public class BookEntityMappingTest {
                 .categoryName("TestChildCategoryName")
                 .build();
 
+        categoryRepository.save(childCategory);
 
         Category savedCategory = categoryRepository.findById(childCategory.getCategoryId()).orElse(null);
 
-        assert savedCategory != null;
-
+        assertNotNull(savedCategory);
         assertEquals("TestChildCategoryName", savedCategory.getCategoryName());
     }
 }
