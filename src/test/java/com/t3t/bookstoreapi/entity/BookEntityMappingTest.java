@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.entity;
 
+import com.t3t.bookstoreapi.category.entity.Category;
+import com.t3t.bookstoreapi.category.repository.CategoryRepository;
 import com.t3t.bookstoreapi.publisher.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
 import com.t3t.bookstoreapi.tag.entity.Tag;
@@ -19,9 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BookEntityMappingTest {
     @Autowired
     private PublisherRepository publisherRepository;
-
     @Autowired
     private TagRepository tagRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Test
     @DisplayName("Publisher entity 맵핑 테스트")
@@ -55,5 +58,39 @@ public class BookEntityMappingTest {
         assert savedTag != null;
 
         assertEquals("TestTagName", savedTag.getTagName());
+    }
+
+    @Test
+    @DisplayName("부모 Category entity 맵핑 테스트")
+    void testParentCategoryEntityMapping() {
+        Category category = Category.builder().categoryName("TestCategoryName").build();
+
+        categoryRepository.save(category);
+
+        Category savedCategory = categoryRepository.findById(category.getCategoryId()).orElse(null);
+
+        assert savedCategory != null;
+
+        assertEquals("TestCategoryName", savedCategory.getCategoryName());
+    }
+
+    @Test
+    @DisplayName("자식 Category entity 맵핑 테스트")
+    void testChildCategoryEntityMapping() {
+        Category parentCategory = Category.builder().categoryName("TestParentCategoryName").build();
+
+        categoryRepository.save(parentCategory);
+
+        Category childCategory = Category.builder().
+                parentCategoryId(parentCategory.getParentCategoryId())
+                .categoryName("TestChildCategoryName")
+                .build();
+
+
+        Category savedCategory = categoryRepository.findById(childCategory.getCategoryId()).orElse(null);
+
+        assert savedCategory != null;
+
+        assertEquals("TestChildCategoryName", savedCategory.getCategoryName());
     }
 }
