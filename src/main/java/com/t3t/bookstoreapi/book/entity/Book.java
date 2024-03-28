@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.book.entity;
 
 import com.sun.istack.NotNull;
+import com.t3t.bookstoreapi.publisher.entity.Publisher;
 import lombok.Getter;
 import javax.persistence.*;
 import java.math.BigDecimal;

@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.book.entity;
 
+import com.t3t.bookstoreapi.category.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
