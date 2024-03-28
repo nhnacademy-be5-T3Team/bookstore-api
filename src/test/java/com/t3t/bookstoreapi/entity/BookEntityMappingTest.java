@@ -2,6 +2,8 @@ package com.t3t.bookstoreapi.entity;
 
 import com.t3t.bookstoreapi.publisher.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
+import com.t3t.bookstoreapi.tag.entity.Tag;
+import com.t3t.bookstoreapi.tag.repository.TagRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BookEntityMappingTest {
     @Autowired
     private PublisherRepository publisherRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @Test
     @DisplayName("Publisher entity 맵핑 테스트")
@@ -34,5 +39,21 @@ public class BookEntityMappingTest {
 
         assertEquals("TestPublisher", savedPublisher.getPublisherName());
         assertEquals("TestPublisher@example.com", savedPublisher.getPublisherEmail());
+    }
+
+    @Test
+    @DisplayName("Tag entity 맵핑 테스트")
+    void testTagEntityMapping() {
+        Tag tag = Tag.builder().
+                tagName("TestTagName").
+                build();
+
+        tagRepository.save(tag);
+
+        Tag savedTag = tagRepository.findById(tag.getTagId()).orElse(null);
+
+        assert savedTag != null;
+
+        assertEquals("TestTagName", savedTag.getTagName());
     }
 }
