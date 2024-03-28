@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class TossPayments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "payment_id")
+    @JoinColumn(name = "payment_id")
     private Long paymentId;
 
     @Column(name = "toss_payment_key")
