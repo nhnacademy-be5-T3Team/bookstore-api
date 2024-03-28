@@ -1,14 +1,13 @@
 package com.t3t.bookstoreapi.participant.entity;
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "participant_roles")
@@ -22,8 +21,4 @@ public class ParticipantRole {
     @Column(name = "participant_role_name")
     private String participantRoleName;
 
-    @Builder
-    public ParticipantRole(String participantRoleName) {
-        this.participantRoleName = participantRoleName;
-    }
 }

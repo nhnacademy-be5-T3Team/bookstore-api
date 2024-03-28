@@ -2,11 +2,15 @@ package com.t3t.bookstoreapi.book.entity;
 
 import com.sun.istack.NotNull;
 import com.t3t.bookstoreapi.publisher.entity.Publisher;
-import lombok.Getter;
+import lombok.*;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "books")
@@ -64,4 +68,5 @@ public class Book {
     @NotNull
     @Column(name = "book_like_count")
     private Integer bookLikeCount;
+
 }
