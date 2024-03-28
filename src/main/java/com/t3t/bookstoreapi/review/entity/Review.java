@@ -2,11 +2,15 @@ package com.t3t.bookstoreapi.review.entity;
 
 import com.sun.istack.NotNull;
 import com.t3t.bookstoreapi.book.entity.Book;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 @Table(name = "reviews")
@@ -34,4 +38,13 @@ public class Review {
 
     @Column(name = "review_updated_at")
     private LocalDateTime reviewUpdatedAt;
+
+    @Builder
+    public Review(Book book, String reviewComment, Integer reviewScore, LocalDateTime reviewCreatedAt, LocalDateTime reviewUpdatedAt) {
+        this.book = book;
+        this.reviewComment = reviewComment;
+        this.reviewScore = reviewScore;
+        this.reviewCreatedAt = reviewCreatedAt;
+        this.reviewUpdatedAt = reviewUpdatedAt;
+    }
 }
