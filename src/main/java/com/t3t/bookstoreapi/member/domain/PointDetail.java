@@ -26,7 +26,7 @@ public class PointDetail {
     @Column(name = "point_detail_type")
     private String PointDetailType;
 
-    @Column(name = "point_details_date")
+    @Column(name = "point_detail_date")
     private LocalDateTime PointDetailDate;
 
     @Column(name = "point_amount")
