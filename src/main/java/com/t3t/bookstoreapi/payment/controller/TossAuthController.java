@@ -76,11 +76,11 @@ public class TossAuthController {
 
         if (isSuccess) {
             ObjectMapper objectMapper = new ObjectMapper();
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
             TossPaymentResponse paymentResponse = objectMapper.readValue(reader, TossPaymentResponse.class);
-            System.out.println(paymentResponse.getReceipt().getUrl());
             responseStream.close();
             tossPaymentService.saveTossPayment(paymentResponse);
-            return ResponseEntity.status(code).body(paymentResponse);
+            return ResponseEntity.status(code).body(jsonObject);
         } else {
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
             responseStream.close();

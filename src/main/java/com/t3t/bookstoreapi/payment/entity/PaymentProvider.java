@@ -16,7 +16,6 @@ import javax.persistence.*;
 public class PaymentProvider {
     @Id
     @Column(name = "payment_provider_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer paymentProviderId;
 
     @Column(name = "payment_provider_name")
