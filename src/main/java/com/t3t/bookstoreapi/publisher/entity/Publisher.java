@@ -1,10 +1,14 @@
 package com.t3t.bookstoreapi.publisher.entity;
 
 import com.sun.istack.NotNull;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 @Table(name = "publishers")
@@ -22,4 +26,9 @@ public class Publisher {
     @Column(name = "publisher_email")
     private String publisherEmail;
 
+    @Builder
+    public Publisher(String publisherName, String publisherEmail) {
+        this.publisherName = publisherName;
+        this.publisherEmail = publisherEmail;
+    }
 }
