@@ -1,9 +1,17 @@
 package com.t3t.bookstoreapi.order.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 @Entity
 @Table(name = "order_status")
 public class OrderStatus {
