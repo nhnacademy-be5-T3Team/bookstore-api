@@ -1,10 +1,14 @@
 package com.t3t.bookstoreapi.category.entity;
 
 import com.sun.istack.NotNull;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 @Table(name = "categories")
@@ -21,4 +25,9 @@ public class Category {
     @Column(name = "category_name")
     private String categoryName;
 
+    @Builder
+    public Category(Integer parentCategoryId, String categoryName) {
+        this.parentCategoryId = parentCategoryId;
+        this.categoryName = categoryName;
+    }
 }
