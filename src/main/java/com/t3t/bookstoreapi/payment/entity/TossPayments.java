@@ -14,12 +14,12 @@ import java.math.BigDecimal;
 @Builder
 public class TossPayments {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @OneToOne
     @JoinColumn(name = "payment_id")
-    private Long paymentId;
+    private Payments paymentId;
 
     @Column(name = "toss_payment_key")
-    private String tossPaymentKey;
+    private String tossPaymentKey;  
 
     @Column(name = "toss_order_id")
     private String tossOrderId;
