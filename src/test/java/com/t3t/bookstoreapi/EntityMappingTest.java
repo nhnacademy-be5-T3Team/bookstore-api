@@ -1,9 +1,13 @@
 package com.t3t.bookstoreapi;
 
+import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.order.model.entity.Delivery;
 import com.t3t.bookstoreapi.order.model.entity.OrderStatus;
+import com.t3t.bookstoreapi.order.model.entity.Packaging;
 import com.t3t.bookstoreapi.order.repository.DeliveryRepository;
 import com.t3t.bookstoreapi.order.repository.OrderStatusRepository;
+import com.t3t.bookstoreapi.order.repository.OrderRepository;
+import com.t3t.bookstoreapi.order.repository.PackagingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +26,20 @@ import java.util.Optional;
 @Slf4j
 @ActiveProfiles("prod")
 class EntityMappingTest {
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Autowired
     private OrderStatusRepository orderStatusRepository;
 
     @Autowired
     private DeliveryRepository deliveryRepository;
+
+    @Autowired
+    private OrderRepository OrderRepository;
+
+    @Autowired
+    private PackagingRepository packagingRepository;
 
     /**
      * OrderStatus 엔티티 맵핑 테스트
@@ -45,7 +57,7 @@ class EntityMappingTest {
 
         // then
         Assertions.assertTrue(resultOrderStatus.isPresent());
-        Assertions.assertEquals(orderStatusName, resultOrderStatus.get().getName());
+        Assertions.assertEquals(orderStatus, resultOrderStatus.get());
     }
 
     /**
@@ -79,12 +91,30 @@ class EntityMappingTest {
 
         // then
         Assertions.assertTrue(resultDelivery.isPresent());
-        Assertions.assertEquals(price, resultDelivery.get().getPrice());
-        Assertions.assertEquals(addressNumber, resultDelivery.get().getAddressNumber());
-        Assertions.assertEquals(roadnameAddress, resultDelivery.get().getRoadnameAddress());
-        Assertions.assertEquals(detailAddress, resultDelivery.get().getDetailAddress());
-        Assertions.assertEquals(recipientName, resultDelivery.get().getRecipientName());
-        Assertions.assertEquals(recipientPhoneNumber, resultDelivery.get().getRecipientPhoneNumber());
-        Assertions.assertEquals(deliveryDate, resultDelivery.get().getDeliveryDate());
+        Assertions.assertEquals(delivery, resultDelivery.get());
+    }
+
+    @Test
+    @DisplayName("Package 엔티티 맵핑 테스트")
+    void PackageTest(){
+
+        // given
+        String packageName = "testPackageName";
+        BigDecimal packagePrice = BigDecimal.valueOf(10000);
+
+        Packaging packaging = Packaging.builder()
+                .name(packageName)
+                .price(packagePrice)
+                .build();
+
+        Packaging resultPack = packagingRepository.save(packaging);
+
+        // when
+        Optional<Packaging> resultPackaging = packagingRepository.findById(resultPack.getId());
+
+        //then
+        Assertions.assertTrue(resultPackaging.isPresent());
+        Assertions.assertEquals(packaging, resultPackaging.get());
+
     }
 }
