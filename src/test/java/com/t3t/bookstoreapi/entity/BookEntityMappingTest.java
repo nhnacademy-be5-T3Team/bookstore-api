@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.entity;
 
+import com.t3t.bookstoreapi.book.model.entity.Book;
+import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
 import com.t3t.bookstoreapi.participant.model.entity.Participant;
@@ -16,6 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,6 +40,8 @@ public class BookEntityMappingTest {
     private ParticipantRepository participantRepository;
     @Autowired
     private ParticipantRoleRepository participantRoleRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
     @Test
     @DisplayName("Publisher entity 맵핑 테스트")
@@ -151,4 +159,35 @@ public class BookEntityMappingTest {
 
     }
 
+    @Test
+    @DisplayName("Book entity 맵핑 테스트")
+    void testBookEntityMapping() {
+        Publisher publisher = Publisher.builder()
+                .publisherName("TestPublisher")
+                .publisherEmail("TestPublisher@example.com")
+                .build();
+
+        Book book = Book.builder()
+                .publisher(publisher)
+                .bookName("어린왕자")
+                .bookIndex("예시 목차")
+                .bookDesc("어린왕자는 황소와의 대화, 별의 왕과의 대화, 장미꽃과의 대화 등을 통해 인생의 진리를 탐구하는 내용이 담겨있다.")
+                .bookIsbn("9788966863307")
+                .bookPrice(new BigDecimal("19.99"))
+                .bookDiscount(new BigDecimal("0.1"))
+                .bookPackage(1)
+                .bookPublished(LocalDate.of(1943, Month.APRIL, 6))
+                .bookStock(100)
+                .bookAverageScore(4.5f)
+                .bookLikeCount(500)
+                .build();
+
+        bookRepository.save(book);
+
+        Book savedBook = bookRepository.findById(book.getBookId()).orElse(null);
+
+        assertNotNull(savedBook);
+        assertEquals("9788966863307", savedBook.getBookIsbn());
+
+    }
 }
