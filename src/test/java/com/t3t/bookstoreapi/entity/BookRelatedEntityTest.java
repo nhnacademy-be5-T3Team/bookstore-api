@@ -1,13 +1,7 @@
 package com.t3t.bookstoreapi.entity;
 
-import com.t3t.bookstoreapi.book.model.entity.Book;
-import com.t3t.bookstoreapi.book.model.entity.BookCategory;
-import com.t3t.bookstoreapi.book.model.entity.BookImage;
-import com.t3t.bookstoreapi.book.model.entity.BookTag;
-import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
-import com.t3t.bookstoreapi.book.repository.BookImageRepository;
-import com.t3t.bookstoreapi.book.repository.BookRepository;
-import com.t3t.bookstoreapi.book.repository.BookTagRepository;
+import com.t3t.bookstoreapi.book.model.entity.*;
+import com.t3t.bookstoreapi.book.repository.*;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
@@ -48,6 +42,8 @@ class BookRelatedEntityTest {
     private BookImageRepository bookImageRepository;
     @Autowired
     private BookTagRepository bookTagRepository;
+    @Autowired
+    private BookThumbnailRepository bookThumbnailRepository;
 
     private Book testBook;
 
@@ -121,6 +117,25 @@ class BookRelatedEntityTest {
 
         assertNotNull(savedBookTag);
         assertEquals("TestTagName", savedBookTag.getId().getTag().getTagName());
+    }
+
+    @Test
+    @DisplayName("BookThumbnail entity 맵핑 테스트")
+    void testBookThumbnailEntityMapping() {
+
+        String thumbnailImageUrl = "https://image.aladin.co.kr/product/27137/83/coversum/k252731342_1.jpg";
+
+        BookThumbnail bookThumbnail = BookThumbnail.builder()
+                .book(testBook)
+                .thumbnailImageUrl(thumbnailImageUrl)
+                .build();
+
+        bookThumbnailRepository.save(bookThumbnail);
+
+        BookThumbnail savedBookThumbnail = bookThumbnailRepository.findById(bookThumbnail.getBookThumbnailImageId()).orElse(null);
+
+        assertNotNull(savedBookThumbnail);
+        assertEquals(thumbnailImageUrl, savedBookThumbnail.getThumbnailImageUrl());
     }
 
 }
