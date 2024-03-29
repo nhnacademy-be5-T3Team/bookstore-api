@@ -1,8 +1,10 @@
 package com.t3t.bookstoreapi.payment.entity;
+
 import com.t3t.bookstoreapi.payment.responce.TossPaymentResponse;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Setter
@@ -12,14 +14,13 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Table(name = "toss_payments")
 @Builder
-public class TossPayments {
-    @Id
-    @OneToOne
-    @JoinColumn(name = "payment_id")
-    private Payments paymentId;
+public class TossPayments implements Serializable {
+
+    @EmbeddedId
+    private TossPaymentId tossPaymentId;
 
     @Column(name = "toss_payment_key")
-    private String tossPaymentKey;  
+    private String tossPaymentKey;
 
     @Column(name = "toss_order_id")
     private String tossOrderId;
@@ -30,7 +31,14 @@ public class TossPayments {
     @Column(name = "toss_payment_receipt_url")
     private String tossPaymentReceiptUrl;
 
-
+    @Embeddable
+    @Setter
+    @Getter
+    public static class TossPaymentId implements Serializable {
+        @OneToOne
+        @JoinColumn(name = "payment_id")
+        private Payments payment;
     }
+}
 
 
