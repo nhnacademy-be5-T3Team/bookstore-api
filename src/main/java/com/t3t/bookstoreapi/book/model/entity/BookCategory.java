@@ -19,6 +19,7 @@ public class BookCategory {
         this.id = new BookCategoryId(book, category);
     }
 
+
     @NoArgsConstructor
     @AllArgsConstructor
     @EqualsAndHashCode

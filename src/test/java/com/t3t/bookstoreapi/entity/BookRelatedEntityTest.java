@@ -3,14 +3,17 @@ package com.t3t.bookstoreapi.entity;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
 import com.t3t.bookstoreapi.book.model.entity.BookImage;
+import com.t3t.bookstoreapi.book.model.entity.BookTag;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookImageRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.book.repository.BookTagRepository;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
-import lombok.Setter;
+import com.t3t.bookstoreapi.tag.model.entity.Tag;
+import com.t3t.bookstoreapi.tag.repository.TagRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,20 +41,24 @@ class BookRelatedEntityTest {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
+    private TagRepository tagRepository;
+    @Autowired
     private BookCategoryRepository bookCategoryRepository;
     @Autowired
     private BookImageRepository bookImageRepository;
-    @Setter
-    private Book book;
+    @Autowired
+    private BookTagRepository bookTagRepository;
+
+    private Book testBook;
 
     @BeforeEach
-    void createBookEntity() {
+    void setUpBookEntity() {
         Publisher publisher = publisherRepository.save(Publisher.builder()
                 .publisherName("TestPublisher")
                 .publisherEmail("TestPublisher@example.com")
                 .build());
 
-        Book book = bookRepository.save(Book.builder()
+        testBook = bookRepository.save(Book.builder()
                 .publisher(publisher)
                 .bookName("어린왕자")
                 .bookIndex("예시 목차")
@@ -66,7 +73,6 @@ class BookRelatedEntityTest {
                 .bookLikeCount(500)
                 .build());
 
-        setBook(book);
     }
 
     @Test
@@ -77,7 +83,7 @@ class BookRelatedEntityTest {
                 .categoryName("categoryName")
                 .build());
 
-        BookCategory bookCategory = BookCategory.builder().book(book).category(category).build();
+        BookCategory bookCategory = BookCategory.builder().book(testBook).category(category).build();
 
         bookCategoryRepository.save(bookCategory);
     }
@@ -89,7 +95,7 @@ class BookRelatedEntityTest {
         String bookImageUrl = "https://image.aladin.co.kr/product/27137/83/coversum/k252731342_1.jpg";
 
         BookImage bookImage = bookImageRepository.save(BookImage.builder()
-                .book(book)
+                .book(testBook)
                 .bookImageUrl(bookImageUrl)
                 .build());
 
@@ -99,6 +105,22 @@ class BookRelatedEntityTest {
 
         assertNotNull(savedBookImaged);
         assertEquals(bookImageUrl, savedBookImaged.getBookImageUrl());
+    }
+
+    @Test
+    @DisplayName("BookTag entity 맵핑 테스트")
+    void testBookTagEntityMapping() {
+
+        Tag tag = tagRepository.save(Tag.builder().tagName("TestTagName").build());
+
+        BookTag bookTag = BookTag.builder().book(testBook).tag(tag).build();
+
+        bookTagRepository.save(bookTag);
+
+        BookTag savedBookTag = bookTagRepository.findById(new BookTag.BookTagId(testBook, tag)).orElse(null);
+
+        assertNotNull(savedBookTag);
+        assertEquals("TestTagName", savedBookTag.getId().getTag().getTagName());
     }
 
 }

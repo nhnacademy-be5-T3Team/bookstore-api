@@ -19,6 +19,7 @@ public class BookTag {
         this.id = new BookTagId(book, tag);
     }
 
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     @EqualsAndHashCode
