@@ -1,20 +1,17 @@
 package com.t3t.bookstoreapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.t3t.bookstoreapi.payment.controller.TossPaymentController;
 import com.t3t.bookstoreapi.payment.entity.TossPayments;
 import com.t3t.bookstoreapi.payment.repository.TossPaymentRepository;
 import com.t3t.bookstoreapi.payment.responce.TossPaymentResponse;
 import com.t3t.bookstoreapi.payment.service.TossPaymentService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 
@@ -23,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class BookstoreApiApplicationTests {
+class TossPaymentTest {
 
     @Test
     void contextLoads() {
@@ -55,14 +52,14 @@ class BookstoreApiApplicationTests {
     private TossPaymentService tossPaymentService;
     @Mock
     private TossPayments tossPayments;
-    @InjectMocks
-    private TossPaymentController tossPaymentController;
+
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
     @Test
+    @DisplayName("toss_payment 객체 생성 test")
     public void testCreateTossPayment() {
         // Given
         String json = "{\"paymentKey\":\"12345\",\"orderId\":\"67890\",\"status\":\"success\",\"receipt\":{\"url\":\"http://example.com/receipt\"}}";
@@ -76,20 +73,12 @@ class BookstoreApiApplicationTests {
         }
         // When
         tossPaymentService.saveTossPayment(tossPaymentResponse);
-        System.out.println(tossPaymentResponse);
-        // Then
-        // Verify that the save method of tossPaymentRepository is called with the correct argument
-        verify(tossPaymentRepository, times(1)).save(any(TossPayments.class));
-    }
 
-    private TossPayments mapToTossPaymentEntity(TossPaymentResponse tossPaymentResponse) {
-        TossPayments tossPayment = new TossPayments();
-        tossPayment.setTossPaymentKey(tossPaymentResponse.getPaymentKey());
-        tossPayment.setTossOrderId(tossPaymentResponse.getOrderId());
-        tossPayment.setTossPaymentStatus(tossPaymentResponse.getStatus());
-        tossPayment.setTossPaymentReceiptUrl(tossPaymentResponse.getReceipt().getUrl());
-        System.out.println(tossPayment);
-        return tossPayment;
+        System.out.println(tossPaymentResponse.getPaymentKey());
+        System.out.println(tossPayments.getTossPaymentKey());
+        // Then
+
+        verify(tossPaymentRepository, times(1)).save(any(TossPayments.class));
     }
 }
 
