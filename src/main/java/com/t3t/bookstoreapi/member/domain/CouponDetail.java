@@ -15,13 +15,7 @@ public class CouponDetail {
 
     @Id
     @Column(name = "coupon_id")
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Type(type = "uuid-char")
-    private UUID couponId;
+    private String couponId;
 
     @JoinColumn(name = "member_id")
     @ManyToOne
