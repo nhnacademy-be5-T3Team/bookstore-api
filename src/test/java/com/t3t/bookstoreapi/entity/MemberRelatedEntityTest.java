@@ -1,9 +1,11 @@
 package com.t3t.bookstoreapi.entity;
 
 import com.t3t.bookstoreapi.member.domain.Addresses;
+import com.t3t.bookstoreapi.member.domain.MemberGrade;
 import com.t3t.bookstoreapi.member.domain.MemberGradePolicy;
 import com.t3t.bookstoreapi.member.repository.AddressRepository;
 import com.t3t.bookstoreapi.member.repository.MemberGradePolicyRepository;
+import com.t3t.bookstoreapi.member.repository.MemberGradeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +29,9 @@ class MemberRelatedEntityTest {
 
     @Autowired
     private MemberGradePolicyRepository memberGradePolicyRepository;
+
+    @Autowired
+    private MemberGradeRepository memberGradeRepository;
 
     /**
      * MemberAddress 엔티티 맵핑 테스트
@@ -69,5 +74,33 @@ class MemberRelatedEntityTest {
         // then
         Assertions.assertTrue(resultMemberGradePolicy.isPresent());
         Assertions.assertEquals(memberGradePolicy, resultMemberGradePolicy.get());
+    }
+
+    /**
+     * MemberGrade 엔티티 맵핑 테스트
+     * @author woody33545(구건모)
+     */
+
+    @Test
+    @DisplayName("MemberGrade 엔티티 맵핑 테스트")
+    void memberGradeTest() {
+
+        // given
+        MemberGradePolicy memberGradePolicy = memberGradePolicyRepository.save(MemberGradePolicy.builder()
+                .startAmount(BigDecimal.valueOf(0))
+                .endAmount(BigDecimal.valueOf(100000))
+                .build());
+
+        MemberGrade memberGrade = memberGradeRepository.save(MemberGrade.builder()
+                .policy(memberGradePolicy)
+                .name("test")
+                .build());
+
+        // when
+        Optional<MemberGrade> resultMemberGrade = memberGradeRepository.findById(memberGrade.getGradeId());
+
+        // then
+        Assertions.assertTrue(resultMemberGrade.isPresent());
+        Assertions.assertEquals(memberGrade, resultMemberGrade.get());
     }
 }
