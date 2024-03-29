@@ -1,7 +1,7 @@
-package com.t3t.bookstoreapi.review.entity;
+package com.t3t.bookstoreapi.review.model.entity;
 
 import com.sun.istack.NotNull;
-import com.t3t.bookstoreapi.book.entity.Book;
+import com.t3t.bookstoreapi.book.model.entity.Book;
 import lombok.*;
 
 import javax.persistence.*;

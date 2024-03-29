@@ -1,17 +1,21 @@
-package com.t3t.bookstoreapi.book.entity;
+package com.t3t.bookstoreapi.book.model.entity;
 
 import com.sun.istack.NotNull;
-import com.t3t.bookstoreapi.participant.entity.Participant;
-import com.t3t.bookstoreapi.participant.entity.ParticipantRole;
-import lombok.Getter;
+import com.t3t.bookstoreapi.participant.model.entity.Participant;
+import com.t3t.bookstoreapi.participant.model.entity.ParticipantRole;
+import lombok.*;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "participant_role_registrations")
 public class ParticipantRoleRegistration {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "participant_role_registration_id")
     private Long participantRoleRegistrationId;
 
