@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.book.entity;
+package com.t3t.bookstoreapi.book.model.entity;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;
@@ -7,12 +7,12 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@Table(name = "book_thumbnails")
-public class BookThumbnail {
+@Table(name = "book_images")
+public class BookImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_thumbnail_image_id")
-    private Long bookThumbnailImageId;
+    @Column(name = "book_image_id")
+    private Long bookImageId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -20,6 +20,7 @@ public class BookThumbnail {
     private Book book;
 
     @NotNull
-    @Column(name = "thumbnail_image_url")
-    private String thumbnailImageUrl;
+    @Column(name = "book_image_url")
+    private String bookImageUrl;
+
 }

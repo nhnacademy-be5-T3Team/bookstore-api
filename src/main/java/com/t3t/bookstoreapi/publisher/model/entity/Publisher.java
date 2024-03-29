@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.publisher.entity;
+package com.t3t.bookstoreapi.publisher.model.entity;
 
 import com.sun.istack.NotNull;
 import lombok.*;

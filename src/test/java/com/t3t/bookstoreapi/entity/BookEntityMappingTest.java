@@ -1,14 +1,14 @@
 package com.t3t.bookstoreapi.entity;
 
-import com.t3t.bookstoreapi.category.entity.Category;
+import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
-import com.t3t.bookstoreapi.participant.entity.Participant;
-import com.t3t.bookstoreapi.participant.entity.ParticipantRole;
+import com.t3t.bookstoreapi.participant.model.entity.Participant;
+import com.t3t.bookstoreapi.participant.model.entity.ParticipantRole;
 import com.t3t.bookstoreapi.participant.repository.ParticipantRepository;
 import com.t3t.bookstoreapi.participant.repository.ParticipantRoleRepository;
-import com.t3t.bookstoreapi.publisher.entity.Publisher;
+import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
-import com.t3t.bookstoreapi.tag.entity.Tag;
+import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import com.t3t.bookstoreapi.tag.repository.TagRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

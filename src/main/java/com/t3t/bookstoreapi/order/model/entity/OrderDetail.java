@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.order.model.entity;
 
-import com.t3t.bookstoreapi.book.entity.Book;
+import com.t3t.bookstoreapi.book.model.entity.Book;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
