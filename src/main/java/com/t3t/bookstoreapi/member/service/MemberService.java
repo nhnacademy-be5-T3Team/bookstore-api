@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.member.service;
 
-import com.t3t.bookstoreapi.member.domain.Member;
+import com.t3t.bookstoreapi.member.entity.Member;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
