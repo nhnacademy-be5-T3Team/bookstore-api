@@ -41,10 +41,16 @@ public class SecretKeyManagerService {
                         HttpMethod.GET, null, secretKeyManagerResponseTypeReference,
                         secretKeyManagerProperties.getAppKey(), keyId);
 
-        if (!response.getBody().getHeader().isSuccessful() || response.getBody().getBody().getSecret() == null) {
-            throw new SecretKeyManagerApiRequestFailedException(String.format("Secret Key Manager API 요청에 실패하였습니다. (Key ID: %s)", keyId));
+        SecretKeyManagerResponse responseBody = response.getBody();
+
+        if (responseBody == null) {
+            throw new SecretKeyManagerApiRequestFailedException("Response body is null.");
         }
 
-        return response.getBody().getBody().getSecret();
+        if (responseBody.getHeader() == null || responseBody.getBody() == null || !responseBody.getHeader().isSuccessful() || responseBody.getBody().getSecret() == null) {
+            throw new SecretKeyManagerApiRequestFailedException(String.format("Fail to request Secret Key Manager API (Key ID: %s)", keyId));
+        }
+
+        return responseBody.getBody().getSecret();
     }
 }
