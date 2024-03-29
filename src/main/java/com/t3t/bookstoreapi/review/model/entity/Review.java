@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.review.model.entity;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import lombok.*;
 

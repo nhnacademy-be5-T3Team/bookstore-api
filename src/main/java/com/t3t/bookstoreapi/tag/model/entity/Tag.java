@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.tag.model.entity;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
