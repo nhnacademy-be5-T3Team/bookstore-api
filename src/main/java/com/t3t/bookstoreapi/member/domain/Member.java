@@ -1,11 +1,16 @@
 package com.t3t.bookstoreapi.member.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "members")
 @Getter
@@ -46,7 +51,7 @@ public class Member {
     @Comment("회원 보유 포인트")
     private Long point;
 
-    @Column(name = "member_status", length = 10)
+    @Column(name = "member_status", length = 10, nullable = false)
     @Comment("회원 상태")
     private String status;
 
