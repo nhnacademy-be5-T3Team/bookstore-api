@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.payment.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "payments")
-public class Payments {
+public class Payments implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
