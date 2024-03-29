@@ -1,13 +1,7 @@
 package com.t3t.bookstoreapi.entity;
 
-import com.t3t.bookstoreapi.member.domain.Addresses;
-import com.t3t.bookstoreapi.member.domain.Member;
-import com.t3t.bookstoreapi.member.domain.MemberGrade;
-import com.t3t.bookstoreapi.member.domain.MemberGradePolicy;
-import com.t3t.bookstoreapi.member.repository.AddressRepository;
-import com.t3t.bookstoreapi.member.repository.MemberGradePolicyRepository;
-import com.t3t.bookstoreapi.member.repository.MemberGradeRepository;
-import com.t3t.bookstoreapi.member.repository.MemberRepository;
+import com.t3t.bookstoreapi.member.domain.*;
+import com.t3t.bookstoreapi.member.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -39,26 +33,29 @@ class MemberRelatedEntityTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private MemberAddressRepository memberAddressRepository;
+
     /**
      * MemberAddress 엔티티 맵핑 테스트
      * @author woody33545(구건모)
      */
     @Test
-    @DisplayName("MemberAddress 엔티티 맵핑 테스트")
-    void memberAddressTest() {
+    @DisplayName("Address 엔티티 맵핑 테스트")
+    void addressTest() {
 
         // given
-        Addresses addresses = addressRepository.save(Addresses.builder()
-                        .roadNameAddress("대전광역시 유성구")
+        Address address = addressRepository.save(Address.builder()
+                        .roadNameAddress("test")
                         .addressNumber(12345)
                         .build());
 
         // when
-        Optional<Addresses> resultAddresses = addressRepository.findById(addresses.getId());
+        Optional<Address> resultAddresses = addressRepository.findById(address.getId());
 
         // then
         Assertions.assertTrue(resultAddresses.isPresent());
-        Assertions.assertEquals(addresses, resultAddresses.get());
+        Assertions.assertEquals(address, resultAddresses.get());
     }
 
     /**
@@ -118,6 +115,7 @@ class MemberRelatedEntityTest {
     @DisplayName("Member 엔티티 맵핑 테스트")
     void memberTest() {
 
+        // given
         MemberGradePolicy memberGradePolicy = memberGradePolicyRepository.save(MemberGradePolicy.builder()
                 .startAmount(BigDecimal.valueOf(0))
                 .endAmount(BigDecimal.valueOf(100000))
@@ -128,7 +126,6 @@ class MemberRelatedEntityTest {
                 .name("test")
                 .build());
 
-        // given
         Member member = memberRepository.save(Member.builder()
                 .name("test")
                 .email("woody@mail.com")
@@ -147,5 +144,56 @@ class MemberRelatedEntityTest {
         // then
         Assertions.assertTrue(resultMember.isPresent());
         Assertions.assertEquals(member, resultMember.get());
+    }
+
+    /**
+     * MemberAddress 엔티티 맵핑 테스트
+     * @author woody33545(구건모)
+     */
+    @Test
+    @DisplayName("MemberAddress 엔티티 맵핑 테스트")
+    void memberAddressTest() {
+        // given
+        MemberGradePolicy memberGradePolicy = memberGradePolicyRepository.save(MemberGradePolicy.builder()
+                .startAmount(BigDecimal.valueOf(0))
+                .endAmount(BigDecimal.valueOf(100000))
+                .build());
+
+        MemberGrade memberGrade = memberGradeRepository.save(MemberGrade.builder()
+                .policy(memberGradePolicy)
+                .name("test")
+                .build());
+
+        Member member = memberRepository.save(Member.builder()
+                .name("test")
+                .email("woody@mail.com")
+                .point(1000L)
+                .phone("010-1234-5678")
+                .latestLogin(LocalDateTime.now())
+                .birthDate(LocalDateTime.now().toLocalDate())
+                .gradeId(memberGrade)
+                .status("ACTIVE")
+                .role(1)
+                .build());
+
+        Address address = addressRepository.save(Address.builder()
+                .roadNameAddress("test")
+                .addressNumber(12345)
+                .build());
+
+        MemberAddress memberAddress = memberAddressRepository.save(MemberAddress.builder()
+                .member(member)
+                .address(address)
+                .addressDetail("test")
+                .addressNickname("test")
+                .build());
+
+        // when
+        Optional<MemberAddress> resultMemberAddress = memberAddressRepository.findById(memberAddress.getMemberAddressId());
+
+        // then
+        Assertions.assertTrue(resultMemberAddress.isPresent());
+        Assertions.assertEquals(memberAddress, resultMemberAddress.get());
+
     }
 }
