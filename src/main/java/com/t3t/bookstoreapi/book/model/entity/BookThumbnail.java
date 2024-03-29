@@ -1,10 +1,13 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
 import com.sun.istack.NotNull;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "book_thumbnails")
