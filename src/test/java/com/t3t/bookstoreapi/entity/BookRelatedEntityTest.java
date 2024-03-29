@@ -92,6 +92,8 @@ class BookRelatedEntityTest {
         BookCategory bookCategory = BookCategory.builder().book(testBook).category(category).build();
 
         bookCategoryRepository.save(bookCategory);
+
+        BookCategory savedBookCategory = bookCategoryRepository.findById(new BookCategory.BookCategoryId(testBook, category)).orElse(null);
     }
 
     @Test
