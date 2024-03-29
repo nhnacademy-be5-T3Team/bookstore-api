@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.payment.service;
 
-import com.t3t.bookstoreapi.payment.entity.Orders;
+
+import com.t3t.bookstoreapi.order.model.entity.Order;
 import com.t3t.bookstoreapi.payment.entity.PaymentProvider;
 import com.t3t.bookstoreapi.payment.entity.Payments;
 import com.t3t.bookstoreapi.payment.repository.PaymentProviderRepository;
@@ -26,10 +27,10 @@ public class PaymentService {
     private PaymentProviderRepository paymentProviderRepository;
 
     public void PaymentRequest(PaymentRequest paymentRequest) {
-        Orders order = entityManager.find(Orders.class, paymentRequest.getOrderId());
+        Order order = entityManager.find(Order.class, paymentRequest.getOrderId());
 
         PaymentProvider paymentProvider;
-        if (String.valueOf(order.getOrderId()).startsWith("1")) {
+        if (String.valueOf(order.getId()).startsWith("1")) {
             paymentProvider = paymentProviderRepository.findByPaymentProviderName("토스");
         } else {
             paymentProvider = paymentProviderRepository.findByPaymentProviderName("기본");

@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.payment.entity;
 
+import com.t3t.bookstoreapi.order.model.entity.Order;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +24,7 @@ public class Payments implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    private Orders orderId;
+    private Order orderId;
 
     @ManyToOne
     @JoinColumn(name = "payment_provider_id")
