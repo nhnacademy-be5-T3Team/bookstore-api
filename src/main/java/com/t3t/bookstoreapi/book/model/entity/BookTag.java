@@ -1,20 +1,23 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 @Table(name = "book_tags")
 public class BookTag {
     @EmbeddedId
     private BookTagId id;
+
+    @Builder
+    public BookTag(Book book, Tag tag) {
+        this.id = new BookTagId(book, tag);
+    }
 
     @NoArgsConstructor
     @AllArgsConstructor
