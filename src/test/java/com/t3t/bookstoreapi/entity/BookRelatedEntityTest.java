@@ -4,6 +4,10 @@ import com.t3t.bookstoreapi.book.model.entity.*;
 import com.t3t.bookstoreapi.book.repository.*;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
+import com.t3t.bookstoreapi.participant.model.entity.Participant;
+import com.t3t.bookstoreapi.participant.model.entity.ParticipantRole;
+import com.t3t.bookstoreapi.participant.repository.ParticipantRepository;
+import com.t3t.bookstoreapi.participant.repository.ParticipantRoleRepository;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
@@ -35,6 +39,10 @@ class BookRelatedEntityTest {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
+    private ParticipantRepository participantRepository;
+    @Autowired
+    private ParticipantRoleRepository participantRoleRepository;
+    @Autowired
     private TagRepository tagRepository;
     @Autowired
     private BookCategoryRepository bookCategoryRepository;
@@ -44,6 +52,8 @@ class BookRelatedEntityTest {
     private BookTagRepository bookTagRepository;
     @Autowired
     private BookThumbnailRepository bookThumbnailRepository;
+    @Autowired
+    private ParticipantRoleRegistrationRepository participantRoleRegis;
 
     private Book testBook;
 
@@ -136,6 +146,35 @@ class BookRelatedEntityTest {
 
         assertNotNull(savedBookThumbnail);
         assertEquals(thumbnailImageUrl, savedBookThumbnail.getThumbnailImageUrl());
+    }
+
+    @Test
+    @DisplayName("ParticipantRoleRegistration entity 맵핑 테스트")
+    void testParticipantRoleRegistrationMapping() {
+
+
+        Participant participant = participantRepository.save(Participant.builder()
+                .participantName("TestParticipantName")
+                .participantEmail("TestParticipantEmail@example.com")
+                .build());
+
+        ParticipantRole participantRole = participantRoleRepository.save(ParticipantRole.builder()
+                        .participantRoleName("TestParticipantRoleName")
+                        .build());
+
+        ParticipantRoleRegistration participantRoleRegistration = ParticipantRoleRegistration.builder()
+                .book(testBook)
+                .participant(participant)
+                .participantRole(participantRole)
+                .build();
+
+        participantRoleRegis.save(participantRoleRegistration);
+
+        ParticipantRoleRegistration saved = participantRoleRegis.findById(participantRoleRegistration.getParticipantRoleRegistrationId()).orElse(null);
+
+        assertNotNull(saved);
+        assertEquals(participant.getParticipantName(), participantRoleRegistration.getParticipant().getParticipantName());
+
     }
 
 }
