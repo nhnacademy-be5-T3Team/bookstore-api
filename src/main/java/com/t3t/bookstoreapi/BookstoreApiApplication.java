@@ -9,6 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 public class BookstoreApiApplication {
 
 	public static void main(String[] args) {
+
+
+
 		SpringApplication.run(BookstoreApiApplication.class, args);
 	}
 
