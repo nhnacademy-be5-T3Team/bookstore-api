@@ -24,10 +24,10 @@ public class PointDetail {
     private String content;
 
     @Column(name = "point_detail_type")
-    private String PointDetailType;
+    private String pointDetailType;
 
     @Column(name = "point_detail_date")
-    private LocalDateTime PointDetailDate;
+    private LocalDateTime pointDetailDate;
 
     @Column(name = "point_amount")
     private BigDecimal pointAmount;
