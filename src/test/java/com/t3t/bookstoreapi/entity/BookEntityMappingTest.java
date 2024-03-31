@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("prod")
-public class BookEntityMappingTest {
+@ActiveProfiles("local")
+class BookEntityMappingTest {
     @Autowired
     private PublisherRepository publisherRepository;
     @Autowired
@@ -166,6 +166,8 @@ public class BookEntityMappingTest {
                 .publisherName("TestPublisher")
                 .publisherEmail("TestPublisher@example.com")
                 .build();
+
+        publisherRepository.save(publisher);
 
         Book book = Book.builder()
                 .publisher(publisher)

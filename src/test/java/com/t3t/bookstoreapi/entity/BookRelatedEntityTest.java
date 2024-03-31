@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("prod")
+@ActiveProfiles("local")
 class BookRelatedEntityTest {
 
     @Autowired
@@ -94,6 +94,9 @@ class BookRelatedEntityTest {
         bookCategoryRepository.save(bookCategory);
 
         BookCategory savedBookCategory = bookCategoryRepository.findById(new BookCategory.BookCategoryId(testBook, category)).orElse(null);
+
+        assertNotNull(savedBookCategory);
+        assertEquals("categoryName", savedBookCategory.getId().getCategory().getCategoryName());
     }
 
     @Test

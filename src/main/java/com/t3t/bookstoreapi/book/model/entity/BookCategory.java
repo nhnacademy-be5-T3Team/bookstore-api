@@ -19,7 +19,7 @@ public class BookCategory {
         this.id = new BookCategoryId(book, category);
     }
 
-
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     @EqualsAndHashCode
