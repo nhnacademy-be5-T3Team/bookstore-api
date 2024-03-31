@@ -145,10 +145,10 @@ class BookRelatedEntityTest {
 
         bookCategoryRepository.save(bookCategory);
 
-        BookCategory savedBookCategory = bookCategoryRepository.findById(new BookCategory.BookCategoryId(testBook, category)).orElse(null);
+        BookCategory savedBookCategory = bookCategoryRepository.findById(bookCategory.getBookCategoryId()).orElse(null);
 
         assertNotNull(savedBookCategory);
-        assertEquals("categoryName", savedBookCategory.getId().getCategory().getCategoryName());
+        assertEquals("categoryName", savedBookCategory.getCategory().getCategoryName());
     }
 
     @Test
@@ -180,10 +180,10 @@ class BookRelatedEntityTest {
 
         bookTagRepository.save(bookTag);
 
-        BookTag savedBookTag = bookTagRepository.findById(new BookTag.BookTagId(testBook, tag)).orElse(null);
+        BookTag savedBookTag = bookTagRepository.findById(bookTag.getBookTagId()).orElse(null);
 
         assertNotNull(savedBookTag);
-        assertEquals("TestTagName", savedBookTag.getId().getTag().getTagName());
+        assertEquals("TestTagName", savedBookTag.getTag().getTagName());
     }
 
     @Test
