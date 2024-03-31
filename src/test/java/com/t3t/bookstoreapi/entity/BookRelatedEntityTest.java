@@ -18,6 +18,8 @@ import com.t3t.bookstoreapi.participant.repository.ParticipantRepository;
 import com.t3t.bookstoreapi.participant.repository.ParticipantRoleRepository;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
+import com.t3t.bookstoreapi.review.model.entity.Review;
+import com.t3t.bookstoreapi.review.repository.ReviewRepository;
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import com.t3t.bookstoreapi.tag.repository.TagRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +66,8 @@ class BookRelatedEntityTest {
     @Autowired
     private BookLikeRepository bookLikeRepository;
     @Autowired
+    private ReviewRepository reviewRepository;
+    @Autowired
     private ParticipantRoleRegistrationRepository participantRoleRegis;
     @Autowired
     private MemberRepository memberRepository;
@@ -73,6 +77,7 @@ class BookRelatedEntityTest {
     private MemberGradeRepository memberGradeRepository;
 
     private Book testBook;
+    private Member testUser;
 
     @BeforeEach
     void setUpBookEntity() {
@@ -94,6 +99,32 @@ class BookRelatedEntityTest {
                 .bookStock(100)
                 .bookAverageScore(4.5f)
                 .bookLikeCount(500)
+                .build());
+
+    }
+
+    @BeforeEach
+    void setUpMemberEntity() {
+        MemberGradePolicy memberGradePolicy = memberGradePolicyRepository.save(MemberGradePolicy.builder()
+                .startAmount(BigDecimal.valueOf(0))
+                .endAmount(BigDecimal.valueOf(100000))
+                .build());
+
+        MemberGrade memberGrade = memberGradeRepository.save(MemberGrade.builder().gradeId(2)
+                .policy(memberGradePolicy) // MemberGrade 테이블 autoincrement 적용 후 없애기
+                .name("test")
+                .build());
+
+        testUser = memberRepository.save(Member.builder()
+                .name("test")
+                .email("woody@mail.com")
+                .point(1000L)
+                .phone("010-1234-5678")
+                .latestLogin(LocalDateTime.now())
+                .birthDate(LocalDateTime.now().toLocalDate())
+                .gradeId(memberGrade)
+                .status("ACTIVE")
+                .role(1)
                 .build());
 
     }
@@ -203,34 +234,33 @@ class BookRelatedEntityTest {
     @DisplayName("BookLike entity 맵핑 테스트")
     void testBookLikeEntityMapping() {
 
-        MemberGradePolicy memberGradePolicy = memberGradePolicyRepository.save(MemberGradePolicy.builder()
-                .startAmount(BigDecimal.valueOf(0))
-                .endAmount(BigDecimal.valueOf(100000))
-                .build());
+        BookLike bookLike = BookLike.builder().book(testBook).member(testUser).build();
 
-        MemberGrade memberGrade = memberGradeRepository.save(MemberGrade.builder().gradeId(2)
-                .policy(memberGradePolicy) // MemberGrade 테이블 autoincrement 적용 후 없애기
-                .name("test")
-                .build());
+        bookLikeRepository.save(bookLike);
 
-        Member member = memberRepository.save(Member.builder()
-                .name("test")
-                .email("woody@mail.com")
-                .point(1000L)
-                .phone("010-1234-5678")
-                .latestLogin(LocalDateTime.now())
-                .birthDate(LocalDateTime.now().toLocalDate())
-                .gradeId(memberGrade)
-                .status("ACTIVE")
-                .role(1)
-                .build());
-
-        BookLike bookLike = BookLike.builder().book(testBook).member(member).build();
-
-        BookLike savedBookLike = bookLikeRepository.save(bookLike);
+        BookLike savedBookLike = bookLikeRepository.findById(bookLike.getId()).orElse(null);
 
         assertNotNull(savedBookLike);
         assertEquals(testBook.getBookIsbn(), savedBookLike.getId().getBook().getBookIsbn());
     }
 
+    @Test
+    @DisplayName("Review entity 맵핑 테스트")
+    void testReviewEntityMapping() {
+        Review review = Review.builder()
+                .book(testBook)
+                .member(testUser)
+                .reviewComment("review 내용")
+                .reviewScore(3)
+                .reviewCreatedAt(LocalDateTime.now())
+                .reviewUpdatedAt(LocalDateTime.now())
+                .build();
+
+        reviewRepository.save(review);
+
+        Review savedReview = reviewRepository.findById(review.getReviewId()).orElse(null);
+
+        assertNotNull(savedReview);
+        assertEquals(review.getReviewComment(), savedReview.getReviewComment());
+    }
 }
