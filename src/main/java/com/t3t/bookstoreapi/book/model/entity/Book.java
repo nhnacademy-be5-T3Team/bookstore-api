@@ -69,4 +69,7 @@ public class Book {
     @Column(name = "book_like_count")
     private Integer bookLikeCount;
 
+    @OneToOne(mappedBy = "book")
+    private BookThumbnail bookThumbnail;
+
 }
