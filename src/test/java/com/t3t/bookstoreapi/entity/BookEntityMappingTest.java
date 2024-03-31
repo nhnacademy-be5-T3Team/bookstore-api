@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("local")
+@ActiveProfiles("prod")
 class BookEntityMappingTest {
     @Autowired
     private PublisherRepository publisherRepository;
