@@ -4,34 +4,27 @@ import com.t3t.bookstoreapi.category.model.entity.Category;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "book_categories")
 public class BookCategory {
-    @EmbeddedId
-    private BookCategoryId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="book_category_id")
+    private Long bookCategoryId;
 
-    @Builder
-    public BookCategory(Book book, Category category) {
-        this.id = new BookCategoryId(book, category);
-    }
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Book book;
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @Embeddable
-    public static class BookCategoryId implements Serializable {
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "book_id")
-        private Book book;
-
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "category_id")
-        private Category category;
-    }
-
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
