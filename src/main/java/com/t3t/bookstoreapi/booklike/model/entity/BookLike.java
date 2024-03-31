@@ -20,6 +20,7 @@ public class BookLike {
         this.id = new BookLikeId(book, member);
     }
 
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     @EqualsAndHashCode

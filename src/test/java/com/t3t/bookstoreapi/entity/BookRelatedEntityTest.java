@@ -2,14 +2,26 @@ package com.t3t.bookstoreapi.entity;
 
 import com.t3t.bookstoreapi.book.model.entity.*;
 import com.t3t.bookstoreapi.book.repository.*;
+import com.t3t.bookstoreapi.booklike.model.entity.BookLike;
+import com.t3t.bookstoreapi.booklike.repository.BookLikeRepository;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
+import com.t3t.bookstoreapi.member.domain.Member;
+import com.t3t.bookstoreapi.member.domain.MemberGrade;
+import com.t3t.bookstoreapi.member.domain.MemberGradePolicy;
+import com.t3t.bookstoreapi.member.repository.MemberGradePolicyRepository;
+import com.t3t.bookstoreapi.member.repository.MemberGradeRepository;
+import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.participant.model.entity.Participant;
 import com.t3t.bookstoreapi.participant.model.entity.ParticipantRole;
 import com.t3t.bookstoreapi.participant.repository.ParticipantRepository;
 import com.t3t.bookstoreapi.participant.repository.ParticipantRoleRepository;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
+import com.t3t.bookstoreapi.review.model.entity.Review;
+import com.t3t.bookstoreapi.review.model.entity.ReviewImage;
+import com.t3t.bookstoreapi.review.repository.ReviewImageRepository;
+import com.t3t.bookstoreapi.review.repository.ReviewRepository;
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import com.t3t.bookstoreapi.tag.repository.TagRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,9 +66,22 @@ class BookRelatedEntityTest {
     @Autowired
     private BookThumbnailRepository bookThumbnailRepository;
     @Autowired
+    private BookLikeRepository bookLikeRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
+    @Autowired
+    private ReviewImageRepository reviewImageRepository;
+    @Autowired
     private ParticipantRoleRegistrationRepository participantRoleRegis;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private MemberGradePolicyRepository memberGradePolicyRepository;
+    @Autowired
+    private MemberGradeRepository memberGradeRepository;
 
     private Book testBook;
+    private Member testUser;
 
     @BeforeEach
     void setUpBookEntity() {
@@ -81,6 +107,32 @@ class BookRelatedEntityTest {
 
     }
 
+    @BeforeEach
+    void setUpMemberEntity() {
+        MemberGradePolicy memberGradePolicy = memberGradePolicyRepository.save(MemberGradePolicy.builder()
+                .startAmount(BigDecimal.valueOf(0))
+                .endAmount(BigDecimal.valueOf(100000))
+                .build());
+
+        MemberGrade memberGrade = memberGradeRepository.save(MemberGrade.builder().gradeId(2)
+                .policy(memberGradePolicy) // MemberGrade 테이블 autoincrement 적용 후 없애기
+                .name("test")
+                .build());
+
+        testUser = memberRepository.save(Member.builder()
+                .name("test")
+                .email("woody@mail.com")
+                .point(1000L)
+                .phone("010-1234-5678")
+                .latestLogin(LocalDateTime.now())
+                .birthDate(LocalDateTime.now().toLocalDate())
+                .gradeId(memberGrade)
+                .status("ACTIVE")
+                .role(1)
+                .build());
+
+    }
+
     @Test
     @DisplayName("BookCategory entity 맵핑 테스트")
     void testBookCategoryEntityMapping() {
@@ -94,6 +146,9 @@ class BookRelatedEntityTest {
         bookCategoryRepository.save(bookCategory);
 
         BookCategory savedBookCategory = bookCategoryRepository.findById(new BookCategory.BookCategoryId(testBook, category)).orElse(null);
+
+        assertNotNull(savedBookCategory);
+        assertEquals("categoryName", savedBookCategory.getId().getCategory().getCategoryName());
     }
 
     @Test
@@ -179,4 +234,59 @@ class BookRelatedEntityTest {
 
     }
 
+    @Test
+    @DisplayName("BookLike entity 맵핑 테스트")
+    void testBookLikeEntityMapping() {
+
+        BookLike bookLike = BookLike.builder().book(testBook).member(testUser).build();
+
+        bookLikeRepository.save(bookLike);
+
+        BookLike savedBookLike = bookLikeRepository.findById(bookLike.getId()).orElse(null);
+
+        assertNotNull(savedBookLike);
+        assertEquals(testBook.getBookIsbn(), savedBookLike.getId().getBook().getBookIsbn());
+    }
+
+    @Test
+    @DisplayName("Review entity 맵핑 테스트")
+    void testReviewEntityMapping() {
+        Review review = Review.builder()
+                .book(testBook)
+                .member(testUser)
+                .reviewComment("review 내용")
+                .reviewScore(3)
+                .reviewCreatedAt(LocalDateTime.now())
+                .reviewUpdatedAt(LocalDateTime.now())
+                .build();
+
+        reviewRepository.save(review);
+
+        Review savedReview = reviewRepository.findById(review.getReviewId()).orElse(null);
+
+        assertNotNull(savedReview);
+        assertEquals(review.getReviewComment(), savedReview.getReviewComment());
+    }
+
+    @Test
+    @DisplayName("Review Image entity 맵핑 텍스트")
+    void testReviewImageEntityMapping() {
+        Review review = reviewRepository.save(Review.builder()
+                .book(testBook)
+                .member(testUser)
+                .reviewComment("review 내용")
+                .reviewScore(3)
+                .reviewCreatedAt(LocalDateTime.now())
+                .reviewUpdatedAt(LocalDateTime.now())
+                .build());
+
+        ReviewImage reviewImage = ReviewImage.builder().reviewImageUrl("img_url").review(review).build();
+
+        reviewImageRepository.save(reviewImage);
+
+        ReviewImage savedReviewImage = reviewImageRepository.findById(reviewImage.getReviewImageId()).orElse(null);
+
+        assertNotNull(savedReviewImage);
+        assertEquals(reviewImage.getReviewImageUrl(), savedReviewImage.getReviewImageUrl());
+    }
 }

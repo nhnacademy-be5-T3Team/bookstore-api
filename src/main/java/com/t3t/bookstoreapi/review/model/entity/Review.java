@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.review.model.entity;
 
 import javax.validation.constraints.NotNull;
 import com.t3t.bookstoreapi.book.model.entity.Book;
+import com.t3t.bookstoreapi.member.domain.Member;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,6 +24,11 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @NotNull
     @Column(name = "review_comment")
