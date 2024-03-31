@@ -7,6 +7,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -71,5 +73,9 @@ public class Book {
 
     @OneToOne(mappedBy = "book")
     private BookThumbnail bookThumbnail;
+
+    @OneToMany(mappedBy = "book")
+    List<ParticipantRoleRegistration> authors = new ArrayList<>();
+
 
 }
