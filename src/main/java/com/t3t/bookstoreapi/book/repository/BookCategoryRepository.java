@@ -3,5 +3,8 @@ package com.t3t.bookstoreapi.book.repository;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BookCategoryRepository extends JpaRepository<BookCategory, BookCategory.BookCategoryId> {
+import java.util.List;
+
+public interface BookCategoryRepository extends JpaRepository<BookCategory, Long> {
+    List<BookCategory> findByCategoryCategoryId(Integer categoryId);
 }
