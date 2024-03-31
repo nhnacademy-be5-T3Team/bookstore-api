@@ -34,3 +34,6 @@ build/
 
 ### Key Files ###
 *.p12
+
+### yaml ###
+application-dev.yml
