@@ -19,6 +19,8 @@ import com.t3t.bookstoreapi.participant.repository.ParticipantRoleRepository;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
 import com.t3t.bookstoreapi.review.model.entity.Review;
+import com.t3t.bookstoreapi.review.model.entity.ReviewImage;
+import com.t3t.bookstoreapi.review.repository.ReviewImageRepository;
 import com.t3t.bookstoreapi.review.repository.ReviewRepository;
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import com.t3t.bookstoreapi.tag.repository.TagRepository;
@@ -67,6 +69,8 @@ class BookRelatedEntityTest {
     private BookLikeRepository bookLikeRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private ReviewImageRepository reviewImageRepository;
     @Autowired
     private ParticipantRoleRegistrationRepository participantRoleRegis;
     @Autowired
@@ -262,5 +266,27 @@ class BookRelatedEntityTest {
 
         assertNotNull(savedReview);
         assertEquals(review.getReviewComment(), savedReview.getReviewComment());
+    }
+
+    @Test
+    @DisplayName("Review Image entity 맵핑 텍스트")
+    void testReviewImageEntityMapping() {
+        Review review = reviewRepository.save(Review.builder()
+                .book(testBook)
+                .member(testUser)
+                .reviewComment("review 내용")
+                .reviewScore(3)
+                .reviewCreatedAt(LocalDateTime.now())
+                .reviewUpdatedAt(LocalDateTime.now())
+                .build());
+
+        ReviewImage reviewImage = ReviewImage.builder().reviewImageUrl("img_url").review(review).build();
+
+        reviewImageRepository.save(reviewImage);
+
+        ReviewImage savedReviewImage = reviewImageRepository.findById(reviewImage.getReviewImageId()).orElse(null);
+
+        assertNotNull(savedReviewImage);
+        assertEquals(reviewImage.getReviewImageUrl(), savedReviewImage.getReviewImageUrl());
     }
 }
