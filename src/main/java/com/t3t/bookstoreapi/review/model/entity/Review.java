@@ -7,6 +7,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -43,5 +45,8 @@ public class Review {
 
     @Column(name = "review_updated_at")
     private LocalDateTime reviewUpdatedAt;
+
+    @OneToMany(mappedBy = "review")
+    List<ReviewImage> reviewImageList = new ArrayList<>();
 
 }
