@@ -18,7 +18,11 @@ public class ParticipantRole {
     private Integer participantRoleId;
 
     @NotNull
-    @Column(name = "participant_role_name")
-    private String participantRoleName;
+    @Column(name = "participant_role_name_en")
+    private String participantRoleNameEn;
+
+    @NotNull
+    @Column(name = "participant_role_name_kr")
+    private String participantRoleNameKr;
 
 }

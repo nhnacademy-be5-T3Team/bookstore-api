@@ -146,16 +146,17 @@ class BookEntityMappingTest {
     @DisplayName("ParticipantRole entity 맵핑 테스트")
     void testParticipantRoleEntityMapping() {
 
-        String participantRoleName = "TestParticipantRoleName";
+        String participantRoleNameEn = "TestParticipantRoleNameEn";
+        String participantRoleNameKr = "TestParticipantRoleNameKr";
 
-        ParticipantRole participantRole = ParticipantRole.builder().participantRoleName(participantRoleName).build();
+        ParticipantRole participantRole = ParticipantRole.builder().participantRoleNameEn(participantRoleNameEn).participantRoleNameKr(participantRoleNameKr).build();
 
         participantRoleRepository.save(participantRole);
 
         ParticipantRole savedParticipantRole = participantRoleRepository.findById(participantRole.getParticipantRoleId()).orElse(null);
 
         assertNotNull(savedParticipantRole);
-        assertEquals(participantRoleName, savedParticipantRole.getParticipantRoleName());
+        assertEquals(participantRoleNameEn, savedParticipantRole.getParticipantRoleNameEn());
 
     }
 
