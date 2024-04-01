@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-    List<Book> findByBookIdIn(List<Long> ids);
+    Page<Book> findByBookIdIn(List<Long> ids, Pageable pageable);
 }

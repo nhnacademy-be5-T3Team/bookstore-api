@@ -8,6 +8,10 @@ import com.t3t.bookstoreapi.book.model.response.BookSearchResultResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,7 +30,7 @@ public class BookCategoryService {
         this.bookRepository = bookRepository;
     }
 
-    public List<BookSearchResultResponse> findBooksByCategoryId(Integer categoryId) {
+    public Page<BookSearchResultResponse> findBooksByCategoryId(Integer categoryId, Pageable pageable) {
         // 특정 카테고리 ID에 해당하는 BookCategory를 조회
         List<BookCategory> bookCategories = bookCategoryRepository.findByCategoryCategoryId(categoryId);
 
@@ -36,20 +40,22 @@ public class BookCategoryService {
                 .map(Book::getBookId)
                 .collect(Collectors.toList());
 
+        // 페이징 처리
+        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+
         // 도서 ID에 해당하는 도서 데이터 조회
-        List<Book> books = bookRepository.findByBookIdIn(bookIds);
+        Page<Book> booksPage = bookRepository.findByBookIdIn(bookIds, pageRequest);
 
-        List<BookSearchResultResponse> responses = new ArrayList<>();
+        // 페이징 결과를 BookSearchResultResponse로 변환
+        List<BookSearchResultResponse> responses = booksPage.getContent().stream()
+                .map(book -> {
+                    List<AuthorInfo> authorInfoList = extractAuthorInfo(book.getAuthors());
+                    return buildBookSearchResultResponse(book, authorInfoList);
+                })
+                .collect(Collectors.toList());
 
-        // 도서 데이터 순회하면서 연관 정보 조회
-        for (Book book : books) {
-            List<AuthorInfo> authorInfoList = extractAuthorInfo(book.getAuthors());
+        return new PageImpl<>(responses, pageRequest, booksPage.getTotalElements());
 
-            BookSearchResultResponse result = buildBookSearchResultResponse(book, authorInfoList);
-
-            responses.add(result);
-        }
-        return responses;
     }
 
     private List<AuthorInfo> extractAuthorInfo(List<ParticipantRoleRegistration> authorList) {
