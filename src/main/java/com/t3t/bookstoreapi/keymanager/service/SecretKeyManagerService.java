@@ -4,6 +4,7 @@ import com.t3t.bookstoreapi.keymanager.SecretKeyManagerApiRequestFailedException
 import com.t3t.bookstoreapi.property.SecretKeyManagerProperties;
 import com.t3t.bookstoreapi.keymanager.model.response.SecretKeyManagerResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author woody35545(구건모)
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SecretKeyManagerService {
@@ -47,7 +49,8 @@ public class SecretKeyManagerService {
             throw new SecretKeyManagerApiRequestFailedException("Response body is null.");
         }
 
-        if (responseBody.getHeader() == null || responseBody.getBody() == null || !responseBody.getHeader().isSuccessful() || responseBody.getBody().getSecret() == null) {
+        if (responseBody.getHeader() == null || responseBody.getBody() == null || !responseBody.getHeader().getIsSuccessful().equals("true") || responseBody.getBody().getSecret() == null) {
+            log.error("Secret Key Manager API response: {}", responseBody);
             throw new SecretKeyManagerApiRequestFailedException(String.format("Fail to request Secret Key Manager API (Key ID: %s)", keyId));
         }
 
