@@ -18,7 +18,7 @@ public class BookThumbnail {
     private Long bookThumbnailImageId;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
 
