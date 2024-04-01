@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findByBookIdIn(List<Long> ids, Pageable pageable);
+
+    Book findByBookId(Long bookId);
 }
