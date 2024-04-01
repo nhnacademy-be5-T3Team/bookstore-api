@@ -3,6 +3,8 @@ package com.t3t.bookstoreapi.category.controller;
 import com.t3t.bookstoreapi.category.service.CategoryService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,9 +20,9 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public BaseResponse< Map<String, Object>> getCategoriesHierarchy() {
+    public ResponseEntity<BaseResponse<Map<String, Object>>> getCategoriesHierarchy() {
         Map<String, Object> responseData = categoryService.getCategoriesHierarchy();
-
-        return BaseResponse.success("success", responseData);
+        BaseResponse<Map<String, Object>> response = BaseResponse.success("success", responseData);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
