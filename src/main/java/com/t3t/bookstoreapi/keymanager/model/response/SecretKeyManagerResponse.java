@@ -15,7 +15,7 @@ public class SecretKeyManagerResponse {
     public static class SecretKeyManagerResponseHeaderPartDto {
         private int resultCode;
         private String resultMessage;
-        private boolean isSuccessful;
+        private String isSuccessful;
     }
 
     @Getter
