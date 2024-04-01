@@ -43,43 +43,45 @@ public class BookCategoryService {
 
         // 도서 데이터 순회하면서 연관 정보 조회
         for (Book book : books) {
-            List<ParticipantRoleRegistration> authorList = book.getAuthors();
+            List<AuthorInfo> authorInfoList = extractAuthorInfo(book.getAuthors());
 
-            List<AuthorInfo> authorInfoList = new ArrayList<>();
-
-            for (ParticipantRoleRegistration participantRole : authorList) {
-                AuthorInfo author = AuthorInfo.builder()
-                        .role(participantRole.getParticipantRole().getParticipantRoleNameKr())
-                        .name(participantRole.getParticipant().getParticipantName())
-                        .build();
-
-                authorInfoList.add(author);
-            }
-
-            BookSearchResultResponse result = BookSearchResultResponse.builder()
-                    .name(book.getBookName())
-                    .price(book.getBookPrice())
-                    .discountRate(book.getBookDiscount())
-                    .discountedPrice(calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount()))
-                    .published(book.getBookPublished())
-                    .publisher(book.getPublisher().getPublisherName())
-                    .averageScore(book.getBookAverageScore())
-                    .likeCount(book.getBookLikeCount())
-                    .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
-                    .authorInfoList(authorInfoList)
-                    .build();
+            BookSearchResultResponse result = buildBookSearchResultResponse(book, authorInfoList);
 
             responses.add(result);
         }
         return responses;
     }
-    
+
+    private List<AuthorInfo> extractAuthorInfo(List<ParticipantRoleRegistration> authorList) {
+        return authorList.stream()
+                .map(participantRole -> AuthorInfo.builder()
+                        .role(participantRole.getParticipantRole().getParticipantRoleNameKr())
+                        .name(participantRole.getParticipant().getParticipantName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private BookSearchResultResponse buildBookSearchResultResponse(Book book, List<AuthorInfo> authorInfoList) {
+        BigDecimal discountedPrice = calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount());
+
+        return BookSearchResultResponse.builder()
+                .name(book.getBookName())
+                .price(book.getBookPrice())
+                .discountRate(book.getBookDiscount())
+                .discountedPrice(discountedPrice)
+                .published(book.getBookPublished())
+                .publisher(book.getPublisher().getPublisherName())
+                .averageScore(book.getBookAverageScore())
+                .likeCount(book.getBookLikeCount())
+                .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
+                .authorInfoList(authorInfoList)
+                .build();
+    }
 
     public static BigDecimal calculateDiscountedPrice(BigDecimal originalPrice, BigDecimal discountRate) {
         BigDecimal discountPercentage = discountRate.divide(BigDecimal.valueOf(100));
         BigDecimal discountAmount = originalPrice.multiply(discountPercentage);
-        BigDecimal discountedPrice = originalPrice.subtract(discountAmount);
 
-        return discountedPrice;
+        return originalPrice.subtract(discountAmount);
     }
 }
