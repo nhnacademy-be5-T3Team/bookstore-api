@@ -2,11 +2,11 @@ package com.t3t.bookstoreapi.book.service;
 
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
-import com.t3t.bookstoreapi.book.model.entity.ParticipantRoleRegistration;
 import com.t3t.bookstoreapi.book.model.response.AuthorInfo;
 import com.t3t.bookstoreapi.book.model.response.BookSearchResultResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
 
 @Service
 public class BookCategoryService {
@@ -48,25 +50,15 @@ public class BookCategoryService {
         // 페이징 결과를 BookSearchResultResponse로 변환
         List<BookSearchResultResponse> responses = booksPage.getContent().stream()
                 .map(book -> {
-                    List<AuthorInfo> authorInfoList = extractAuthorInfo(book.getAuthors());
+                    List<AuthorInfo> authorInfoList = BookServiceUtils.extractAuthorInfo(book.getAuthors());
                     return buildBookSearchResultResponse(book, authorInfoList);
                 })
                 .collect(Collectors.toList());
 
         return new PageImpl<>(responses, pageRequest, booksPage.getTotalElements());
-
     }
 
-    private List<AuthorInfo> extractAuthorInfo(List<ParticipantRoleRegistration> authorList) {
-        return authorList.stream()
-                .map(participantRole -> AuthorInfo.builder()
-                        .role(participantRole.getParticipantRole().getParticipantRoleNameKr())
-                        .name(participantRole.getParticipant().getParticipantName())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    private BookSearchResultResponse buildBookSearchResultResponse(Book book, List<AuthorInfo> authorInfoList) {
+    public BookSearchResultResponse buildBookSearchResultResponse(Book book, List<AuthorInfo> authorInfoList) {
         BigDecimal discountedPrice = calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount());
 
         return BookSearchResultResponse.builder()
@@ -81,12 +73,5 @@ public class BookCategoryService {
                 .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
                 .authorInfoList(authorInfoList)
                 .build();
-    }
-
-    public static BigDecimal calculateDiscountedPrice(BigDecimal originalPrice, BigDecimal discountRate) {
-        BigDecimal discountPercentage = discountRate.divide(BigDecimal.valueOf(100));
-        BigDecimal discountAmount = originalPrice.multiply(discountPercentage);
-
-        return originalPrice.subtract(discountAmount);
     }
 }
