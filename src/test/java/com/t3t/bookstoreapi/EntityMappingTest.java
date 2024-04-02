@@ -1,8 +1,5 @@
 package com.t3t.bookstoreapi;
 
-
-
-
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.order.model.entity.Delivery;
 import com.t3t.bookstoreapi.order.model.entity.OrderStatus;
@@ -46,7 +43,6 @@ import java.util.Optional;
 
             /**
              * OrderStatus 엔티티 맵핑 테스트
-             *
              * @author woody33545(구건모)
              */
             @Test

@@ -2,14 +2,14 @@ package com.t3t.bookstoreapi.payment_test;
 
 
 import com.t3t.bookstoreapi.order.model.entity.Order;
-import com.t3t.bookstoreapi.payment.entity.PaymentProvider;
-import com.t3t.bookstoreapi.payment.entity.Payments;
-import com.t3t.bookstoreapi.payment.entity.TossPayments;
+import com.t3t.bookstoreapi.order.repository.OrderRepository;
+import com.t3t.bookstoreapi.payment.model.entity.PaymentProvider;
+import com.t3t.bookstoreapi.payment.model.entity.Payments;
+import com.t3t.bookstoreapi.payment.model.entity.TossPayments;
 import com.t3t.bookstoreapi.payment.repository.PaymentProviderRepository;
 
 import com.t3t.bookstoreapi.payment.repository.PaymentRepository;
 import com.t3t.bookstoreapi.payment.repository.TossPaymentRepository;
-import com.t3t.bookstoreapi.payment.repository.orderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class EntityMappingTest {
 
     @Autowired
-    private orderRepository ordersRepository;
+    private OrderRepository ordersRepository;
 
     @Autowired
     private PaymentProviderRepository paymentProviderRepository;
