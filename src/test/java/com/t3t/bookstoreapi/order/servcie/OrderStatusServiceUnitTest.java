@@ -117,4 +117,23 @@ class OrderStatusServiceUnitTest {
         Assertions.assertEquals(testOrderStatus.getId(), resultOrderStatusDto.getId());
         Assertions.assertEquals(testOrderStatus.getName(), resultOrderStatusDto.getName());
     }
+
+    /**
+     * 주문 상태명으로 주문 상태 조회 테스트<br>
+     * @apiNote 요청한 상태명에 대해 주문 상태가 존재하지 않는 경우 `OrderStatusNotFoundForNameException`가 발생해야 한다.
+     * @see OrderStatusService#getOrderStatusByName(String)
+     * @see OrderStatusNotFoundForNameException
+     * @author woody35545(구건모)
+     */
+    @Test
+    @DisplayName("주문 상태 조회 - 상태명으로 조회(존재하지 않는 주문 상태 요청)")
+    void getOrderStatusByNameExceptionTest() {
+        // given
+        String testOrderStatusName = "testOrderStatus";
+
+        Mockito.when(orderStatusRepository.findByName(testOrderStatusName)).thenReturn(Optional.empty());
+
+        // when & then
+        Assertions.assertThrows(OrderStatusNotFoundForNameException.class, () -> orderStatusService.getOrderStatusByName(testOrderStatusName));
+    }
 }
