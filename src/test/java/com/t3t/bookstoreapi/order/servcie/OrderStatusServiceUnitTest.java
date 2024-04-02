@@ -14,9 +14,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-
 public class OrderStatusServiceUnitTest {
     @Mock
     private OrderStatusRepository orderStatusRepository;
@@ -24,14 +24,19 @@ public class OrderStatusServiceUnitTest {
     @InjectMocks
     private OrderStatusService orderStatusService;
 
+    /**
+     * 주문 상태 전체 조회 테스트
+     * @see OrderStatusService#getAllOrderStatusList()
+     * @author woody35545(구건모)
+     */
     @Test
     @DisplayName("주문 상태 전체 조회 테스트")
-    void getAllOrderStatusTest(){
+    void getAllOrderStatusListTest(){
         // given
         List<OrderStatus> testOrderStatusList = List.of(
-            OrderStatus.builder().id(0L).name("testOrderStatus1").build(),
-            OrderStatus.builder().id(1L).name("testOrderStatus2").build(),
-            OrderStatus.builder().id(2L).name("testOrderStatus3").build()
+            OrderStatus.builder().id(0L).name("testOrderStatus0").build(),
+            OrderStatus.builder().id(1L).name("testOrderStatus1").build(),
+            OrderStatus.builder().id(2L).name("testOrderStatus2").build()
         );
 
         Mockito.doReturn(testOrderStatusList).when(orderStatusRepository).findAll();
@@ -46,5 +51,26 @@ public class OrderStatusServiceUnitTest {
             Assertions.assertEquals(testOrderStatusList.get(i).getId(), resultOrderStatusDtoList.get(i).getId());
             Assertions.assertEquals(testOrderStatusList.get(i).getName(), resultOrderStatusDtoList.get(i).getName());
         }
+    }
+
+    /**
+     * 주문 상태 식별자로 주문 상태 조회 테스트
+     * @see OrderStatusService#getOrderStatusById(Long)
+     * @author woody35545(구건모)
+     */
+    @Test
+    @DisplayName("주문 상태 식별자로 주문 상태 조회 테스트")
+    void getOrderStatusByIdTest(){
+        // given
+        OrderStatus testOrderStatus = OrderStatus.builder().id(0L).name("testOrderStatus").build();
+
+        Mockito.when(orderStatusRepository.findById(0L)).thenReturn(Optional.of(testOrderStatus));
+
+        // when
+        OrderStatusDto resultOrderStatusDto = orderStatusService.getOrderStatusById(0L);
+
+        // then
+        Assertions.assertEquals(testOrderStatus.getId(), resultOrderStatusDto.getId());
+        Assertions.assertEquals(testOrderStatus.getName(), resultOrderStatusDto.getName());
     }
 }
