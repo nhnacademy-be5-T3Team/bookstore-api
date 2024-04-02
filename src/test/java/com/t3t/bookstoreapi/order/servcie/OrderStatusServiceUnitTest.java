@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.order.servcie;
 
+import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundForIdException;
+import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundForNameException;
 import com.t3t.bookstoreapi.order.model.dto.OrderStatusDto;
 import com.t3t.bookstoreapi.order.model.entity.OrderStatus;
 import com.t3t.bookstoreapi.order.repository.OrderStatusRepository;
@@ -74,6 +76,25 @@ class OrderStatusServiceUnitTest {
         // then
         Assertions.assertEquals(testOrderStatus.getId(), resultOrderStatusDto.getId());
         Assertions.assertEquals(testOrderStatus.getName(), resultOrderStatusDto.getName());
+    }
+
+    /**
+     * 주문 상태 식별자로 주문 상태 조회 테스트<br>
+     * @apiNote 요청한 식별자에 대해 주문 상태가 존재하지 않는 경우 `OrderStatusNotFoundForIdException`가 발생해야 한다.
+     * @see OrderStatusService#getOrderStatusById(Long)
+     * @see OrderStatusNotFoundForIdException
+     * @author woody35545(구건모)
+     */
+    @Test
+    @DisplayName("주문 상태 조회 - 식별자로 조회(존재하지 않는 주문 상태 요청)")
+    void getOrderStatusByIdExceptionTest() {
+        // given
+        Long testOrderStatusId = 0L;
+
+        Mockito.when(orderStatusRepository.findById(testOrderStatusId)).thenReturn(Optional.empty());
+
+        // when & then
+        Assertions.assertThrows(OrderStatusNotFoundForIdException.class, () -> orderStatusService.getOrderStatusById(testOrderStatusId));
     }
 
     /**
