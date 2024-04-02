@@ -5,11 +5,9 @@ import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.List;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -31,6 +29,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new BaseResponse<Void>().message(orderStatusNotFoundException.getMessage()));
     }
+    
 
     /**
      * 존재하지 않는 배송에 대한 조회 시도 시 발생하는 예외 처리 핸들러
