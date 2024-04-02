@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.payment.entity;
+package com.t3t.bookstoreapi.payment.model.entity;
 
 import com.t3t.bookstoreapi.order.model.entity.Order;
 import lombok.*;

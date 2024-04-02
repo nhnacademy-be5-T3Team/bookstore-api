@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.payment.entity;
+package com.t3t.bookstoreapi.payment.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

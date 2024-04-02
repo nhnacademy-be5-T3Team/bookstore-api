@@ -1,17 +1,15 @@
-package com.t3t.bookstoreapi.payment.request;
+package com.t3t.bookstoreapi.payment.model.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Data
 public class PaymentRequest {
     private Long orderId;
     private BigDecimal paymentPrice;
-
 }
