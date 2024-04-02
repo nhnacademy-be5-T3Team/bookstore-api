@@ -3,12 +3,14 @@ package com.t3t.bookstoreapi.model.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
+@NoArgsConstructor
 public class BaseResponse<T> {
-    private final String message;
-    private final T data;
+    private String message;
+    private T data;
 
     @Builder
     public BaseResponse(String message, T data) {
@@ -22,4 +24,27 @@ public class BaseResponse<T> {
                 .data(data)
                 .build();
     }
+
+    /**
+     * 응답 객체에 데이터를 설정한다.
+     * @param data 응답할 데이터
+     * @return BaseResponse
+     * @author woody35545(구건모)
+     */
+    public BaseResponse<T> data(T data) {
+        this.data = data;
+        return this;
+    }
+
+    /**
+     * 응답 객체에 메시지를 설정한다.
+     * @param message 응답할 메시지
+     * @return BaseResponse
+     * @author woody35545(구건모)
+     */
+    public BaseResponse<T> message(String message) {
+        this.message = message;
+        return this;
+    }
+
 }
