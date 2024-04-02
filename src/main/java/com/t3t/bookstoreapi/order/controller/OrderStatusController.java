@@ -1,12 +1,9 @@
 package com.t3t.bookstoreapi.order.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
-import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
 import com.t3t.bookstoreapi.order.model.dto.OrderStatusDto;
 import com.t3t.bookstoreapi.order.service.OrderStatusService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +17,6 @@ public class OrderStatusController {
 
     /**
      * 모든 주문 상태를 조회하는 API
-     *
      * @return 200 OK - 조회된 주문 상태들에 대한 DTO 리스트 반환<br>
      * 204 NO_CONTENT - 등록된 주문 상태가 없는 경우 메시지 반환
      * @author woody35545(구건모)
