@@ -216,7 +216,8 @@ class BookRelatedEntityTest {
                 .build());
 
         ParticipantRole participantRole = participantRoleRepository.save(ParticipantRole.builder()
-                        .participantRoleName("TestParticipantRoleName")
+                        .participantRoleNameEn("TestParticipantRoleNameEn")
+                        .participantRoleNameKr("TestParticipantRoleNameKr")
                         .build());
 
         ParticipantRoleRegistration participantRoleRegistration = ParticipantRoleRegistration.builder()

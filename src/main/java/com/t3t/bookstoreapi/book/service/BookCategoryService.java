@@ -2,16 +2,23 @@ package com.t3t.bookstoreapi.book.service;
 
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
-import com.t3t.bookstoreapi.book.model.entity.ParticipantRoleRegistration;
+import com.t3t.bookstoreapi.book.model.response.AuthorInfo;
 import com.t3t.bookstoreapi.book.model.response.BookSearchResultResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
 
 @Service
 public class BookCategoryService {
@@ -24,8 +31,7 @@ public class BookCategoryService {
         this.bookRepository = bookRepository;
     }
 
-
-    public void findBooksByCategoryId(Integer categoryId) {
+    public Page<BookSearchResultResponse> findBooksByCategoryId(Integer categoryId, Pageable pageable) {
         // 특정 카테고리 ID에 해당하는 BookCategory를 조회
         List<BookCategory> bookCategories = bookCategoryRepository.findByCategoryCategoryId(categoryId);
 
@@ -35,36 +41,37 @@ public class BookCategoryService {
                 .map(Book::getBookId)
                 .collect(Collectors.toList());
 
-        List<Book> books = bookRepository.findByBookIdIn(bookIds);
+        // 페이징 처리
+        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
 
-        List<BookSearchResultResponse> responses = null;
+        // 도서 ID에 해당하는 도서 데이터 조회
+        Page<Book> booksPage = bookRepository.findByBookIdIn(bookIds, pageRequest);
 
-        for (Book book : books) {
+        // 페이징 결과를 BookSearchResultResponse로 변환
+        List<BookSearchResultResponse> responses = booksPage.getContent().stream()
+                .map(book -> {
+                    List<AuthorInfo> authorInfoList = BookServiceUtils.extractAuthorInfo(book.getAuthors());
+                    return buildBookSearchResultResponse(book, authorInfoList);
+                })
+                .collect(Collectors.toList());
 
-            List<ParticipantRoleRegistration> list = book.getAuthors();
-
-            BookSearchResultResponse.builder()
-                    .name(book.getBookName())
-                    .published(book.getBookPublished())
-                    .price(book.getBookPrice())
-                    .discount(calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount()))
-                    .averageScore(book.getBookAverageScore())
-                    .likeCount(book.getBookLikeCount())
-                    .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
-                    .build();
-
-            List<ParticipantRoleRegistration> authorList = book.getAuthors();
-
-            for(ParticipantRoleRegistration pp : list) {
-
-            }
-        }
+        return new PageImpl<>(responses, pageRequest, booksPage.getTotalElements());
     }
-    public static BigDecimal calculateDiscountedPrice(BigDecimal originalPrice, BigDecimal discountRate) {
-        BigDecimal discountPercentage = discountRate.divide(BigDecimal.valueOf(100));
-        BigDecimal discountAmount = originalPrice.multiply(discountPercentage);
-        BigDecimal discountedPrice = originalPrice.subtract(discountAmount);
 
-        return discountedPrice;
+    public BookSearchResultResponse buildBookSearchResultResponse(Book book, List<AuthorInfo> authorInfoList) {
+        BigDecimal discountedPrice = calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount());
+
+        return BookSearchResultResponse.builder()
+                .name(book.getBookName())
+                .price(book.getBookPrice())
+                .discountRate(book.getBookDiscount())
+                .discountedPrice(discountedPrice)
+                .published(book.getBookPublished())
+                .publisher(book.getPublisher().getPublisherName())
+                .averageScore(book.getBookAverageScore())
+                .likeCount(book.getBookLikeCount())
+                .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
+                .authorInfoList(authorInfoList)
+                .build();
     }
 }
