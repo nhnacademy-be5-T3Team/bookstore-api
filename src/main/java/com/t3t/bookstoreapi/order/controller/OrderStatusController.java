@@ -1,15 +1,15 @@
 package com.t3t.bookstoreapi.order.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
+import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
 import com.t3t.bookstoreapi.order.model.dto.OrderStatusDto;
 import com.t3t.bookstoreapi.order.service.OrderStatusService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,20 +44,21 @@ public class OrderStatusController {
      * @author woody35545(구건모)
      */
     @GetMapping("/orders/status/{orderStatusId}")
-    public ResponseEntity<BaseResponse<OrderStatusDto>> getOrderStatusById(@PathVariable long orderStatusId) {
+    public ResponseEntity<BaseResponse<OrderStatusDto>> getOrderStatusById(@PathVariable("orderStatusId") long orderStatusId) {
 
         return ResponseEntity.ok(new BaseResponse<OrderStatusDto>()
                 .data(orderStatusService.getOrderStatusById(orderStatusId)));
     }
 
     /**
+     * <b>request: /orders/status?name={statusName}</b><br>
      * 주문 상태 이름으로 주문 상태를 조회하는 API
      * @param statusName 조회하고자 하는 주문 상태 이름
      * @return 200 OK - 조회된 주문 상태에 대한 DTO 반환
      * @author woody35545(구건모)
      */
-    @GetMapping("/orders/status/{statusName}")
-    public ResponseEntity<BaseResponse<OrderStatusDto>> getOrderStatusByName(@PathVariable String statusName) {
+    @GetMapping(value = "/orders/status", params = "name")
+    public ResponseEntity<BaseResponse<OrderStatusDto>> getOrderStatusByName(@RequestParam("name") String statusName) {
 
         return ResponseEntity.ok(new BaseResponse<OrderStatusDto>()
                 .data(orderStatusService.getOrderStatusByName(statusName)));
