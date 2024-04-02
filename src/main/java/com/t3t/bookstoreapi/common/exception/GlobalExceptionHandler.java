@@ -5,8 +5,12 @@ import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -40,5 +44,23 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<Void>> handleDeliveryNotFoundException(DeliveryNotFoundException deliveryNotFoundException) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new BaseResponse<Void>().message(deliveryNotFoundException.getMessage()));
+    }
+
+    /**
+     * validation 실패 시 발생하는 MethodArgumentNotValidException 예외 처리 핸들러
+     * @param  methodArgumentNotValidException validation 실패 시 발생하는 예외
+     * @return 400 BAD_REQUEST - 만족하지 못한 validation 항목에 대한 메시지 반환
+     * @see org.springframework.web.bind.MethodArgumentNotValidException
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<BaseResponse<String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
+
+        return ResponseEntity.badRequest().body(new BaseResponse<String>()
+                .message(String.join(" ", methodArgumentNotValidException.getBindingResult()
+                        .getAllErrors()
+                        .stream()
+                        .map(error -> String.format("* %s  ", error.getDefaultMessage()))
+                        .collect(Collectors.joining()))));
     }
 }
