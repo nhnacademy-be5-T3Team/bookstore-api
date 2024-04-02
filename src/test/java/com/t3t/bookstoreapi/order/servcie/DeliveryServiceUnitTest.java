@@ -108,4 +108,44 @@ public class DeliveryServiceUnitTest {
         // when & then
         Assertions.assertThrows(DeliveryNotFoundForIdException.class, () -> deliveryService.getDeliveryById(testDeliveryId));
     }
+
+    /**
+     * 배송 생성
+     * @see DeliveryService#createDelivery(BigDecimal, int, String, String, String, String)
+     * @author woody35545(구건모)
+     */
+    @Test
+    @DisplayName("배송 생성")
+    void createDeliveryTest() {
+        // given
+        BigDecimal testPrice = BigDecimal.valueOf(10000);
+        int testAddressNumber = 12345;
+        String testRoadnameAddress = "testRoadnameAddress";
+        String testDetailAddress = "testDetailAddress";
+        String testRecipientName = "testRecipientName";
+        String testRecipientPhoneNumber = "testRecipientPhoneNumber";
+
+        Delivery testDelivery = Delivery.builder()
+                .price(testPrice)
+                .addressNumber(testAddressNumber)
+                .roadnameAddress(testRoadnameAddress)
+                .detailAddress(testDetailAddress)
+                .recipientName(testRecipientName)
+                .recipientPhoneNumber(testRecipientPhoneNumber)
+                .deliveryDate(LocalDate.now())
+                .build();
+
+        Mockito.when(deliveryRepository.save(Mockito.any(Delivery.class))).thenReturn(testDelivery);
+
+        // when
+        DeliveryDto resultDeliveryDto = deliveryService.createDelivery(testPrice, testAddressNumber, testRoadnameAddress, testDetailAddress, testRecipientName, testRecipientPhoneNumber);
+
+        // then
+        Assertions.assertEquals(testPrice, resultDeliveryDto.getPrice());
+        Assertions.assertEquals(testAddressNumber, resultDeliveryDto.getAddressNumber());
+        Assertions.assertEquals(testRoadnameAddress, resultDeliveryDto.getRoadnameAddress());
+        Assertions.assertEquals(testDetailAddress, resultDeliveryDto.getDetailAddress());
+        Assertions.assertEquals(testRecipientName, resultDeliveryDto.getRecipientName());
+        Assertions.assertEquals(testRecipientPhoneNumber, resultDeliveryDto.getRecipientPhoneNumber());
+    }
 }
