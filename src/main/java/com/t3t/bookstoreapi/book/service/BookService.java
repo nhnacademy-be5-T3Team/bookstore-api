@@ -13,19 +13,18 @@ import com.t3t.bookstoreapi.book.repository.BookImageRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.repository.BookTagRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
-import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.model.enums.TableStatus;
-import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
 
+@Transactional
 @Service
 public class BookService {
     private final BookRepository bookRepository;
@@ -97,6 +96,6 @@ public class BookService {
     }
 
     public boolean checkStockAvailability(int stock) {
-        return stock >= 0;
+        return stock > 0;
     }
 }

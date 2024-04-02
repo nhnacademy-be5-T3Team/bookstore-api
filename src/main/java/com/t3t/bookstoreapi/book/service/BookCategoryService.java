@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
 
+@Transactional
 @Service
 public class BookCategoryService {
     private final BookRepository bookRepository;
