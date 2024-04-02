@@ -57,7 +57,7 @@ public class DeliveryService {
      * @return 생성된 배송에 대한 DTO
      * @author woody35545(구건모)
      */
-    public DeliveryDto createDelivery(BigDecimal price, int addressNumber, String roadnameAddress, String detailAddress, String recipientName, String recipientPhoneNumber) {
+    public DeliveryDto createDelivery(BigDecimal price, int addressNumber, String roadnameAddress, String detailAddress, LocalDate deliveryDate, String recipientName, String recipientPhoneNumber) {
         return DeliveryDto.of(deliveryRepository.save(Delivery.builder()
                 .price(price)
                 .addressNumber(addressNumber)
@@ -65,7 +65,7 @@ public class DeliveryService {
                 .detailAddress(detailAddress)
                 .recipientName(recipientName)
                 .recipientPhoneNumber(recipientPhoneNumber)
-                .deliveryDate(LocalDate.now())
+                .deliveryDate(deliveryDate)
                 .build()));
     }
 }
