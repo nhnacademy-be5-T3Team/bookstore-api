@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.common.exception;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
+import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,5 +26,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<Void>> handleOrderStatusNotFoundException(OrderStatusNotFoundException orderStatusNotFoundException) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new BaseResponse<Void>().message(orderStatusNotFoundException.getMessage()));
+    }
+
+    /**
+     * 장바구니가 존재하지 않는 경우에 대한 예외 처리 핸들러
+     * @param shoppingCartNotFoundException 장바구니가 존재하지 않는 경우 발생하는 예외
+     * @see com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException
+     * @see com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundForIdException
+     * @return 404 NOT_FOUND - 예외 메시지 반환
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(ShoppingCartNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleShoppingCartNotFoundException(ShoppingCartNotFoundException shoppingCartNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(shoppingCartNotFoundException.getMessage()));
     }
 }
