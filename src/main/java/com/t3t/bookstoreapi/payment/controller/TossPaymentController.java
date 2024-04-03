@@ -1,10 +1,16 @@
 package com.t3t.bookstoreapi.payment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.t3t.bookstoreapi.order.model.entity.Order;
 import com.t3t.bookstoreapi.order.repository.OrderRepository;
+import com.t3t.bookstoreapi.payment.model.entity.Payments;
+import com.t3t.bookstoreapi.payment.model.entity.TossPayments;
+import com.t3t.bookstoreapi.payment.model.request.PaymentCancelRequest;
+import com.t3t.bookstoreapi.payment.model.response.TossPaymentCancelResponse;
 import com.t3t.bookstoreapi.payment.model.response.TossPaymentResponse;
 import com.t3t.bookstoreapi.payment.repository.PaymentProviderRepository;
 import com.t3t.bookstoreapi.payment.repository.PaymentRepository;
+import com.t3t.bookstoreapi.payment.service.PaymentService;
 import com.t3t.bookstoreapi.payment.service.ProviderPaymentService;
 import com.t3t.bookstoreapi.payment.service.TossPaymentService;
 import org.json.simple.JSONObject;
@@ -16,8 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,16 +33,18 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-@Controller
+@RestController
 public class TossPaymentController {
 
     private final ProviderPaymentService providerPaymentService;
 
+    private final PaymentService paymentService;
+
     @Autowired
-    public TossPaymentController(@Qualifier("tossPaymentService")ProviderPaymentService providerPaymentService) {
+    public TossPaymentController(PaymentService paymentService, @Qualifier("tossPaymentService")ProviderPaymentService providerPaymentService) {
+        this.paymentService = paymentService;
         this.providerPaymentService = providerPaymentService;
     }
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @PostMapping(value = "/confirm")
     public ResponseEntity<?> confirmPayment(@RequestBody String jsonBody) throws Exception {
 
@@ -95,6 +102,14 @@ public class TossPaymentController {
             responseStream.close();
             return ResponseEntity.status(code).body(jsonObject);
         }
+    }
 
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<TossPaymentCancelResponse> getPaymentAndTossInfo(@RequestParam("orderId") Long orderId) {
+        Payments payment = paymentService.findPaymentByOrderId(orderId);
+        TossPayments tossPayments = providerPaymentService.getTossPaymentsByPaymentId(payment.getPaymentId());
+        TossPaymentCancelResponse tossPaymentCancelResponse = TossPaymentCancelResponse.fromEntity(tossPayments);
+        return ResponseEntity.ok(tossPaymentCancelResponse);
     }
 }

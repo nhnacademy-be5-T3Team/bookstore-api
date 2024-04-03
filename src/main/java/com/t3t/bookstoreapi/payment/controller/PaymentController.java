@@ -1,14 +1,16 @@
 package com.t3t.bookstoreapi.payment.controller;
 
+import com.t3t.bookstoreapi.payment.model.entity.Payments;
+import com.t3t.bookstoreapi.payment.model.entity.TossPayments;
 import com.t3t.bookstoreapi.payment.model.request.PaymentRequest;
 import com.t3t.bookstoreapi.payment.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
