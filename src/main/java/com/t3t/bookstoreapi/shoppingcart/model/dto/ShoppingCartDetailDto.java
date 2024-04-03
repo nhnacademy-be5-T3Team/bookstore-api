@@ -25,12 +25,12 @@ public class ShoppingCartDetailDto {
     // 수량
     private Long quantity;
 
-    public static ShoppingCartDetail of(ShoppingCartDetailDto dto) {
-        return ShoppingCartDetail.builder()
-                .id(dto.getId())
-                .book(dto.getBook())
-                .shoppingCart(dto.getShoppingCart())
-                .quantity(dto.getQuantity())
+    public static ShoppingCartDetailDto of(ShoppingCartDetail shoppingCartDetail) {
+        return ShoppingCartDetailDto.builder()
+                .id(shoppingCartDetail.getId())
+                .book(shoppingCartDetail.getBook())
+                .shoppingCart(shoppingCartDetail.getShoppingCart())
+                .quantity(shoppingCartDetail.getQuantity())
                 .build();
     }
 }
