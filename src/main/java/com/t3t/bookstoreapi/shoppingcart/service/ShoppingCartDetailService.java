@@ -65,6 +65,26 @@ public class ShoppingCartDetailService {
     }
 
     /**
+     * 특정 장바구니 항목의 수량을 변경한다.
+     * @param shoppingCartDetailId 변경할 장바구니 항목 식별자
+     * @param quantity 변경할 수량
+     * @return 변경된 장바구니 항목에 대한 DTO
+     * @author wooody35545(구건모)
+     */
+    public ShoppingCartDetailDto updateShoppingCartDetailQuantity(long shoppingCartDetailId, long quantity) {
+        ShoppingCartDetail shoppingCartDetail = shoppingCartDetailRepository.findById(shoppingCartDetailId)
+                .orElseThrow(() -> new ShoppingCartDetailNotFoundForIdException(shoppingCartDetailId));
+
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("수량은 0보다 커야 합니다.");
+        }
+
+        shoppingCartDetail.setQuantity(quantity);
+
+        return ShoppingCartDetailDto.of(shoppingCartDetail);
+    }
+
+    /**
      * 장바구니 항목 삭제
      * @param shoppingCartDetailId 삭제할 장바구니 항목 식별자
      * @author wooody35545(구건모)
