@@ -14,4 +14,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Book findByBookId(Long bookId);
 
     List<Book> findByBookPublishedBetween(LocalDate startDate, LocalDate endDate);
+
+    List<Book> findTop10ByOrderByBookLikeCountDescBookAverageScoreDesc();
 }

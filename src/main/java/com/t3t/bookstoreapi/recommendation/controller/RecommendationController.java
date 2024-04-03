@@ -35,4 +35,13 @@ public class RecommendationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/recommendations/mostLike")
+    public ResponseEntity<BaseResponse<List<BookInfoBrief>>> getMostReviewedBooks() {
+        List<BookInfoBrief> res = recommendationService.getMostReviewedBooks();
+
+        BaseResponse<List<BookInfoBrief>> response = BaseResponse.success("message", res);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

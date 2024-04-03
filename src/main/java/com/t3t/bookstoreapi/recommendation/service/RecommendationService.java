@@ -22,11 +22,18 @@ public class RecommendationService {
 
     public List<BookInfoBrief> getRecentlyPublishedBooks(LocalDate date, int maxCount) {
         // 현재 날짜를 기준으로 7일 이내의 책 조회
-
         List<Book> books = bookRepository.findByBookPublishedBetween(date.minusDays(7), date);
 
         return books.stream()
                 .limit(maxCount)
+                .map(this::mapToBookInfo)
+                .collect(Collectors.toList());
+    }
+
+    public List<BookInfoBrief> getMostReviewedBooks() {
+        List<Book> books = bookRepository.findTop10ByOrderByBookLikeCountDescBookAverageScoreDesc();
+
+        return books.stream()
                 .map(this::mapToBookInfo)
                 .collect(Collectors.toList());
     }
@@ -37,4 +44,5 @@ public class RecommendationService {
                 .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
                 .build();
     }
+
 }
