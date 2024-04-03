@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi;
+package com.t3t.bookstoreapi.order.servcie;
 
 
 
@@ -28,7 +28,7 @@ import java.util.Optional;
         @Transactional
         @Slf4j
         @ActiveProfiles("prod")
-        class EntityMappingTest {
+        class OrderRelatedEntityMappingTest {
             @Autowired
             private MemberRepository memberRepository;
 
