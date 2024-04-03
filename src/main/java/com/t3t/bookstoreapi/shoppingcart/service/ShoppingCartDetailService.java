@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.shoppingcart.service;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartDetailNotFoundForIdException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundForIdException;
 import com.t3t.bookstoreapi.shoppingcart.model.dto.ShoppingCartDetailDto;
 import com.t3t.bookstoreapi.shoppingcart.model.entity.ShoppingCart;
@@ -61,5 +62,15 @@ public class ShoppingCartDetailService {
                         .orElseThrow(() -> new BookNotFoundForIdException(bookId)))
                 .quantity(quantity)
                 .build()));
+    }
+
+    /**
+     * 장바구니 항목 삭제
+     * @param shoppingCartDetailId 삭제할 장바구니 항목 식별자
+     * @author wooody35545(구건모)
+     */
+    public void deleteShoppingCartDetail(long shoppingCartDetailId) {
+        shoppingCartDetailRepository.delete(shoppingCartDetailRepository.findById(shoppingCartDetailId)
+                .orElseThrow(() -> new ShoppingCartDetailNotFoundForIdException(shoppingCartDetailId)));
     }
 }
