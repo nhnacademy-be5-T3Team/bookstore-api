@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -50,6 +51,20 @@ public class ShoppingCartDetailController {
                                                                                         @Valid @RequestBody ShoppingCartDetailCreationRequest request) {
         return ResponseEntity.ok(new BaseResponse<ShoppingCartDetailDto>()
                 .data(shoppingCartDetailService.createShoppingCartDetail(shoppingCartId, request)));
+    }
+
+    /**
+     * 장바구니 항목 수량 변경
+     * @param shoppingCartDetailId 변경하려는 장바구니 항목 식별자
+     * @param quantity             변경할 수량
+     * @return 200 OK, 변경된 장바구니 항목에 대한 DTO
+     * @author wooody35545(구건모)
+     */
+    @PutMapping(value = "/shoppingcart-details/{shoppingCartDetailId}", params = "quantity")
+    public ResponseEntity<BaseResponse<ShoppingCartDetailDto>> updateShoppingCartDetailQuantity(@PathVariable("shoppingCartDetailId") long shoppingCartDetailId,
+                                                                                                @RequestParam("quantity") @Min(1) long quantity) {
+        return ResponseEntity.ok(new BaseResponse<ShoppingCartDetailDto>()
+                .data(shoppingCartDetailService.updateShoppingCartDetailQuantity(shoppingCartDetailId, quantity)));
     }
 
     /**
