@@ -2,11 +2,13 @@ package com.t3t.bookstoreapi.recommendation.service;
 
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBrief;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,9 +17,11 @@ import java.util.stream.Collectors;
 public class RecommendationService {
 
     private final BookRepository bookRepository;
+    private final OrderDetailRepository orderDetailRepository;
 
-    public RecommendationService(BookRepository bookRepository) {
+    public RecommendationService(BookRepository bookRepository, OrderDetailRepository orderDetailRepository) {
         this.bookRepository = bookRepository;
+        this.orderDetailRepository = orderDetailRepository;
     }
 
     public List<BookInfoBrief> getRecentlyPublishedBooks(LocalDate date, int maxCount) {
@@ -38,6 +42,14 @@ public class RecommendationService {
                 .collect(Collectors.toList());
     }
 
+    public List<BookInfoBrief> getBestSellerBooks() {
+        List<Object[]> salesCounts = orderDetailRepository.getSalesCountPerBook();
+
+        return salesCounts.stream()
+                .map(this::mapToBookInfoBrief)
+                .collect(Collectors.toList());
+    }
+
     private BookInfoBrief mapToBookInfo(Book book) {
         return BookInfoBrief.builder()
                 .name(book.getBookName())
@@ -45,4 +57,14 @@ public class RecommendationService {
                 .build();
     }
 
+    private BookInfoBrief mapToBookInfoBrief(Object[] result) {
+        if (result[0] instanceof Book) {
+            Book book = (Book) result[0];
+            return BookInfoBrief.builder()
+                    .name(book.getBookName())
+                    .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
+                    .build();
+        }
+        return null;
+    }
 }

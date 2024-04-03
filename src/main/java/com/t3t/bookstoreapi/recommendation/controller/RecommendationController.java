@@ -44,4 +44,12 @@ public class RecommendationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/recommendations/bestSeller")
+    public ResponseEntity<BaseResponse<List<BookInfoBrief>>> getBestSellerBooks() {
+        List<BookInfoBrief> res = recommendationService.getBestSellerBooks();
+
+        BaseResponse<List<BookInfoBrief>> response = BaseResponse.success("message", res);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
