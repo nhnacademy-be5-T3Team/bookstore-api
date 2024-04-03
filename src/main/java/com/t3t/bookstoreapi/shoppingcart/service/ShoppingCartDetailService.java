@@ -8,6 +8,7 @@ import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundForIdExce
 import com.t3t.bookstoreapi.shoppingcart.model.dto.ShoppingCartDetailDto;
 import com.t3t.bookstoreapi.shoppingcart.model.entity.ShoppingCart;
 import com.t3t.bookstoreapi.shoppingcart.model.entity.ShoppingCartDetail;
+import com.t3t.bookstoreapi.shoppingcart.model.request.ShoppingCartDetailCreationRequest;
 import com.t3t.bookstoreapi.shoppingcart.repository.ShoppingCartDetailRepository;
 import com.t3t.bookstoreapi.shoppingcart.repository.ShoppingCartRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,23 +45,22 @@ public class ShoppingCartDetailService {
     /**
      * 장바구니에 항목 추가
      * @param shoppingCartId 장바구니 식별자
-     * @param bookId 추가할 책 식별자
-     * @param quantity 추가할 수량
+     * @param request 추가할 장바구니 항목 정보
      * @return 추가된 장바구니 항목에 대한 DTO
      * @author wooody35545(구건모)
      */
-    public ShoppingCartDetailDto createShoppingCartDetail(long shoppingCartId, long bookId, long quantity) {
+    public ShoppingCartDetailDto createShoppingCartDetail(long shoppingCartId, ShoppingCartDetailCreationRequest request) {
 
-        if (quantity <= 0) {
+        if (request.getQuantity() <= 0) {
             throw new IllegalArgumentException("수량은 0보다 커야 합니다.");
         }
 
         return ShoppingCartDetailDto.of(shoppingCartDetailRepository.save(ShoppingCartDetail.builder()
                 .shoppingCart(shoppingCartRepository.findById(shoppingCartId)
                         .orElseThrow(() -> new ShoppingCartNotFoundForIdException(shoppingCartId)))
-                .book(bookRepository.findById(bookId)
-                        .orElseThrow(() -> new BookNotFoundForIdException(bookId)))
-                .quantity(quantity)
+                .book(bookRepository.findById(request.getBookId())
+                        .orElseThrow(() -> new BookNotFoundForIdException(request.getBookId())))
+                .quantity(request.getQuantity())
                 .build()));
     }
 

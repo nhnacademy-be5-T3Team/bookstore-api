@@ -7,6 +7,7 @@ import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundForIdExce
 import com.t3t.bookstoreapi.shoppingcart.model.dto.ShoppingCartDetailDto;
 import com.t3t.bookstoreapi.shoppingcart.model.entity.ShoppingCart;
 import com.t3t.bookstoreapi.shoppingcart.model.entity.ShoppingCartDetail;
+import com.t3t.bookstoreapi.shoppingcart.model.request.ShoppingCartDetailCreationRequest;
 import com.t3t.bookstoreapi.shoppingcart.repository.ShoppingCartDetailRepository;
 import com.t3t.bookstoreapi.shoppingcart.repository.ShoppingCartRepository;
 import com.t3t.bookstoreapi.shoppingcart.service.ShoppingCartDetailService;
@@ -133,12 +134,18 @@ public class ShoppingCartDetailServiceUnitTest {
                 .quantity(testQuantity)
                 .build();
 
+        ShoppingCartDetailCreationRequest request = ShoppingCartDetailCreationRequest.builder()
+                .bookId(testBookId)
+                .quantity(testQuantity)
+                .build();
+
+
         Mockito.when(shoppingCartRepository.findById(testShoppingCartId)).thenReturn(Optional.of(testShoppingCart));
         Mockito.when(bookRepository.findById(testBookId)).thenReturn(Optional.of(testBook));
         Mockito.when(shoppingCartDetailRepository.save(Mockito.any(ShoppingCartDetail.class))).thenReturn(testShoppingCartDetail);
 
         // when
-        ShoppingCartDetailDto resultShoppingCartDetailDto = shoppingCartService.createShoppingCartDetail(testShoppingCartId, testBookId, testQuantity);
+        ShoppingCartDetailDto resultShoppingCartDetailDto = shoppingCartService.createShoppingCartDetail(testShoppingCartId, request);
 
         // then
         Assertions.assertEquals(testShoppingCartDetail.getId(), resultShoppingCartDetailDto.getId());
@@ -160,9 +167,14 @@ public class ShoppingCartDetailServiceUnitTest {
         long testBookId = 0L;
         long testQuantity = 0L;
 
+        ShoppingCartDetailCreationRequest request = ShoppingCartDetailCreationRequest.builder()
+                .bookId(testBookId)
+                .quantity(testQuantity)
+                .build();
+
         // when & then
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> shoppingCartService.createShoppingCartDetail(testShoppingCartId, testBookId, testQuantity));
+                () -> shoppingCartService.createShoppingCartDetail(testShoppingCartId, request));
     }
 
     /**
