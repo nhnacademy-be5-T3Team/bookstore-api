@@ -1,10 +1,7 @@
 package com.t3t.bookstoreapi.shoppingcart.model.entity;
 
 import com.t3t.bookstoreapi.book.model.entity.Book;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
@@ -32,6 +29,7 @@ public class ShoppingCartDetail {
     @Comment("장바구니 상세 항목이 속한 장바구니")
     private ShoppingCart shoppingCart;
 
+    @Setter
     @Column(name = "book_quantity", nullable = false)
     @Comment("책 수량")
     private Long quantity;
