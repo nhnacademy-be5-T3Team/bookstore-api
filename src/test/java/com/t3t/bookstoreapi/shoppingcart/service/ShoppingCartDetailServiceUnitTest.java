@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.shoppingcart.service;
 
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartDetailNotFoundForIdException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundForIdException;
 import com.t3t.bookstoreapi.shoppingcart.model.dto.ShoppingCartDetailDto;
 import com.t3t.bookstoreapi.shoppingcart.model.entity.ShoppingCart;
@@ -162,5 +163,46 @@ public class ShoppingCartDetailServiceUnitTest {
         // when & then
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> shoppingCartService.createShoppingCartDetail(testShoppingCartId, testBookId, testQuantity));
+    }
+
+    /**
+     * 장바구니 항목 삭제
+     * @see ShoppingCartDetailService#deleteShoppingCartDetail
+     * @author wooody35545(구건모)
+     */
+    @Test
+    @DisplayName("장바구니 항목 삭제")
+    void deleteShoppingCartDetail() {
+        // given
+        long testShoppingCartDetailId = 0L;
+
+        ShoppingCartDetail testShoppingCartDetail = ShoppingCartDetail.builder()
+                .id(testShoppingCartDetailId)
+                .build();
+
+        Mockito.when(shoppingCartDetailRepository.findById(testShoppingCartDetailId)).thenReturn(Optional.of(testShoppingCartDetail));
+
+        // when
+        shoppingCartService.deleteShoppingCartDetail(testShoppingCartDetailId);
+
+        // then
+        Mockito.verify(shoppingCartDetailRepository, Mockito.times(1)).delete(testShoppingCartDetail);
+    }
+
+    /**
+     * 장바구니 항목 삭제 - 존재하지 않는 장바구니 항목 식별자로 삭제할 때 ShoppingCartDetailNotFoundForIdException 가 발생해야한다.
+     * @throws ShoppingCartDetailNotFoundForIdException 장바구니 항목 식별자가 존재하지 않을 때 발생하는 예외
+     * @see ShoppingCartDetailService#deleteShoppingCartDetail
+     */
+    @Test
+    @DisplayName("장바구니 항목 삭제 - 존재하지 않는 장바구니 항목 식별자")
+    void deleteShoppingCartDetail_ShoppingCartDetailNotFoundForIdException() {
+        // given
+        long testShoppingCartDetailId = 0L;
+        Mockito.when(shoppingCartDetailRepository.findById(testShoppingCartDetailId)).thenReturn(Optional.empty());
+
+        // when & then
+        Assertions.assertThrows(ShoppingCartDetailNotFoundForIdException.class,
+                () -> shoppingCartService.deleteShoppingCartDetail(testShoppingCartDetailId));
     }
 }
