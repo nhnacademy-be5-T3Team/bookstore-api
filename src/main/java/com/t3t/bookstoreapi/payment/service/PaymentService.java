@@ -2,32 +2,38 @@ package com.t3t.bookstoreapi.payment.service;
 
 
 import com.t3t.bookstoreapi.order.model.entity.Order;
-import com.t3t.bookstoreapi.payment.entity.PaymentProvider;
-import com.t3t.bookstoreapi.payment.entity.Payments;
+import com.t3t.bookstoreapi.order.repository.OrderRepository;
+import com.t3t.bookstoreapi.payment.model.entity.PaymentProvider;
+import com.t3t.bookstoreapi.payment.model.entity.Payments;
 import com.t3t.bookstoreapi.payment.repository.PaymentProviderRepository;
 import com.t3t.bookstoreapi.payment.repository.PaymentRepository;
-import com.t3t.bookstoreapi.payment.request.PaymentRequest;
+import com.t3t.bookstoreapi.payment.model.request.PaymentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.persistence.EntityManager;
 
-import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
+@Transactional
 public class PaymentService {
-    @PersistenceContext
-    private EntityManager entityManager;
+
+    private final OrderRepository orderRepository;
+    private final PaymentRepository paymentRepository;
+    private final PaymentProviderRepository paymentProviderRepository;
 
     @Autowired
-    private PaymentRepository paymentRepository;
-
-
-    @Autowired
-    private PaymentProviderRepository paymentProviderRepository;
+    public PaymentService(OrderRepository orderRepository, PaymentRepository paymentRepository,
+                          PaymentProviderRepository paymentProviderRepository) {
+        this.orderRepository = orderRepository;
+        this.paymentRepository = paymentRepository;
+        this.paymentProviderRepository = paymentProviderRepository;
+    }
 
     public void PaymentRequest(PaymentRequest paymentRequest) {
-        Order order = entityManager.find(Order.class, paymentRequest.getOrderId());
+        Order order = orderRepository.findById(paymentRequest.getOrderId())
+                .orElseThrow(() -> new IllegalArgumentException("주문 정보를 찾을 수 없습니다."));
 
         PaymentProvider paymentProvider;
         if (String.valueOf(order.getId()).startsWith("1")) {

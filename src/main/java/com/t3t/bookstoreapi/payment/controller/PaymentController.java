@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.payment.controller;
 
-import com.t3t.bookstoreapi.payment.request.PaymentRequest;
+import com.t3t.bookstoreapi.payment.model.request.PaymentRequest;
 import com.t3t.bookstoreapi.payment.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
