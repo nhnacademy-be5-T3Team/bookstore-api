@@ -2,11 +2,11 @@ package com.t3t.bookstoreapi.payment_test;
 
 
 import com.t3t.bookstoreapi.order.model.entity.Order;
-import com.t3t.bookstoreapi.payment.entity.PaymentProvider;
-import com.t3t.bookstoreapi.payment.entity.Payments;
+import com.t3t.bookstoreapi.payment.model.entity.PaymentProvider;
+import com.t3t.bookstoreapi.payment.model.entity.Payments;
 import com.t3t.bookstoreapi.payment.repository.PaymentProviderRepository;
 import com.t3t.bookstoreapi.payment.repository.PaymentRepository;
-import com.t3t.bookstoreapi.payment.request.PaymentRequest;
+import com.t3t.bookstoreapi.payment.model.request.PaymentRequest;
 import com.t3t.bookstoreapi.payment.service.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,9 +58,7 @@ public class PaymentTest {
         Mockito.when(entityManager.find(Order.class, 1L)).thenReturn(order);
         Mockito.when(paymentProviderRepository.findByPaymentProviderName("토스")).thenReturn(paymentProvider);
 
-        // when
         paymentService.PaymentRequest(paymentRequest);
-        // then
         Mockito.verify(paymentRepository, Mockito.times(1)).save(Mockito.any(Payments.class));
     }
 }

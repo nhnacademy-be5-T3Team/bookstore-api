@@ -1,9 +1,9 @@
 package com.t3t.bookstoreapi.payment_test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.t3t.bookstoreapi.payment.entity.TossPayments;
+import com.t3t.bookstoreapi.payment.model.entity.TossPayments;
 import com.t3t.bookstoreapi.payment.repository.TossPaymentRepository;
-import com.t3t.bookstoreapi.payment.responce.TossPaymentResponse;
+import com.t3t.bookstoreapi.payment.model.response.TossPaymentResponse;
 import com.t3t.bookstoreapi.payment.service.TossPaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -61,7 +61,7 @@ class TossPaymentTest {
     @Test
     @DisplayName("toss_payment 객체 생성 test")
     public void testCreateTossPayment() {
-        // Given
+
         String json = "{\"paymentKey\":\"12345\",\"orderId\":\"67890\",\"status\":\"success\",\"receipt\":{\"url\":\"http://example.com/receipt\"}}";
         TossPaymentResponse tossPaymentResponse = null;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -71,15 +71,14 @@ class TossPaymentTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // When
         tossPaymentService.saveTossPayment(tossPaymentResponse);
 
         System.out.println(tossPaymentResponse.getPaymentKey());
         System.out.println(tossPayments.getTossPaymentKey());
-        // Then
 
         verify(tossPaymentRepository, times(1)).save(any(TossPayments.class));
     }
+
 }
 
 
