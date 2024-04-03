@@ -178,6 +178,51 @@ public class ShoppingCartDetailServiceUnitTest {
     }
 
     /**
+     * 장바구니 항목 수량 변경
+     * @see ShoppingCartDetailService#updateShoppingCartDetailQuantity
+     * @author wooody35545(구건모)
+     */
+    @Test
+    @DisplayName("장바구니 항목 수량 변경")
+    void updateShoppingCartDetailQuantity() {
+        // given
+        long testShoppingCartDetailId = 0L;
+        long testQuantity = 2L;
+
+        ShoppingCartDetail testShoppingCartDetail = ShoppingCartDetail.builder()
+                .id(testShoppingCartDetailId)
+                .quantity(1L)
+                .build();
+
+        Mockito.when(shoppingCartDetailRepository.findById(testShoppingCartDetailId)).thenReturn(Optional.of(testShoppingCartDetail));
+
+        // when
+        ShoppingCartDetailDto resultShoppingCartDetailDto = shoppingCartService.updateShoppingCartDetailQuantity(testShoppingCartDetailId, testQuantity);
+
+        // then
+        Assertions.assertEquals(testQuantity, resultShoppingCartDetailDto.getQuantity());
+    }
+
+    /**
+     * 장바구니 항목 수량 변경 - 존재하지 않는 장바구니 항목 식별자로 변경할 때 ShoppingCartDetailNotFoundForIdException 가 발생해야한다.
+     * @see ShoppingCartDetailService#updateShoppingCartDetailQuantity
+     * @author wooody35545(구건모)
+     */
+    @Test
+    @DisplayName("장바구니 항목 수량 변경 - 요청 파라미터의 수량이 0 이하일 때 IllegalArgumentException 이 발생해야한다.")
+    void updateShoppingCartDetailQuantityWithQuantityLessThanZero() {
+        // given
+        long testShoppingCartDetailId = 0L;
+        long testQuantity = 0L;
+
+        Mockito.when(shoppingCartDetailRepository.findById(testShoppingCartDetailId)).thenReturn(Optional.of(ShoppingCartDetail.builder().build()));
+
+        // when & then
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> shoppingCartService.updateShoppingCartDetailQuantity(testShoppingCartDetailId, testQuantity));
+    }
+
+    /**
      * 장바구니 항목 삭제
      * @see ShoppingCartDetailService#deleteShoppingCartDetail
      * @author wooody35545(구건모)
