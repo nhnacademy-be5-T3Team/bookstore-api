@@ -1,15 +1,16 @@
 package com.t3t.bookstoreapi.shoppingcart.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
+import com.t3t.bookstoreapi.shoppingcart.model.dto.ShoppingCartDetailDto;
 import com.t3t.bookstoreapi.shoppingcart.model.entity.ShoppingCartDetail;
+import com.t3t.bookstoreapi.shoppingcart.model.request.ShoppingCartDetailCreationRequest;
 import com.t3t.bookstoreapi.shoppingcart.service.ShoppingCartDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,5 +35,19 @@ public class ShoppingCartDetailController {
                         body(new BaseResponse<List<ShoppingCartDetail>>().message("장바구니에 담긴 상품이 없습니다.")) :
                 ResponseEntity.ok(new BaseResponse<List<ShoppingCartDetail>>()
                         .data(shoppingCartDetailList));
+    }
+
+    /**
+     * 장바구니에 항목 추가
+     * @param shoppingCartId 장바구니 식별자
+     * @param request        추가할 장바구니 항목 정보
+     * @return 추가된 장바구니 항목에 대한 DTO
+     * @author wooody35545(구건모)
+     */
+    @PostMapping("/shoppingcarts/{shoppingCartId}/details")
+    public ResponseEntity<BaseResponse<ShoppingCartDetailDto>> createShoppingCartDetail(@PathVariable("shoppingCartId") long shoppingCartId,
+                                                                                        @Valid @RequestBody ShoppingCartDetailCreationRequest request) {
+        return ResponseEntity.ok(new BaseResponse<ShoppingCartDetailDto>()
+                .data(shoppingCartDetailService.createShoppingCartDetail(shoppingCartId, request)));
     }
 }
