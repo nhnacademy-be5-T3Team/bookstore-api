@@ -22,6 +22,7 @@ public class RecommendationService {
 
     public List<BookInfoBrief> getRecentlyPublishedBooks(LocalDate date, int maxCount) {
         // 현재 날짜를 기준으로 7일 이내의 책 조회
+
         List<Book> books = bookRepository.findByBookPublishedBetween(date.minusDays(7), date);
 
         return books.stream()
