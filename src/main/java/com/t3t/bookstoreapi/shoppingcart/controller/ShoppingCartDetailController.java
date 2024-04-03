@@ -22,7 +22,8 @@ public class ShoppingCartDetailController {
     /**
      * 장바구니 식별자로 전체 항목 리스트 조회
      * @param shoppingCartId 조회하려는 장바구니 식별자
-     * @return 장바구니 식별자에 해당하는 전체 항목 리스트
+     * @return 200 OK, 장바구니 식별자에 해당하는 전체 항목 리스트<br>
+     *         204 No Content, 장바구니에 담긴 상품이 없는 경우 메시지 반환
      * @author wooody35545(구건모)
      */
     @GetMapping("/shoppingcarts/{shoppingCartId}/details")
@@ -41,7 +42,7 @@ public class ShoppingCartDetailController {
      * 장바구니에 항목 추가
      * @param shoppingCartId 장바구니 식별자
      * @param request        추가할 장바구니 항목 정보
-     * @return 추가된 장바구니 항목에 대한 DTO
+     * @return 200 OK, 추가된 장바구니 항목에 대한 DTO
      * @author wooody35545(구건모)
      */
     @PostMapping("/shoppingcarts/{shoppingCartId}/details")
@@ -49,5 +50,17 @@ public class ShoppingCartDetailController {
                                                                                         @Valid @RequestBody ShoppingCartDetailCreationRequest request) {
         return ResponseEntity.ok(new BaseResponse<ShoppingCartDetailDto>()
                 .data(shoppingCartDetailService.createShoppingCartDetail(shoppingCartId, request)));
+    }
+
+    /**
+     * 장바구니 항목 삭제
+     * @param shoppingCartDetailId 삭제하려는 장바구니 항목 식별자
+     * @return 200 OK
+     * @author wooody35545(구건모)
+     */
+    @DeleteMapping("/shoppingcart-details/{shoppingCartDetailId}")
+    public ResponseEntity<BaseResponse<Void>> deleteShoppingCartDetail(@PathVariable("shoppingCartDetailId") long shoppingCartDetailId) {
+        shoppingCartDetailService.deleteShoppingCartDetail(shoppingCartDetailId);
+        return ResponseEntity.ok(new BaseResponse<Void>());
     }
 }
