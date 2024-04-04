@@ -38,11 +38,10 @@ public class CouponDetailServiceTest {
         Member member = memberRepository.findById(memberId).orElse(null);
         memberRepository.save(member);
 
-        List<CouponDetail> couponDetail
-                = Arrays.asList(
-                new CouponDetail("1011", member, LocalDateTime.of(2024, 3, 31, 0, 0, 0), "사용"),
-                new CouponDetail("1012", member, null, "미사용")
-        );
+        CouponDetail coupon1 = new CouponDetail("1011", member, LocalDateTime.of(2024, 3, 31, 0, 0, 0), "used");
+        CouponDetail coupon2 = new CouponDetail("1012", member, null, "issued");
+        couponDetailRepository.save(coupon1);
+        couponDetailRepository.save(coupon2);
 
         List<CouponDetailResponse> couponDetailResponses = couponDetailService.getCouponByMemberId(memberId);
 
