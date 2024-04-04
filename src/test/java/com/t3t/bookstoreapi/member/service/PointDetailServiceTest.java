@@ -26,12 +26,6 @@ public class PointDetailServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private PointDetailRepository pointDetailRepository;
-
-    @Autowired
-    private PointDetailService pointDetailService;
-
     @Test
     void getPointByMemberId() {
         Long memberId = 1L;
@@ -39,12 +33,24 @@ public class PointDetailServiceTest {
         List<PointDetail> pointDetailResponses
                 = Arrays.asList(
                         new PointDetail(1001L, member, "구매 포인트 적립", "issued", LocalDateTime.of(2024, 3, 31, 0, 0, 0), new BigDecimal(1000)),
-                        new PointDetail(1002L, member, "구매 포인트 사용", "used", LocalDate.of(2024, 4, 1).atStartOfDay(), new BigDecimal(500)));
+                        new PointDetail(1002L, member, "구매 포인트 사용", "used", LocalDateTime.of(2024, 4, 1, 0, 0, 0), new BigDecimal(500)));
 
         assertNotNull(pointDetailResponses);
         assertEquals(2, pointDetailResponses.size());
-        assertEquals(pointDetailResponses.get(0).getContent(), pointDetailResponses.get(0).getContent());
-        assertEquals(pointDetailResponses.get(1).getContent(), pointDetailResponses.get(1).getContent());
+
+        assertEquals(pointDetailResponses.get(0).getPointDetailId(), 1001L);
+        assertEquals(pointDetailResponses.get(0).getMember(), member);
+        assertEquals(pointDetailResponses.get(0).getContent(), "구매 포인트 적립");
+        assertEquals(pointDetailResponses.get(0).getPointDetailType(), "issued");
+        assertEquals(pointDetailResponses.get(0).getPointDetailDate(), LocalDateTime.of(2024, 3, 31, 0, 0, 0));
+        assertEquals(pointDetailResponses.get(0).getPointAmount(), new BigDecimal(1000));
+
+        assertEquals(pointDetailResponses.get(1).getPointDetailId(), 1002L);
+        assertEquals(pointDetailResponses.get(1).getMember(), member);
+        assertEquals(pointDetailResponses.get(1).getContent(), "구매 포인트 사용");
+        assertEquals(pointDetailResponses.get(1).getPointDetailType(), "used");
+        assertEquals(pointDetailResponses.get(1).getPointDetailDate(), LocalDateTime.of(2024, 4, 1, 0, 0, 0));
+        assertEquals(pointDetailResponses.get(1).getPointAmount(), new BigDecimal(500));
 
     }
 
