@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.member.domain;
 
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,16 +9,19 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "point_details")
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PointDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "point_detail_id")
+    @Column(name = "point_details_id")
     private Long pointDetailId;
 
     @JoinColumn(name = "member_id")
     @ManyToOne
-    private Member memberId;
+    private Member member;
 
     @Column(name = "content")
     private String content;
