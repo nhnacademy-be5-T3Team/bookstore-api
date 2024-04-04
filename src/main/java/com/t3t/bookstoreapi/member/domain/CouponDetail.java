@@ -1,16 +1,16 @@
 package com.t3t.bookstoreapi.member.domain;
 
-import lombok.Getter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "coupon_details")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CouponDetail {
 
     @Id
@@ -19,7 +19,7 @@ public class CouponDetail {
 
     @JoinColumn(name = "member_id")
     @ManyToOne
-    private Member memberId;
+    private Member member;
 
     @Column(name = "coupon_use_date")
     private LocalDateTime useDate;
