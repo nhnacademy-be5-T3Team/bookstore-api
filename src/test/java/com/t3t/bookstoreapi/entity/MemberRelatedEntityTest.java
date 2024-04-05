@@ -18,7 +18,7 @@ import java.util.Optional;
 @Slf4j
 @SpringBootTest
 @Transactional
-@ActiveProfiles("prod")
+@ActiveProfiles("test")
 class MemberRelatedEntityTest {
 
     @Autowired
