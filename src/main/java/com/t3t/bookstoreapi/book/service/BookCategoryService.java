@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.book.service;
 
+import com.t3t.bookstoreapi.book.exception.BookNotFoundForCategoryIdException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
 import com.t3t.bookstoreapi.book.model.response.AuthorInfo;
@@ -7,7 +8,7 @@ import com.t3t.bookstoreapi.book.model.response.BookSearchResultResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -21,21 +22,21 @@ import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
 
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class BookCategoryService {
     private final BookRepository bookRepository;
     private final BookCategoryRepository bookCategoryRepository;
 
-    @Autowired
-    public BookCategoryService(BookCategoryRepository bookCategoryRepository, BookRepository bookRepository) {
-        this.bookCategoryRepository = bookCategoryRepository;
-        this.bookRepository = bookRepository;
-    }
-
+    @Transactional(readOnly = true)
     public Page<BookSearchResultResponse> findBooksByCategoryId(Integer categoryId, Pageable pageable) {
         // 특정 카테고리 ID에 해당하는 BookCategory를 조회
         List<BookCategory> bookCategories = bookCategoryRepository.findByCategoryCategoryId(categoryId);
+
+        if(bookCategories.isEmpty()) {
+            throw new BookNotFoundForCategoryIdException(categoryId);
+        }
 
         // 도서 ID 목록 추출
         List<Long> bookIds = bookCategories.stream()
