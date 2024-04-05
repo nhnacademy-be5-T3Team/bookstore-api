@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.property;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 
 /**
@@ -9,7 +10,7 @@ import org.springframework.core.io.Resource;
  * @author woody35545(구건모)
  */
 @Getter
-@Setter
+@Profile("!local")
 @ConfigurationProperties(prefix = "t3t.secret-key-manager")
 public class SecretKeyManagerProperties {
     private String appKey;
