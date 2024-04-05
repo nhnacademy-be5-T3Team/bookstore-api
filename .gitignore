@@ -36,4 +36,4 @@ build/
 *.p12
 
 ### yaml ###
-application-dev.yml
+application-local.yml
