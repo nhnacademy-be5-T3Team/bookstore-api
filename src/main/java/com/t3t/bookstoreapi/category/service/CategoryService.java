@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.category.service;
 
+import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.category.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.model.response.CategoryListResponse;
@@ -21,7 +22,12 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public List<CategoryListResponse> getCategoriesHierarchy() {
+
         List<Category> categoryList = categoryRepository.findAll();
+
+        if (categoryList == null || categoryList.isEmpty()) {
+            throw new CategoryNotFoundException();
+        }
 
         List<CategoryListResponse> response = new ArrayList<>();
 
