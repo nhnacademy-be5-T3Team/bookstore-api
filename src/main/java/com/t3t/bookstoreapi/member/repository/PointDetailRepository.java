@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 public interface PointDetailRepository extends JpaRepository<PointDetail, Long> {
     List<PointDetail> findByMemberId(Long memberId);
 }
