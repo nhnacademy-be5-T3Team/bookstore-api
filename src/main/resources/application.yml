@@ -1,6 +1,22 @@
+server:
+    port: 8081
+
 spring:
   profiles:
-    active: prod
+    active: dev
+
+  application:
+    name: bookstore-service
+
+  eureka:
+    instance:
+      prefer-ip-address: true
+    client:
+      register-with-eureka: true
+      fetch-registry: true
+      service-url:
+        defaultZone: http://127.0.0.1:8761/eureka
+
   mvc:
     path-match:
       matching-strategy: ant_path_matcher
