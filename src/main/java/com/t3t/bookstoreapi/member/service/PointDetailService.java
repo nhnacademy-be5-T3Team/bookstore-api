@@ -21,7 +21,7 @@ public class PointDetailService {
     @Transactional(readOnly = true)
     public List<PointDetailResponse> getPointByMemberId(Long memberId) {
         if(!memberRepository.existsById(memberId)) {
-            throw new MemberNotFoundException("화원을 찾을 수 없습니다. ");
+            throw new MemberNotFoundException();
         }
 
         return pointDetailRepository.findByMemberId(memberId).stream()

@@ -68,20 +68,5 @@ public class PointDetailServiceTest {
         assertEquals(pointDetail2.getPointDetailType(), pointDetailResponses.get(1).getPointDetailType());
         assertEquals(pointDetail2.getPointDetailDate(), pointDetailResponses.get(1).getPointDetailDate());
         assertEquals(pointDetail2.getPointAmount(), pointDetailResponses.get(1).getPointAmount());
-
-//        PointDetail point1 = new PointDetail(, member, "구매 포인트 적립", "saved", LocalDateTime.of(2024, 3, 31, 0, 0, 0), new BigDecimal(1000));
-//        PointDetail point2 = new PointDetail(1002L, member, "구매 포인트 사용", "used", LocalDateTime.of(2024, 4, 1, 0, 0, 0), new BigDecimal(500));
-//        pointDetailRepository.save(point2);
-
-        /*assertEquals(pointDetailResponses.get(0).getContent(), "구매 포인트 적립");
-        assertEquals(pointDetailResponses.get(0).getPointDetailType(), "saved");
-        assertEquals(pointDetailResponses.get(0).getPointDetailDate(), LocalDateTime.of(2024, 3, 31, 0, 0, 0));
-        assertEquals(pointDetailResponses.get(0).getPointAmount(), new BigDecimal(1000));
-
-        assertEquals(pointDetailResponses.get(1).getPointDetailId(), 1002L);
-        assertEquals(pointDetailResponses.get(1).getContent(), "구매 포인트 사용");
-        assertEquals(pointDetailResponses.get(1).getPointDetailType(), "used");
-        assertEquals(pointDetailResponses.get(1).getPointDetailDate(), LocalDateTime.of(2024, 4, 1, 0, 0, 0));
-        assertEquals(pointDetailResponses.get(1).getPointAmount(), new BigDecimal(500));*/
     }
 }
