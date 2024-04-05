@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource;
  * @author woody35545(구건모)
  */
 @Getter
+@Setter
 @Profile("!local")
 @ConfigurationProperties(prefix = "t3t.secret-key-manager")
 public class SecretKeyManagerProperties {
