@@ -70,10 +70,11 @@ public class TossPaymentService implements ProviderPaymentService {
     public void updateTossPayment(TossPaymentResponse tossPaymentResponse) {
         Optional<TossPayments> existingPaymentOptional = tossPaymentRepository.findByTossPaymentKey(tossPaymentResponse.getPaymentKey());
         if (existingPaymentOptional.isPresent()) {
-            TossPayments existingPayment = existingPaymentOptional.get();
-            existingPayment.setTossOrderId(tossPaymentResponse.getOrderId());
-            existingPayment.setTossPaymentStatus(tossPaymentResponse.getStatus());
-            existingPayment.setTossPaymentReceiptUrl(tossPaymentResponse.getReceipt().getUrl());
+            TossPayments existingPayment = TossPayments.builder()
+                    .tossOrderId(tossPaymentResponse.getOrderId())
+                    .tossPaymentStatus(tossPaymentResponse.getStatus())
+                    .tossPaymentReceiptUrl(tossPaymentResponse.getReceipt().getUrl())
+                    .build();
             tossPaymentRepository.save(existingPayment);
         }
     }
