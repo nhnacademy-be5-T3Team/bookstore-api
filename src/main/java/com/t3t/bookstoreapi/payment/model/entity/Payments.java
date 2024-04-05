@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "payments")
