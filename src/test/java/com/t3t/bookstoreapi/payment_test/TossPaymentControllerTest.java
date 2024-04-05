@@ -1,15 +1,10 @@
 package com.t3t.bookstoreapi.payment_test;
 
-import com.t3t.bookstoreapi.member.domain.Member;
-import com.t3t.bookstoreapi.order.model.entity.Delivery;
-import com.t3t.bookstoreapi.order.model.entity.Order;
-import com.t3t.bookstoreapi.payment.controller.PaymentController;
+import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.payment.controller.TossPaymentController;
 import com.t3t.bookstoreapi.payment.model.entity.Payments;
 import com.t3t.bookstoreapi.payment.model.entity.TossPayments;
-import com.t3t.bookstoreapi.payment.model.request.PaymentCancelRequest;
-import com.t3t.bookstoreapi.payment.model.request.PaymentRequest;
-import com.t3t.bookstoreapi.payment.model.response.TossPaymentCancelResponse;
+import com.t3t.bookstoreapi.payment.model.response.PaymentCancelResponse;
 import com.t3t.bookstoreapi.payment.service.PaymentService;
 import com.t3t.bookstoreapi.payment.service.ProviderPaymentService;
 import org.junit.jupiter.api.Test;
@@ -19,12 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -59,16 +50,19 @@ public class TossPaymentControllerTest {
         when(paymentService.findPaymentByOrderId(orderId)).thenReturn(payment);
         when(providerPaymentService.getTossPaymentsByPaymentId(payment.getPaymentId())).thenReturn(tossPayments);
         TossPaymentController tossPaymentController = new TossPaymentController(paymentService, providerPaymentService);
-        ResponseEntity<TossPaymentCancelResponse> responseEntity = tossPaymentController.getPaymentAndTossInfo(orderId);
+        ResponseEntity<BaseResponse<PaymentCancelResponse>> responseEntity = tossPaymentController.getPaymentAndTossInfo(orderId);
 
         assertNotNull(responseEntity);
 
         assertEquals(200, responseEntity.getStatusCodeValue());
-        TossPaymentCancelResponse response = responseEntity.getBody();
-        assertEquals(tossPayments.getTossPaymentKey(), response.getTossPaymentKey());
-        assertEquals(tossPayments.getTossOrderId(), response.getTossOrderId());
-        assertEquals(tossPayments.getTossPaymentStatus(), response.getTossPaymentStatus());
-        assertEquals(tossPayments.getTossPaymentReceiptUrl(), response.getTossPaymentReceiptUrl());
+        BaseResponse<PaymentCancelResponse> response = responseEntity.getBody();
+        assert response != null;
+        PaymentCancelResponse responseData = response.getData();
+        assertEquals(tossPayments.getTossPaymentKey(), responseData.getTossPaymentKey());
+        assertEquals(tossPayments.getTossOrderId(), responseData.getTossOrderId());
+        assertEquals(tossPayments.getTossPaymentStatus(), responseData.getTossPaymentStatus());
+        assertEquals(tossPayments.getTossPaymentReceiptUrl(), responseData.getTossPaymentReceiptUrl());
     }
+
     }
 

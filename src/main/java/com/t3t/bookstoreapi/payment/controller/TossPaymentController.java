@@ -1,33 +1,29 @@
 package com.t3t.bookstoreapi.payment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.t3t.bookstoreapi.order.model.entity.Order;
-import com.t3t.bookstoreapi.order.repository.OrderRepository;
+import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.payment.model.entity.Payments;
 import com.t3t.bookstoreapi.payment.model.entity.TossPayments;
 import com.t3t.bookstoreapi.payment.model.request.PaymentCancelRequest;
-import com.t3t.bookstoreapi.payment.model.response.TossPaymentCancelResponse;
+import com.t3t.bookstoreapi.payment.model.response.PaymentCancelResponse;
+import com.t3t.bookstoreapi.payment.model.response.PaymentResponse;
 import com.t3t.bookstoreapi.payment.model.response.TossPaymentResponse;
-import com.t3t.bookstoreapi.payment.repository.PaymentProviderRepository;
-import com.t3t.bookstoreapi.payment.repository.PaymentRepository;
 import com.t3t.bookstoreapi.payment.service.PaymentService;
 import com.t3t.bookstoreapi.payment.service.ProviderPaymentService;
-import com.t3t.bookstoreapi.payment.service.TossPaymentService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -45,6 +41,7 @@ public class TossPaymentController {
         this.paymentService = paymentService;
         this.providerPaymentService = providerPaymentService;
     }
+    String widgetSecretKey = "test_sk_Z1aOwX7K8m1OPOjdk5qW8yQxzvNP:";
     @PostMapping(value = "/confirm")
     public ResponseEntity<?> confirmPayment(@RequestBody String jsonBody) throws Exception {
 
@@ -66,7 +63,7 @@ public class TossPaymentController {
         obj.put("amount", amount);
         obj.put("paymentKey", paymentKey);
 
-        String widgetSecretKey = "test_sk_Z1aOwX7K8m1OPOjdk5qW8yQxzvNP:";
+
 
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] encodedBytes = encoder.encode((widgetSecretKey + ":").getBytes(StandardCharsets.UTF_8));
@@ -103,13 +100,37 @@ public class TossPaymentController {
             return ResponseEntity.status(code).body(jsonObject);
         }
     }
-
-
-    @GetMapping("/{orderId}")
-    public ResponseEntity<TossPaymentCancelResponse> getPaymentAndTossInfo(@RequestParam("orderId") Long orderId) {
+    @GetMapping("payments/{orderId}")
+    public ResponseEntity<BaseResponse<PaymentCancelResponse>> getPaymentAndTossInfo(@RequestParam("orderId") Long orderId) {
         Payments payment = paymentService.findPaymentByOrderId(orderId);
-        TossPayments tossPayments = providerPaymentService.getTossPaymentsByPaymentId(payment.getPaymentId());
-        TossPaymentCancelResponse tossPaymentCancelResponse = TossPaymentCancelResponse.fromEntity(tossPayments);
-        return ResponseEntity.ok(tossPaymentCancelResponse);
+        return ResponseEntity.ok(new BaseResponse<PaymentCancelResponse>().data(PaymentCancelResponse
+                .fromEntity(providerPaymentService.getTossPaymentsByPaymentId(payment.getPaymentId()))));
+    }
+
+    @PostMapping("/cancel")
+        public ResponseEntity<?> cancelPayment(PaymentCancelRequest request, PaymentCancelResponse response) {
+        BigDecimal paymentPrice = request.getPaymentPrice();
+        String cancelReason = request.getCancelReason();
+        String paymentKey = response.getTossPaymentKey();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(widgetSecretKey);
+
+        String url = "https://api.tosspayments.com/v1/payments/" + paymentKey + "/cancel";
+        HttpEntity<String> requestEntity = new HttpEntity<>("{\"cancelReason\": \"" + cancelReason + "\"}", headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                TossPaymentResponse tossPaymentResponse = objectMapper.readValue(responseEntity.getBody(), TossPaymentResponse.class);
+                providerPaymentService.updateTossPayment(tossPaymentResponse);
+            }
+            return ResponseEntity.ok(responseEntity.getBody());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }
+
