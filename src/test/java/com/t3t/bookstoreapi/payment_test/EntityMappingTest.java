@@ -1,6 +1,12 @@
 package com.t3t.bookstoreapi.payment_test;
 
 
+import com.t3t.bookstoreapi.member.domain.Member;
+import com.t3t.bookstoreapi.member.domain.MemberGrade;
+import com.t3t.bookstoreapi.member.domain.MemberGradePolicy;
+import com.t3t.bookstoreapi.member.repository.MemberGradePolicyRepository;
+import com.t3t.bookstoreapi.member.repository.MemberGradeRepository;
+import com.t3t.bookstoreapi.order.model.entity.Delivery;
 import com.t3t.bookstoreapi.order.model.entity.Order;
 import com.t3t.bookstoreapi.order.repository.OrderRepository;
 import com.t3t.bookstoreapi.payment.model.entity.PaymentProvider;
@@ -12,17 +18,23 @@ import com.t3t.bookstoreapi.payment.repository.PaymentRepository;
 import com.t3t.bookstoreapi.payment.repository.TossPaymentRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@Transactional
+@ActiveProfiles("prod")
 public class EntityMappingTest {
 
     @Autowired
@@ -37,6 +49,12 @@ public class EntityMappingTest {
     @Autowired
     private TossPaymentRepository tossPaymentsRepository;
 
+    @Autowired
+    private MemberGradePolicyRepository memberGradePolicyRepository;
+
+    @Autowired
+    private MemberGradeRepository memberGradeRepository;
+
     @Test
     @DisplayName("Entity Mapping test")
     public void testEntitiesMapping() {
@@ -47,8 +65,41 @@ public class EntityMappingTest {
         paymentProviderRepository.save(paymentProvider);
 
         // Create an order
+        MemberGradePolicy memberGradePolicy = memberGradePolicyRepository.save(MemberGradePolicy.builder()
+                .startAmount(BigDecimal.valueOf(0))
+                .endAmount(BigDecimal.valueOf(100000))
+                .build());
+
+        MemberGrade memberGrade = memberGradeRepository.save(MemberGrade.builder()
+                .policy(memberGradePolicy)
+                .name("test")
+                .build());
+
         Order order = new Order();
         order.setId(1L);
+        order.setMember(Member.builder()
+                .id(1L)
+                .gradeId(memberGrade)
+                .name("test")
+                .phone("010-1234-1234")
+                .email("g@naver.com")
+                .birthDate(LocalDate.now())
+                .latestLogin(LocalDateTime.now())
+                .point(1L)
+                .status("test")
+                .role(1)
+                .build());
+        order.setDelivery(Delivery.builder()
+                .id(0L)
+                .deliveryDate(LocalDate.now())
+                .price(BigDecimal.valueOf(10000))
+                .addressNumber(12345)
+                .roadnameAddress("testRoadnameAddress0")
+                .detailAddress("testDetailAddress0")
+                .recipientName("testRecipientName0")
+                .recipientPhoneNumber("testRecipientPhoneNumber0")
+                .build());
+        order.setOrderDatetime(LocalDateTime.now());
         ordersRepository.save(order);
 
         // Create a payment
