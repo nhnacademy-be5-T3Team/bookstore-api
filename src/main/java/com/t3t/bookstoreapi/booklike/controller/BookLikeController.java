@@ -22,8 +22,7 @@ public class BookLikeController {
 
     @GetMapping("book/liked-books/{memberId}")
     public ResponseEntity<BaseResponse<List<BookInfoBrief>>> getLikedBooksByMemberId(@PathVariable Long memberId) {
-        List<BookInfoBrief> likedBooks = bookLikeService.getLikedBooksByMemberId(memberId);
-        return ResponseEntity.ok(new BaseResponse<>("message", likedBooks));
+        return ResponseEntity.ok(new BaseResponse<List<BookInfoBrief>>().data(bookLikeService.getLikedBooksByMemberId(memberId)));
     }
 
     @PostMapping("book/like")

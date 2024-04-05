@@ -14,7 +14,7 @@ import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.repository.BookTagRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.model.enums.TableStatus;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
 
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class BookService {
@@ -32,14 +33,7 @@ public class BookService {
     private final BookCategoryRepository bookCategoryRepository;
     private final BookTagRepository bookTagRepository;
 
-    @Autowired
-    public BookService(BookRepository bookRepository, BookImageRepository bookImageRepository, BookCategoryRepository bookCategoryRepository, BookTagRepository bookTagRepository) {
-        this.bookRepository = bookRepository;
-        this.bookImageRepository = bookImageRepository;
-        this.bookCategoryRepository = bookCategoryRepository;
-        this.bookTagRepository = bookTagRepository;
-    }
-
+    @Transactional(readOnly = true)
     public BookSearchResultDetailResponse getBook(Long bookId) {
 
         Book book = bookRepository.findByBookId(bookId);

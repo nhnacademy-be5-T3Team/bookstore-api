@@ -4,6 +4,7 @@ import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBrief;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class RecommendationService {
@@ -19,11 +21,7 @@ public class RecommendationService {
     private final BookRepository bookRepository;
     private final OrderDetailRepository orderDetailRepository;
 
-    public RecommendationService(BookRepository bookRepository, OrderDetailRepository orderDetailRepository) {
-        this.bookRepository = bookRepository;
-        this.orderDetailRepository = orderDetailRepository;
-    }
-
+    @Transactional(readOnly = true)
     public List<BookInfoBrief> getRecentlyPublishedBooks(LocalDate date, int maxCount) {
         // 현재 날짜를 기준으로 7일 이내의 책 조회
         List<Book> books = bookRepository.findByBookPublishedBetween(date.minusDays(7), date);
@@ -34,6 +32,7 @@ public class RecommendationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<BookInfoBrief> getMostReviewedBooks() {
         List<Book> books = bookRepository.findTop10ByOrderByBookLikeCountDescBookAverageScoreDesc();
 
@@ -42,6 +41,7 @@ public class RecommendationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<BookInfoBrief> getBestSellerBooks() {
         List<Object[]> salesCounts = orderDetailRepository.getSalesCountPerBook();
 
