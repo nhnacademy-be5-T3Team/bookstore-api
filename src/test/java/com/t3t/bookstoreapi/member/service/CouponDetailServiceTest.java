@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,23 +37,32 @@ public class CouponDetailServiceTest {
         Member member = memberRepository.findById(memberId).orElse(null);
         memberRepository.save(member);
 
-        CouponDetail coupon1 = new CouponDetail("1011", member, LocalDateTime.of(2024, 3, 31, 0, 0, 0), "used");
-        CouponDetail coupon2 = new CouponDetail("1012", member, null, "issued");
-        couponDetailRepository.save(coupon1);
-        couponDetailRepository.save(coupon2);
+        CouponDetail couponDetail1 = couponDetailRepository.save(CouponDetail.builder()
+                .couponId("1001")
+                .member(member)
+                .useDate(LocalDateTime.of(2024, 3, 31, 0, 0, 0))
+                .useType("used")
+                .build());
+        CouponDetail couponDetail2 = couponDetailRepository.save(CouponDetail.builder()
+                .couponId("1002")
+                .member(member)
+                .useDate(null)
+                .useType("issued")
+                .build());
 
         List<CouponDetailResponse> couponDetailResponses = couponDetailService.getCouponByMemberId(memberId);
 
         assertNotNull(couponDetailResponses);
         assertEquals(2, couponDetailResponses.size());
 
-        assertEquals(couponDetailResponses.get(0).getCouponId(), "1011");
-        assertEquals(couponDetailResponses.get(0).getUseDate(), LocalDateTime.of(2024, 3, 31, 0, 0, 0));
-        assertEquals(couponDetailResponses.get(0).getUseType(), "used");
+        assertEquals(couponDetail1.getCouponId(), couponDetailResponses.get(0).getCouponId());
+        assertEquals(couponDetail1.getMember(), member);
+        assertEquals(couponDetail1.getUseDate(), couponDetailResponses.get(0).getUseDate());
+        assertEquals(couponDetail1.getUseType(), couponDetailResponses.get(0).getUseType());
 
-        assertEquals(couponDetailResponses.get(1).getCouponId(), "1012");
-        assertEquals(couponDetailResponses.get(1).getUseDate(), null);
-        assertEquals(couponDetailResponses.get(1).getUseType(), "issued");
-
+        assertEquals(couponDetail2.getCouponId(), couponDetailResponses.get(1).getCouponId());
+        assertEquals(couponDetail2.getMember(), member);
+        assertEquals(couponDetail2.getUseDate(), couponDetailResponses.get(1).getUseDate());
+        assertEquals(couponDetail2.getUseType(), couponDetailResponses.get(1).getUseType());
     }
 }
