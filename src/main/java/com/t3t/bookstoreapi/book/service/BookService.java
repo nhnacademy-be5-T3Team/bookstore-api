@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.book.service;
 
+import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
 import com.t3t.bookstoreapi.book.model.entity.BookImage;
@@ -37,6 +38,11 @@ public class BookService {
     public BookSearchResultDetailResponse getBook(Long bookId) {
 
         Book book = bookRepository.findByBookId(bookId);
+
+        if(book == null) {
+            throw new BookNotFoundForIdException(bookId);
+        }
+
         List<AuthorInfo> authorInfoList = BookServiceUtils.extractAuthorInfo(book.getAuthors());
 
         return buildBookSearchResultDetailResponse(book, authorInfoList);
