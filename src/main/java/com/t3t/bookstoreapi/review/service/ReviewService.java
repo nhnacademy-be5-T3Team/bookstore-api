@@ -1,11 +1,11 @@
 package com.t3t.bookstoreapi.review.service;
 
+import com.t3t.bookstoreapi.review.exception.ReviewNotFoundException;
 import com.t3t.bookstoreapi.review.model.entity.Review;
 import com.t3t.bookstoreapi.review.model.entity.ReviewImage;
 import com.t3t.bookstoreapi.review.model.response.ReviewResponse;
 import com.t3t.bookstoreapi.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +25,10 @@ public class ReviewService {
     public Page<ReviewResponse> findReviewsByBookId(Long bookId, Pageable pageable) {
 
         Page<Review> reviewsPage = reviewRepository.findByBookBookId(bookId, pageable);
+
+        if(reviewsPage == null || reviewsPage.isEmpty()) {
+            throw new ReviewNotFoundException();
+        }
 
         List<ReviewResponse> responses = reviewsPage.getContent().stream()
                 .map(this::buildReviewResponse)
