@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.category.controller;
 
+import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.category.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.category.model.response.CategoryListResponse;
 import com.t3t.bookstoreapi.category.service.CategoryService;
@@ -54,5 +55,16 @@ class CategoryControllerUnitTest {
                 .andExpect(jsonPath("$.data[0].parent.name", equalTo(parentCategory.getName())))
                 .andExpect(jsonPath("$.data[0].childCategoryList[0].name", equalTo(childCategory.getName())))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("카테고리가 존재하지 않을 때 CategoryNotFoundException이 발생하는지 확인 테스트")
+    void testGetCategoriesHierarchy_CategoryNotFound() throws Exception {
+
+        when(categoryService.getCategoriesHierarchy()).thenThrow(CategoryNotFoundException.class);
+
+        mvc.perform(MockMvcRequestBuilders.get("/categories")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

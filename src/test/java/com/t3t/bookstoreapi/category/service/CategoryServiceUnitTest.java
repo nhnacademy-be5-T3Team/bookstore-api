@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.category.service;
 
+import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.category.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.model.response.CategoryListResponse;
@@ -15,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceUnitTest {
@@ -58,5 +61,12 @@ class CategoryServiceUnitTest {
         CategoryDto childDto = response.getChildCategoryList().get(0);
         assertEquals(childCategory.getCategoryId(), childDto.getId());
         assertEquals(childCategory.getCategoryName(), childDto.getName());
+    }
+
+    @Test
+    @DisplayName("카테고리가 존재하지 않을 때 CategoryNotFoundException이 발생하는지 확인 테스트")
+    void testGetCategoriesHierarchy_CategoryNotFound() {
+        when(categoryRepository.findAll()).thenReturn(new ArrayList<>());
+        assertThrows(CategoryNotFoundException.class, () -> categoryService.getCategoriesHierarchy());
     }
 }
