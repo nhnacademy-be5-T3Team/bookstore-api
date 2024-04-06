@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.book.service;
 
+import com.t3t.bookstoreapi.book.exception.AuthorNotFoundException;
+import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundForCategoryIdException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
@@ -50,9 +52,16 @@ public class BookCategoryService {
         // 도서 ID에 해당하는 도서 데이터 조회
         Page<Book> booksPage = bookRepository.findByBookIdIn(bookIds, pageRequest);
 
+        if(booksPage.isEmpty()) {
+            throw new BookNotFoundException();
+        }
+
         // 페이징 결과를 BookSearchResultResponse로 변환
         List<BookSearchResultResponse> responses = booksPage.getContent().stream()
                 .map(book -> {
+                    if (book.getAuthors().isEmpty()) {
+                        throw new AuthorNotFoundException();
+                    }
                     List<AuthorInfo> authorInfoList = BookServiceUtils.extractAuthorInfo(book.getAuthors());
                     return buildBookSearchResultResponse(book, authorInfoList);
                 })

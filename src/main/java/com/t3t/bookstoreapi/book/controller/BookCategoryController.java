@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookCategoryController {
     private final BookCategoryService bookCategoryService;
 
-
     @GetMapping("/category/{categoryId}/books")
     public ResponseEntity<BaseResponse<Page<BookSearchResultResponse>>> getBooksByCategoryId(@PathVariable Integer categoryId, Pageable pageable) {
         return ResponseEntity.ok(new BaseResponse<Page<BookSearchResultResponse>>()
