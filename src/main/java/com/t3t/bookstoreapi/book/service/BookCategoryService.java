@@ -10,6 +10,8 @@ import com.t3t.bookstoreapi.book.model.response.BookSearchResultResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
+import com.t3t.bookstoreapi.category.model.entity.Category;
+import com.t3t.bookstoreapi.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,12 +31,23 @@ import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscounte
 @Service
 public class BookCategoryService {
     private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
     private final BookCategoryRepository bookCategoryRepository;
 
     @Transactional(readOnly = true)
     public Page<BookSearchResultResponse> findBooksByCategoryId(Integer categoryId, Pageable pageable) {
-        // 특정 카테고리 ID에 해당하는 BookCategory를 조회
-        List<BookCategory> bookCategories = bookCategoryRepository.findByCategoryCategoryId(categoryId);
+
+        // 요청 카테고리 ID에 해당하는 자식 카테고리 조회
+        List<Category> childCategoryList = categoryRepository.getChildCategoriesById(categoryId);
+
+        List<Integer> targetCategoryIdList = childCategoryList.stream()
+                .map(Category::getCategoryId)
+                .collect(Collectors.toList());
+
+        targetCategoryIdList.add(categoryId);
+
+        // 요청 카테고리 ID에 해당하는 BookCategory를 조회
+        List<BookCategory> bookCategories = bookCategoryRepository.findByCategoryCategoryIdIn(targetCategoryIdList);
 
         if(bookCategories.isEmpty()) {
             throw new BookNotFoundForCategoryIdException(categoryId);
