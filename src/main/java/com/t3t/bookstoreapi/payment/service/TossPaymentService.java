@@ -40,20 +40,15 @@ public class TossPaymentService implements ProviderPaymentService {
 
 
     public void saveTossPayment(TossPaymentResponse tossPaymentResponse) {
-        TossPayments tossPayment = mapToTossPaymentEntity(tossPaymentResponse);
+        TossPayments tossPayment = TossPayments.builder()
+                .tossPaymentKey(tossPaymentResponse.getPaymentKey())
+                .tossOrderId(tossPaymentResponse.getOrderId())
+                .tossPaymentStatus(tossPaymentResponse.getStatus())
+                .tossPaymentReceiptUrl(tossPaymentResponse.getReceipt().getUrl())
+                .build();
+
         tossPaymentRepository.save(tossPayment);
     }
-
-    private TossPayments mapToTossPaymentEntity(TossPaymentResponse tossPaymentResponse) {
-        TossPayments tossPayment = new TossPayments();
-        tossPayment.setTossPaymentKey(tossPaymentResponse.getPaymentKey());
-        tossPayment.setTossOrderId(tossPaymentResponse.getOrderId());
-        tossPayment.setTossPaymentStatus(tossPaymentResponse.getStatus());
-        tossPayment.setTossPaymentReceiptUrl(tossPaymentResponse.getReceipt().getUrl());
-
-        return tossPayment;
-    }
-
     @Transactional(readOnly = true)
     public TossPayments getTossPaymentsByPaymentId(Long paymentId) {
 
