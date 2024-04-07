@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.recommendation.service;
 
+import com.querydsl.core.Tuple;
+import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
@@ -23,48 +25,55 @@ public class RecommendationService {
 
     @Transactional(readOnly = true)
     public List<BookInfoBrief> getRecentlyPublishedBooks(LocalDate date, int maxCount) {
-        // 현재 날짜를 기준으로 7일 이내의 책 조회
-        List<Book> books = bookRepository.findByBookPublishedBetween(date.minusDays(7), date);
+        // 요청받은 날짜를 기준으로 7일 이내의 책 조회
+        List<Book> bookList = bookRepository.findByBookPublishedBetween(date.minusDays(7), date);
 
-        return books.stream()
+        if (bookList == null || bookList.isEmpty()) {
+            throw new BookNotFoundException();
+        }
+
+        return bookList.stream()
                 .limit(maxCount)
-                .map(this::mapToBookInfo)
+                .map(this::mapToBookInfoBrief)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<BookInfoBrief> getMostReviewedBooks() {
-        List<Book> books = bookRepository.findTop10ByOrderByBookLikeCountDescBookAverageScoreDesc();
+        List<Book> bookList = bookRepository.findTop10ByOrderByBookLikeCountDescBookAverageScoreDesc();
 
-        return books.stream()
-                .map(this::mapToBookInfo)
+        if (bookList == null || bookList.isEmpty()) {
+            throw new BookNotFoundException();
+        }
+
+        return bookList.stream()
+                .map(this::mapToBookInfoBrief)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<BookInfoBrief> getBestSellerBooks() {
-        List<Object[]> salesCounts = orderDetailRepository.getSalesCountPerBook();
 
-        return salesCounts.stream()
+        List<Book> bookList = orderDetailRepository.getSalesCountPerBook();
+
+        if (bookList == null || bookList.isEmpty()) {
+            throw new BookNotFoundException();
+        }
+
+        return bookList.stream()
                 .map(this::mapToBookInfoBrief)
                 .collect(Collectors.toList());
     }
 
-    private BookInfoBrief mapToBookInfo(Book book) {
+
+    private BookInfoBrief mapToBookInfoBrief(Book book) {
+
+        String coverImageUrl = (book.getBookThumbnail() != null && book.getBookThumbnail().getThumbnailImageUrl() != null) ?
+                book.getBookThumbnail().getThumbnailImageUrl() : "no-image";
+
         return BookInfoBrief.builder()
                 .name(book.getBookName())
-                .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
+                .coverImageUrl(coverImageUrl)
                 .build();
-    }
-
-    private BookInfoBrief mapToBookInfoBrief(Object[] result) {
-        if (result[0] instanceof Book) {
-            Book book = (Book) result[0];
-            return BookInfoBrief.builder()
-                    .name(book.getBookName())
-                    .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
-                    .build();
-        }
-        return null;
     }
 }
