@@ -24,24 +24,25 @@ public class RecommendationController {
     @GetMapping("/recommendations/recentlyPublished")
     public ResponseEntity<BaseResponse<List<BookInfoBrief>>> getRecentlyPublishedBooks(
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @NotNull LocalDate date,
-            @RequestParam(value = "maxCount", required = false, defaultValue = "10")
-            @Min(value = 1, message = "maxCount는 1 이상의 값이어야 합니다.")
-            @Max(value = 100, message = "maxCount는 100 이하의 값이어야 합니다.")int maxCount) {
+            @RequestParam(value = "maxCount", required = false, defaultValue = "10") @Min(1) @Max(100) int maxCount) {
 
         return ResponseEntity.ok(new BaseResponse<List<BookInfoBrief>>()
                 .data(recommendationService.getRecentlyPublishedBooks(date, maxCount)));
     }
 
     @GetMapping("/recommendations/mostLike")
-    public ResponseEntity<BaseResponse<List<BookInfoBrief>>> getMostReviewedBooks() {
+    public ResponseEntity<BaseResponse<List<BookInfoBrief>>> getMostReviewedBooks(
+            @RequestParam(value = "maxCount", required = false, defaultValue = "10") @Min(1) @Max(100) int maxCount) {
 
         return ResponseEntity.ok(new BaseResponse<List<BookInfoBrief>>()
-                .data(recommendationService.getMostReviewedBooks()));
+                .data(recommendationService.getMostReviewedBooks(maxCount)));
     }
 
     @GetMapping("/recommendations/bestSeller")
-    public ResponseEntity<BaseResponse<List<BookInfoBrief>>> getBestSellerBooks() {
+    public ResponseEntity<BaseResponse<List<BookInfoBrief>>> getBestSellerBooks(
+            @RequestParam(value = "maxCount", required = false, defaultValue = "10") @Min(1) @Max(100) int maxCount) {
+
         return ResponseEntity.ok(new BaseResponse<List<BookInfoBrief>>()
-                .data(recommendationService.getBestSellerBooks()));
+                .data(recommendationService.getBestSellerBooks(maxCount)));
     }
 }
