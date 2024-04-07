@@ -10,7 +10,7 @@ import java.util.List;
 import static com.t3t.bookstoreapi.category.model.entity.QCategory.category;
 
 @RequiredArgsConstructor
-public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
+public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
