@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -26,13 +27,13 @@ public class BookLikeController {
     }
 
     @PostMapping("book/like")
-    public ResponseEntity<BaseResponse<Void>> likeBook(@RequestBody BookLikeRequest request) {
+    public ResponseEntity<BaseResponse<Void>> likeBook(@Valid @RequestBody BookLikeRequest request) {
         bookLikeService.likeBook(request.getBookId(), request.getMemberId());
         return ResponseEntity.ok(new BaseResponse<Void>());
     }
 
     @DeleteMapping("book/unlike")
-    public ResponseEntity<BaseResponse<Void>> unlikeBook(@RequestBody BookLikeRequest request) {
+    public ResponseEntity<BaseResponse<Void>> unlikeBook(@Valid @RequestBody BookLikeRequest request) {
         bookLikeService.unlikeBook(request.getBookId(), request.getMemberId());
         return ResponseEntity.ok(new BaseResponse<Void>());
     }
