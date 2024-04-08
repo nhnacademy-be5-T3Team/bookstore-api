@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.payment_test;
 
+import com.t3t.bookstoreapi.member.model.constant.MemberRole;
+import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
 import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
@@ -84,8 +86,8 @@ public class PaymentTest {
                 .birthDate(LocalDate.now())
                 .latestLogin(LocalDateTime.now())
                 .point(1L)
-                .status("test")
-                .role(1)
+                .status(MemberStatus.ACTIVE)
+                .role(MemberRole.USER)
                 .build());
         order.setDelivery(Delivery.builder()
                 .id(0L)
