@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.payment_test;
 
+import com.t3t.bookstoreapi.member.model.constant.MemberRole;
+import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
 import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
@@ -71,15 +73,15 @@ public class EntityMappingTest {
         order.setId(1L);
         order.setMember(Member.builder()
                 .id(1L)
-                .gradeId(memberGrade)
+                .grade(memberGrade)
                 .name("test")
                 .phone("010-1234-1234")
                 .email("g@naver.com")
                 .birthDate(LocalDate.now())
                 .latestLogin(LocalDateTime.now())
                 .point(1L)
-                .status("test")
-                .role(1)
+                .status(MemberStatus.ACTIVE)
+                .role(MemberRole.USER)
                 .build());
         order.setDelivery(Delivery.builder()
                 .id(0L)
