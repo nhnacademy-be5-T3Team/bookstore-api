@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.member.domain.account;
+package com.t3t.bookstoreapi.member.model.entity;
 
 import lombok.AccessLevel;
 import lombok.Getter;

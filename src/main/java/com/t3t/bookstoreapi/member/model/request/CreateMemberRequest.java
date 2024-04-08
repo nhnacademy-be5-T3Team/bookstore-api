@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.member.dto.request;
+package com.t3t.bookstoreapi.member.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
