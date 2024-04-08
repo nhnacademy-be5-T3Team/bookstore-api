@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.member.domain;
+package com.t3t.bookstoreapi.member.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

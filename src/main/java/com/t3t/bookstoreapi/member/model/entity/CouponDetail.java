@@ -1,12 +1,9 @@
-package com.t3t.bookstoreapi.member.domain;
+package com.t3t.bookstoreapi.member.model.entity;
 
 import lombok.Getter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "coupon_details")

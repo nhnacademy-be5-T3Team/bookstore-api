@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.member.repository;
 
-import com.t3t.bookstoreapi.member.domain.Member;
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
