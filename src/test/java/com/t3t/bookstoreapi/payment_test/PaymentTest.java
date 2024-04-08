@@ -1,9 +1,8 @@
 package com.t3t.bookstoreapi.payment_test;
 
-
-import com.t3t.bookstoreapi.member.domain.Member;
-import com.t3t.bookstoreapi.member.domain.MemberGrade;
-import com.t3t.bookstoreapi.member.domain.MemberGradePolicy;
+import com.t3t.bookstoreapi.member.model.entity.Member;
+import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
+import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
 import com.t3t.bookstoreapi.member.repository.MemberGradePolicyRepository;
 import com.t3t.bookstoreapi.member.repository.MemberGradeRepository;
 import com.t3t.bookstoreapi.order.model.entity.Delivery;
@@ -11,7 +10,6 @@ import com.t3t.bookstoreapi.order.model.entity.Order;
 import com.t3t.bookstoreapi.order.repository.OrderRepository;
 import com.t3t.bookstoreapi.payment.model.entity.PaymentProvider;
 import com.t3t.bookstoreapi.payment.model.entity.Payments;
-import com.t3t.bookstoreapi.payment.model.response.PaymentResponse;
 import com.t3t.bookstoreapi.payment.repository.PaymentProviderRepository;
 import com.t3t.bookstoreapi.payment.repository.PaymentRepository;
 import com.t3t.bookstoreapi.payment.model.request.PaymentRequest;
@@ -21,24 +19,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@ActiveProfiles("prod")
+@ActiveProfiles("test")
 public class PaymentTest {
 
     @Mock

@@ -2,7 +2,7 @@ package com.t3t.bookstoreapi.review.model.entity;
 
 import javax.validation.constraints.NotNull;
 import com.t3t.bookstoreapi.book.model.entity.Book;
-import com.t3t.bookstoreapi.member.domain.Member;
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import lombok.*;
 
 import javax.persistence.*;
