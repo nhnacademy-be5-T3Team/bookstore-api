@@ -128,7 +128,7 @@ class BookRelatedEntityTest {
                 .phone("010-1234-5678")
                 .latestLogin(LocalDateTime.now())
                 .birthDate(LocalDateTime.now().toLocalDate())
-                .gradeId(memberGrade)
+                .grade(memberGrade)
                 .status(MemberStatus.ACTIVE)
                 .role(MemberRole.USER)
                 .build());

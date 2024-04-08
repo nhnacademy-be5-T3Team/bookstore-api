@@ -79,7 +79,7 @@ public class PaymentTest {
         order.setId(1L);
         order.setMember(Member.builder()
                         .id(1L)
-                .gradeId(memberGrade)
+                .grade(memberGrade)
                 .name("test")
                 .phone("010-1234-1234")
                 .email("g@naver.com")

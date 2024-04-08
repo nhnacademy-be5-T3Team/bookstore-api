@@ -27,7 +27,7 @@ public class Member {
     @ManyToOne
     @JoinColumn(name = "member_grade_id", nullable = false)
     @Comment("회원 등급 식별자")
-    private MemberGrade gradeId;
+    private MemberGrade grade;
 
     @Column(name = "member_name", length = 100, nullable = false)
     @Comment("회원 이름")
