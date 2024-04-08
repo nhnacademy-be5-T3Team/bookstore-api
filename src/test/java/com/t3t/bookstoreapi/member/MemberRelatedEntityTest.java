@@ -1,6 +1,5 @@
-package com.t3t.bookstoreapi.entity;
+package com.t3t.bookstoreapi.member;
 
-import com.t3t.bookstoreapi.member.entity.*;
 import com.t3t.bookstoreapi.member.model.entity.*;
 import com.t3t.bookstoreapi.member.repository.*;
 import lombok.extern.slf4j.Slf4j;
