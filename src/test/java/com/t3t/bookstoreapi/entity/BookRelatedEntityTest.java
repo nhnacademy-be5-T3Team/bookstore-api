@@ -6,6 +6,8 @@ import com.t3t.bookstoreapi.booklike.model.entity.BookLike;
 import com.t3t.bookstoreapi.booklike.repository.BookLikeRepository;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
+import com.t3t.bookstoreapi.member.model.constant.MemberRole;
+import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
 import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
@@ -127,8 +129,8 @@ class BookRelatedEntityTest {
                 .latestLogin(LocalDateTime.now())
                 .birthDate(LocalDateTime.now().toLocalDate())
                 .gradeId(memberGrade)
-                .status("ACTIVE")
-                .role(1)
+                .status(MemberStatus.ACTIVE)
+                .role(MemberRole.USER)
                 .build());
 
     }
