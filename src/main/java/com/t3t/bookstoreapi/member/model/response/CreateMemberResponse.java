@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.member.dto.response;
+package com.t3t.bookstoreapi.member.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

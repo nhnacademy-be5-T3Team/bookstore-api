@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.shoppingcart.model.entity;
 
-import com.t3t.bookstoreapi.member.domain.Member;
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

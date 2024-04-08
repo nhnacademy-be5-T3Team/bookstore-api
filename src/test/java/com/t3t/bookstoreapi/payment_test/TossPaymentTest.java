@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("prod")
+@ActiveProfiles("test")
 class TossPaymentTest {
     @Mock
     private TossPaymentRepository tossPaymentRepository;
