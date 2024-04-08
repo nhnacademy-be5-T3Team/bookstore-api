@@ -10,8 +10,8 @@ import java.io.Serializable;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "toss_payments")
 @Builder
+@Table(name = "toss_payments")
 public class TossPayments implements Serializable {
 
     @EmbeddedId
