@@ -1,56 +1,64 @@
 package com.t3t.bookstoreapi.category.service;
 
+import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
+import com.t3t.bookstoreapi.category.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.category.model.entity.Category;
+import com.t3t.bookstoreapi.category.model.response.CategoryListResponse;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
+@Transactional
 @Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    @Transactional(readOnly = true)
+    public List<CategoryListResponse> getCategoriesHierarchy() {
 
-    public Map<String, Object> getCategoriesHierarchy() {
-
-        Map<String, Object> response = new HashMap<>();
-
-        // 데이터베이스로부터 모든 카테고리 데이터 가져옴
         List<Category> categoryList = categoryRepository.findAll();
 
-        List<Map<String, Object>> parentCategoryList = new ArrayList<>();
+        if (categoryList == null || categoryList.isEmpty()) {
+            throw new CategoryNotFoundException();
+        }
 
-        // 부모 카테고리를 순회하면서 자식 카테고리 정보를 가져와서 맵핑함
-        for(Category parentCategory : categoryList) {
-            // 부모 카테고리인 경우
-            if(parentCategory.getParentCategoryId() == null) {
-                Map<String, Object> parentCategoryMap = new HashMap<>();
-                parentCategoryMap.put("parent", parentCategory);
+        List<CategoryListResponse> response = new ArrayList<>();
 
-                // 해당 부모 카테고리에 속하는 자식 카테고리 찾기
-                List<Map<String, Object>> childCategoryList = new ArrayList<>();
-                for(Category childCategory : categoryList) {
-                    if(childCategory.getParentCategoryId()!= null && childCategory.getParentCategoryId().equals(parentCategory.getCategoryId())) {
-                        Map<String, Object> childCategoryMap = new HashMap<>();
-                        childCategoryMap.put("id", childCategory.getCategoryId());
-                        childCategoryMap.put("name", childCategory.getCategoryName());
-                        childCategoryList.add(childCategoryMap);
-                    }
-                }
-                parentCategoryMap.put("childCategoryList", childCategoryList);
-                parentCategoryList.add(parentCategoryMap);
+        // 카테고리를 순회하면서 부모 카테고리를 찾음
+        for (Category parentCategory : categoryList) {
+            if (parentCategory.getParentCategoryId() == null) {
+                // 해당 부모 카테고리에 속하는 자식 카테고리 찾음
+                CategoryListResponse parentCategoryResponse = mapCategoryToResponse(parentCategory, categoryList);
+                response.add(parentCategoryResponse);
             }
         }
-        response.put("parentCategoryList", parentCategoryList);
         return response;
+    }
+
+    private CategoryListResponse mapCategoryToResponse(Category category, List<Category> categoryList) {
+        CategoryDto parentDto = CategoryDto.builder()
+                .id(category.getCategoryId())
+                .name(category.getCategoryName())
+                .build();
+
+        List<CategoryDto> childCategoryList = categoryList.stream()
+                .filter(childCategory -> childCategory.getParentCategoryId() != null && childCategory.getParentCategoryId().equals(category.getCategoryId()))
+                .map(childCategory -> CategoryDto.builder()
+                        .id(childCategory.getCategoryId())
+                        .name(childCategory.getCategoryName())
+                        .build())
+                .collect(Collectors.toList());
+
+        return CategoryListResponse.builder()
+                .parent(parentDto)
+                .childCategoryList(childCategoryList)
+                .build();
     }
 }

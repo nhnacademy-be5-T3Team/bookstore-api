@@ -2,11 +2,13 @@ package com.t3t.bookstoreapi.review.model.entity;
 
 import javax.validation.constraints.NotNull;
 import com.t3t.bookstoreapi.book.model.entity.Book;
-import com.t3t.bookstoreapi.member.domain.Member;
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -43,5 +45,8 @@ public class Review {
 
     @Column(name = "review_updated_at")
     private LocalDateTime reviewUpdatedAt;
+
+    @OneToMany(mappedBy = "review")
+    List<ReviewImage> reviewImageList = new ArrayList<>();
 
 }

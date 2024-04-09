@@ -6,6 +6,7 @@ import com.t3t.bookstoreapi.keymanager.model.response.SecretKeyManagerResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author woody35545(구건모)
  */
+@Profile("!local")
 @Slf4j
 @Service
 @RequiredArgsConstructor

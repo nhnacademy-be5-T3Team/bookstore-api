@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.order.model.entity;
 
-import com.t3t.bookstoreapi.member.domain.Member;
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 

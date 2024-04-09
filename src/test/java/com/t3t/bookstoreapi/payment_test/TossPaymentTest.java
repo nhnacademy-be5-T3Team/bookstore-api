@@ -1,27 +1,40 @@
 package com.t3t.bookstoreapi.payment_test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.t3t.bookstoreapi.payment.entity.TossPayments;
+import com.t3t.bookstoreapi.payment.model.entity.TossPayments;
+import com.t3t.bookstoreapi.payment.model.response.TossPaymentResponse;
 import com.t3t.bookstoreapi.payment.repository.TossPaymentRepository;
-import com.t3t.bookstoreapi.payment.responce.TossPaymentResponse;
 import com.t3t.bookstoreapi.payment.service.TossPaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
+import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@Transactional
+@ActiveProfiles("test")
 class TossPaymentTest {
+    @Mock
+    private TossPaymentRepository tossPaymentRepository;
 
+    @InjectMocks
+    private TossPaymentService tossPaymentService;
+    @Mock
+    private TossPayments tossPayments;
     @Test
     void contextLoads() {
     }
@@ -45,19 +58,10 @@ class TossPaymentTest {
 
     }
 
-    @Mock
-    private TossPaymentRepository tossPaymentRepository;
-
-    @InjectMocks
-    private TossPaymentService tossPaymentService;
-    @Mock
-    private TossPayments tossPayments;
 
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+
+
     @Test
     @DisplayName("toss_payment 객체 생성 test")
     public void testCreateTossPayment() {
@@ -70,14 +74,13 @@ class TossPaymentTest {
             tossPaymentResponse = objectMapper.readValue(json, TossPaymentResponse.class);
         } catch (Exception e) {
             e.printStackTrace();
+            fail("Failed to parse JSON: " + e.getMessage());
         }
+
         // When
         tossPaymentService.saveTossPayment(tossPaymentResponse);
 
-        System.out.println(tossPaymentResponse.getPaymentKey());
-        System.out.println(tossPayments.getTossPaymentKey());
         // Then
-
         verify(tossPaymentRepository, times(1)).save(any(TossPayments.class));
     }
 }

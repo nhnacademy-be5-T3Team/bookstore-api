@@ -1,18 +1,4 @@
-t3t:
-  secretKeyManager:
-    certKeyPath: ${secretKeyManagerCertKeyPath}
-    certKeyType: ${secretKeyManagerCertKeyType}
-    appKey: ${secretKeyManagerAppKey}
-    password: ${secretKeyManagerPassword}
-
-    secrets:
-      databaseName:
-        keyId: "e3203972cbf04433b90c752f695d5736"
-      databaseServerIpAddress:
-        keyId: "62911d2c30064812b2b2c97a8dd90782"
-      databaseServerPort:
-        keyId: "48e191996aa748938a1edb62652336f4"
-      databaseServerUsername:
-        keyId: "f008c1d3f87f4f88ae57bd03871eb10d"
-      databaseServerPassword:
-        keyId: "8a65684780224384a681c3e9035ca7d6"
+eureka:
+  client:
+    service-url:
+      defaultZone: ${eurekaServiceUrlDefaultZone}
