@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.member;
 
+import com.t3t.bookstoreapi.member.model.constant.MemberRole;
+import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
 import com.t3t.bookstoreapi.member.model.entity.*;
 import com.t3t.bookstoreapi.member.repository.*;
 import lombok.extern.slf4j.Slf4j;
@@ -133,9 +135,9 @@ class MemberRelatedEntityTest {
                 .phone("010-1234-5678")
                 .latestLogin(LocalDateTime.now())
                 .birthDate(LocalDateTime.now().toLocalDate())
-                .gradeId(memberGrade)
-                .status("ACTIVE")
-                .role(1)
+                .grade(memberGrade)
+                .status(MemberStatus.ACTIVE)
+                .role(MemberRole.USER)
                 .build());
 
         // when
@@ -171,9 +173,9 @@ class MemberRelatedEntityTest {
                 .phone("010-1234-5678")
                 .latestLogin(LocalDateTime.now())
                 .birthDate(LocalDateTime.now().toLocalDate())
-                .gradeId(memberGrade)
-                .status("ACTIVE")
-                .role(1)
+                .grade(memberGrade)
+                .status(MemberStatus.ACTIVE)
+                .role(MemberRole.USER)
                 .build());
 
         Address address = addressRepository.save(Address.builder()

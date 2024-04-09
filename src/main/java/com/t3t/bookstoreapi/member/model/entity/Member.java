@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.member.model.entity;
 
+import com.t3t.bookstoreapi.member.model.constant.MemberRole;
+import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +27,7 @@ public class Member {
     @ManyToOne
     @JoinColumn(name = "member_grade_id", nullable = false)
     @Comment("회원 등급 식별자")
-    private MemberGrade gradeId;
+    private MemberGrade grade;
 
     @Column(name = "member_name", length = 100, nullable = false)
     @Comment("회원 이름")
@@ -52,10 +54,12 @@ public class Member {
     private Long point;
 
     @Column(name = "member_status", length = 10, nullable = false)
+    @Enumerated(EnumType.STRING)
     @Comment("회원 상태")
-    private String status;
+    private MemberStatus status;
 
-    @Column(name = "member_role", columnDefinition = "TINYINT", nullable = false)
+    @Column(name = "member_role", length = 10, nullable = false)
+    @Enumerated(EnumType.STRING)
     @Comment("회원 역할")
-    private int role;
+    private MemberRole role;
 }
