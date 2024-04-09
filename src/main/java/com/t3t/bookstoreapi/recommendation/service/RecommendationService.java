@@ -61,6 +61,7 @@ public class RecommendationService {
 
         return BookInfoBrief.builder()
                 .name(book.getBookName())
+                .bookId(book.getBookId())
                 .coverImageUrl(coverImageUrl)
                 .build();
     }
