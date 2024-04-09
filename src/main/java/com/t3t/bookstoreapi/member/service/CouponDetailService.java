@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.member.service;
 
-import com.t3t.bookstoreapi.member.dto.response.CouponDetailResponse;
+import com.t3t.bookstoreapi.member.model.response.CouponDetailResponse;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.member.repository.CouponDetailRepository;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
