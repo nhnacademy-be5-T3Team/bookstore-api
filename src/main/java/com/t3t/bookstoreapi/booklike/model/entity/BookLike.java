@@ -1,7 +1,7 @@
 package com.t3t.bookstoreapi.booklike.model.entity;
 
 import com.t3t.bookstoreapi.book.model.entity.Book;
-import com.t3t.bookstoreapi.member.domain.Member;
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import lombok.*;
 
 import javax.persistence.*;

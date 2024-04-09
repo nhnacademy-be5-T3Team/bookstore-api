@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookServiceUtils {
+
+    private BookServiceUtils() {
+        throw new AssertionError("Utility class should not be instantiated");
+    }
+
     public static List<AuthorInfo> extractAuthorInfo(List<ParticipantRoleRegistration> authorList) {
         return authorList.stream()
                 .map(participantRole -> AuthorInfo.builder()

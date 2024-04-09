@@ -77,5 +77,12 @@ public class Book {
     @OneToMany(mappedBy = "book")
     List<ParticipantRoleRegistration> authors = new ArrayList<>();
 
+    public void incrementLikes() {
+        this.bookLikeCount++;
+    }
+
+    public void decreaseLikes() {
+        this.bookLikeCount--;
+    }
 
 }

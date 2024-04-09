@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.book.service;
 
+import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
 import com.t3t.bookstoreapi.book.model.entity.BookImage;
@@ -13,19 +14,19 @@ import com.t3t.bookstoreapi.book.repository.BookImageRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.repository.BookTagRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
-import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.model.enums.TableStatus;
-import com.t3t.bookstoreapi.tag.model.entity.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
 
+@RequiredArgsConstructor
+@Transactional
 @Service
 public class BookService {
     private final BookRepository bookRepository;
@@ -33,17 +34,15 @@ public class BookService {
     private final BookCategoryRepository bookCategoryRepository;
     private final BookTagRepository bookTagRepository;
 
-    @Autowired
-    public BookService(BookRepository bookRepository, BookImageRepository bookImageRepository, BookCategoryRepository bookCategoryRepository, BookTagRepository bookTagRepository) {
-        this.bookRepository = bookRepository;
-        this.bookImageRepository = bookImageRepository;
-        this.bookCategoryRepository = bookCategoryRepository;
-        this.bookTagRepository = bookTagRepository;
-    }
-
+    @Transactional(readOnly = true)
     public BookSearchResultDetailResponse getBook(Long bookId) {
 
         Book book = bookRepository.findByBookId(bookId);
+
+        if(book == null) {
+            throw new BookNotFoundForIdException(bookId);
+        }
+
         List<AuthorInfo> authorInfoList = BookServiceUtils.extractAuthorInfo(book.getAuthors());
 
         return buildBookSearchResultDetailResponse(book, authorInfoList);
@@ -97,6 +96,6 @@ public class BookService {
     }
 
     public boolean checkStockAvailability(int stock) {
-        return stock >= 0;
+        return stock > 0;
     }
 }
