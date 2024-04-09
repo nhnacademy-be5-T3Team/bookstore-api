@@ -28,11 +28,11 @@ public class PublisherController {
                 ResponseEntity.ok(responseBody.data(publisherDtoList));
     }
 
-    @GetMapping("/{publisherId}")
+/*    @GetMapping("/{publisherId}")
     public ResponseEntity<BaseResponse<PublisherDto>> getPublisherById(@PathVariable Long publisherId) {
         return ResponseEntity.ok(new BaseResponse<PublisherDto>()
                 .data(publisherService.getPublisherById(publisherId)));
-    }
+    }*/
 
     @PostMapping
     public Publisher createPublisher(@RequestBody Publisher publisher) {

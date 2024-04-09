@@ -6,8 +6,8 @@ import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,11 +25,11 @@ public class PublisherService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+/*    @Transactional(readOnly = true)
     public PublisherDto getPublisherById(Long publisherId) {
         return PublisherDto.of(publisherRepository.findById(publisherId))
                 .orElseThrow(() -> new PublisherNotFoundException());
-    }
+    }*/
 
     public Publisher createPublisher(Publisher publisher) {
         return publisherRepository.save(publisher);
