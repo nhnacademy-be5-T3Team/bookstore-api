@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.member.controller;
 
-import com.t3t.bookstoreapi.member.dto.response.PointDetailResponse;
+import com.t3t.bookstoreapi.member.model.response.PointDetailResponse;
 import com.t3t.bookstoreapi.member.service.PointDetailService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
