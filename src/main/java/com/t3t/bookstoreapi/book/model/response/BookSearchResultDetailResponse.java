@@ -21,8 +21,8 @@ public class BookSearchResultDetailResponse {
     private String bookIndex; // 도서 목차
     private String bookDesc; // 도서 설명
     private String bookIsbn; // isbn
-    private boolean isStockAvailable; // 재고 여부 (주문 가능 여부)
-    private boolean isPackagingAvailable; // 포장 가능 여부
+    private boolean orderAvailableStatus; // 재고 여부 (주문 가능 여부)
+    private boolean packagingAvailableStatus; // 포장 가능 여부
     private List<TagInfo> tagList; // 연결된 태그 리스트
     private List<CategoryInfo> catgoryInfoList; //연결된 카테고리 리스트
     private String coverImageUrl; // 도서 커버 이미지 url
