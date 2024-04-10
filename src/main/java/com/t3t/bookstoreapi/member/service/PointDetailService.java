@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.member.service;
 
-import com.t3t.bookstoreapi.member.dto.response.PointDetailResponse;
+import com.t3t.bookstoreapi.member.model.response.PointDetailResponse;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.member.repository.PointDetailRepository;
