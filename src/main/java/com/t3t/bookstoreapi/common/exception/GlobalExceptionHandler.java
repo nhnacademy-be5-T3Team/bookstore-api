@@ -2,6 +2,8 @@ package com.t3t.bookstoreapi.common.exception;
 
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
+import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsException;
+import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
@@ -96,6 +98,31 @@ public class GlobalExceptionHandler {
                 .body(new BaseResponse<Void>().message(deliveryNotFoundException.getMessage()));
     }
 
+    /**
+     * 회원 계정이 이미 존재하는 경우에 대한 예외 처리 핸들러
+     * @param accountAlreadyExistsException 회원 계정이 이미 존재하는 경우 발생하는 예외
+     * @see com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsException
+     * @return 409 CONFLICT - 예외 메시지 반환
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(AccountAlreadyExistsException.class)
+    public ResponseEntity<BaseResponse<Void>> handleAccountAlreadyExistsException(AccountAlreadyExistsException accountAlreadyExistsException) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new BaseResponse<Void>().message(accountAlreadyExistsException.getMessage()));
+    }
+
+    /**
+     * 회원 등급이 존재하지 않는 경우에 대한 예외 처리 핸들러
+     * @param memberGradeNotFoundForNameException 회원 등급이 존재하지 않는 경우 발생하는 예외
+     * @see com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException
+     * @return 404 NOT_FOUND - 예외 메시지 반환
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(MemberGradeNotFoundForNameException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMemberGradeNotFoundForNameException(MemberGradeNotFoundForNameException memberGradeNotFoundForNameException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(memberGradeNotFoundForNameException.getMessage()));
+    }
 
     /**
      * validation 실패 시 발생하는 MethodArgumentNotValidException 예외 처리 핸들러
@@ -114,4 +141,5 @@ public class GlobalExceptionHandler {
                         .map(error -> String.format("* %s  ", error.getDefaultMessage()))
                         .collect(Collectors.joining()))));
     }
+
 }
