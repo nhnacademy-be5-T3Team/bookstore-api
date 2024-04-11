@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.book.controller;
 
-import com.t3t.bookstoreapi.book.model.response.BookSearchResultDetailResponse;
+import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.service.BookService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,8 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping("/books/{bookId}")
-    public ResponseEntity<BaseResponse<BookSearchResultDetailResponse>> getBook(@PathVariable Long bookId) {
-        return ResponseEntity.ok(new BaseResponse<BookSearchResultDetailResponse>()
+    public ResponseEntity<BaseResponse<BookDetailResponse>> getBook(@PathVariable Long bookId) {
+        return ResponseEntity.ok(new BaseResponse<BookDetailResponse>()
                 .data(bookService.getBook(bookId)));
     }
 }

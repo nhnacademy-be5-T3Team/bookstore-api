@@ -5,16 +5,15 @@ import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
 import com.t3t.bookstoreapi.book.model.entity.BookImage;
 import com.t3t.bookstoreapi.book.model.entity.BookTag;
-import com.t3t.bookstoreapi.book.model.response.AuthorInfo;
-import com.t3t.bookstoreapi.book.model.response.BookSearchResultDetailResponse;
-import com.t3t.bookstoreapi.book.model.response.CategoryInfo;
-import com.t3t.bookstoreapi.book.model.response.TagInfo;
+import com.t3t.bookstoreapi.book.model.response.*;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookImageRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.repository.BookTagRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.model.enums.TableStatus;
+import com.t3t.bookstoreapi.order.model.entity.Packaging;
+import com.t3t.bookstoreapi.order.repository.PackagingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,9 +32,10 @@ public class BookService {
     private final BookImageRepository bookImageRepository;
     private final BookCategoryRepository bookCategoryRepository;
     private final BookTagRepository bookTagRepository;
+    private final PackagingRepository packagingRepository;
 
     @Transactional(readOnly = true)
-    public BookSearchResultDetailResponse getBook(Long bookId) {
+    public BookDetailResponse getBook(Long bookId) {
 
         Book book = bookRepository.findByBookId(bookId);
 
@@ -48,12 +48,13 @@ public class BookService {
         return buildBookSearchResultDetailResponse(book, authorInfoList);
     }
 
-    public BookSearchResultDetailResponse buildBookSearchResultDetailResponse(Book book, List<AuthorInfo> authorInfoList) {
+    public BookDetailResponse buildBookSearchResultDetailResponse(Book book, List<AuthorInfo> authorInfoList) {
         BigDecimal discountedPrice = calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount());
 
         List<BookCategory> bookCategories = bookCategoryRepository.findByBookBookId(book.getBookId());
         List<BookTag> bookTags = bookTagRepository.findByBookBookId(book.getBookId());
         List<BookImage> bookImages = bookImageRepository.findByBookBookId(book.getBookId());
+        List<Packaging> packages = packagingRepository.findAll();
 
         List<CategoryInfo> categoryInfoList = bookCategories.stream()
                 .map(bookCategory -> CategoryInfo.builder()
@@ -73,7 +74,10 @@ public class BookService {
                 .map(BookImage::getBookImageUrl)
                 .collect(Collectors.toList());
 
-        return BookSearchResultDetailResponse.builder()
+        List<PackagingInfo> packagingInfoList = packages.stream()
+                .map(packaging -> PackagingInfo.builder().id(packaging.getId()).name(packaging.getName()).build()).collect(Collectors.toList());
+
+        return BookDetailResponse.builder()
                 .name(book.getBookName())
                 .price(book.getBookPrice())
                 .discountRate(book.getBookDiscount())
@@ -87,6 +91,7 @@ public class BookService {
                 .bookIsbn(book.getBookIsbn())
                 .orderAvailableStatus(checkStockAvailability(book.getBookStock()))
                 .packagingAvailableStatus(TableStatus.getStatusFromValue(book.getBookPackage()))
+                .packagingInfoList(packagingInfoList)
                 .tagList(tagInfoList)
                 .catgoryInfoList(categoryInfoList)
                 .imageUrlList(imgUrlList)

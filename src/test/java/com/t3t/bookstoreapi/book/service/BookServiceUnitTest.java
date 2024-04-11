@@ -2,7 +2,7 @@ package com.t3t.bookstoreapi.book.service;
 
 import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.model.entity.*;
-import com.t3t.bookstoreapi.book.model.response.BookSearchResultDetailResponse;
+import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookImageRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
@@ -118,7 +118,7 @@ public class BookServiceUnitTest {
         when(bookTagRepository.findByBookBookId(any())).thenReturn(bookTags);
         when(bookImageRepository.findByBookBookId(any())).thenReturn(bookImages);
 
-        BookSearchResultDetailResponse response = bookService.getBook(book.getBookId());
+        BookDetailResponse response = bookService.getBook(book.getBookId());
 
         assertEquals(book.getBookName(), response.getName());
         assertEquals(category.getCategoryId(), response.getCatgoryInfoList().get(0).getId());

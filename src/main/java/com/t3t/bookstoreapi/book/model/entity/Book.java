@@ -71,7 +71,7 @@ public class Book {
     @Column(name = "book_like_count")
     private Integer bookLikeCount;
 
-    @OneToOne(mappedBy = "book")
+    @OneToOne(mappedBy = "book", fetch = FetchType.LAZY)
     private BookThumbnail bookThumbnail;
 
     @OneToMany(mappedBy = "book")
