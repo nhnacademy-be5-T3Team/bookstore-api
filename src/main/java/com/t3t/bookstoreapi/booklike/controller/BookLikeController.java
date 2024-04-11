@@ -4,22 +4,18 @@ import com.t3t.bookstoreapi.booklike.model.request.BookLikeRequest;
 import com.t3t.bookstoreapi.booklike.service.BookLikeService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBrief;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 public class BookLikeController {
 
     private final BookLikeService bookLikeService;
-
-    @Autowired
-    public BookLikeController(BookLikeService bookLikeService) {
-        this.bookLikeService = bookLikeService;
-    }
 
     @GetMapping("book/liked-books/{memberId}")
     public ResponseEntity<BaseResponse<List<BookInfoBrief>>> getLikedBooksByMemberId(@PathVariable Long memberId) {

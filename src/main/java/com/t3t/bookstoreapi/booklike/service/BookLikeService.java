@@ -11,12 +11,10 @@ import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBrief;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
