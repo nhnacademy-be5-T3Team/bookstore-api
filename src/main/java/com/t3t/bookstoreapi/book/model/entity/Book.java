@@ -1,6 +1,9 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
 import javax.validation.constraints.NotNull;
+
+import com.t3t.bookstoreapi.book.controller.enums.TableStatus;
+import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import lombok.*;
 
@@ -53,7 +56,8 @@ public class Book {
 
     @NotNull
     @Column(name = "book_package")
-    private Integer bookPackage;
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus bookPackage;
 
     @NotNull
     @Column(name = "book_published")

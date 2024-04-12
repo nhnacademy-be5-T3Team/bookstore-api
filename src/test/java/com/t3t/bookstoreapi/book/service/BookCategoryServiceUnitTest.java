@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.book.service;
 
+import com.t3t.bookstoreapi.book.controller.enums.TableStatus;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundForCategoryIdException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
@@ -95,7 +96,7 @@ class BookCategoryServiceUnitTest {
                 .bookIsbn("9788966863307")
                 .bookPrice(new BigDecimal("19.99"))
                 .bookDiscount(new BigDecimal("0.1"))
-                .bookPackage(1)
+                .bookPackage(TableStatus.TRUE)
                 .bookPublished(LocalDate.of(1943, Month.APRIL, 6))
                 .bookStock(100)
                 .bookAverageScore(4.5f)
