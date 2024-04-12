@@ -10,8 +10,6 @@ import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookImageRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.repository.BookTagRepository;
-import com.t3t.bookstoreapi.book.util.BookServiceUtils;
-import com.t3t.bookstoreapi.model.enums.TableStatus;
 import com.t3t.bookstoreapi.order.model.entity.Packaging;
 import com.t3t.bookstoreapi.order.repository.PackagingRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
+import static com.t3t.bookstoreapi.book.util.BookServiceUtils.extractAuthorInfo;
 
 @RequiredArgsConstructor
 @Transactional
@@ -39,22 +38,15 @@ public class BookService {
 
         Book book = bookRepository.findByBookId(bookId);
 
+        // 존재하지 않는 도서의 식별자로 조회시 예외 발생
         if(book == null) {
             throw new BookNotFoundForIdException(bookId);
         }
 
-        List<AuthorInfo> authorInfoList = BookServiceUtils.extractAuthorInfo(book.getAuthors());
-
-        return buildBookSearchResultDetailResponse(book, authorInfoList);
-    }
-
-    public BookDetailResponse buildBookSearchResultDetailResponse(Book book, List<AuthorInfo> authorInfoList) {
-        BigDecimal discountedPrice = calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount());
-
+        // 도서와 연관된 정보 조회 (도서별 카테고리, 태그, 이미지 정보)
         List<BookCategory> bookCategories = bookCategoryRepository.findByBookBookId(book.getBookId());
         List<BookTag> bookTags = bookTagRepository.findByBookBookId(book.getBookId());
         List<BookImage> bookImages = bookImageRepository.findByBookBookId(book.getBookId());
-        List<Packaging> packages = packagingRepository.findAll();
 
         List<CategoryInfo> categoryInfoList = bookCategories.stream()
                 .map(bookCategory -> CategoryInfo.builder()
@@ -74,8 +66,12 @@ public class BookService {
                 .map(BookImage::getBookImageUrl)
                 .collect(Collectors.toList());
 
-        List<PackagingInfo> packagingInfoList = packages.stream()
-                .map(packaging -> PackagingInfo.builder().id(packaging.getId()).name(packaging.getName()).build()).collect(Collectors.toList());
+        // TODO : book entity의 author 다대다 맵핑 (n+1 문제) 변경 후 수정해야함
+        List<AuthorInfo> authorInfoList = extractAuthorInfo(book.getAuthors());
+        BigDecimal discountedPrice = calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount());
+
+        // 포장 가능한 도서이면 포장지 종류 정보를 가져와서 반환 아닌 경우 null
+        List<PackagingInfo> packagingInfoList = book.getBookPackage().isValue() ? extractPackagingInfoList() : null;
 
         return BookDetailResponse.builder()
                 .name(book.getBookName())
@@ -90,7 +86,7 @@ public class BookService {
                 .bookDesc(book.getBookDesc())
                 .bookIsbn(book.getBookIsbn())
                 .orderAvailableStatus(checkStockAvailability(book.getBookStock()))
-                .packagingAvailableStatus(TableStatus.getStatusFromValue(book.getBookPackage()))
+                .packagingAvailableStatus(book.getBookPackage().isValue())
                 .packagingInfoList(packagingInfoList)
                 .tagList(tagInfoList)
                 .catgoryInfoList(categoryInfoList)
@@ -100,7 +96,14 @@ public class BookService {
                 .build();
     }
 
-    public boolean checkStockAvailability(int stock) {
+    private boolean checkStockAvailability(int stock) {
         return stock > 0;
+    }
+
+    private List<PackagingInfo> extractPackagingInfoList() {
+        List<Packaging> packages = packagingRepository.findAll();
+        return packages.stream()
+                .map(packaging -> PackagingInfo.builder().id(packaging.getId()).name(packaging.getName()).build())
+                .collect(Collectors.toList());
     }
 }
