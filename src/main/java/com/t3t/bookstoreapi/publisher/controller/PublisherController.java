@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.publisher.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
+import com.t3t.bookstoreapi.publisher.model.request.PublisherCreationRequest;
 import com.t3t.bookstoreapi.publisher.model.dto.PublisherDto;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.service.PublisherService;
@@ -9,45 +10,45 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/publishers")
 public class PublisherController {
     private final PublisherService publisherService;
 
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<PublisherDto>>> getAllPublishers() {
-        List<PublisherDto> publisherDtoList = publisherService.getAllPublishers();
+    @GetMapping("/publishers/{publisherId}")
+    public ResponseEntity<BaseResponse<List<Publisher>>> getPulisherList(@PathVariable("publisherId") Long publisherId) {
+        List<Publisher> publisherList = publisherService.getPublisherList();
 
-        BaseResponse<List<PublisherDto>> responseBody = new BaseResponse<>();
-
-        return publisherDtoList.isEmpty() ?
-                ResponseEntity.status(HttpStatus.NO_CONTENT).body(responseBody.message("등록된 출판사가 없습니다.")) :
-                ResponseEntity.ok(responseBody.data(publisherDtoList));
+        return publisherList.isEmpty() ?
+                ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<List<Publisher>>().message("등록된 출판사가 없습니다.")) :
+                ResponseEntity.ok(new BaseResponse<List<Publisher>>().data(publisherList));
     }
 
-/*    @GetMapping("/{publisherId}")
+    @GetMapping("/publishers/{publisherId}")
     public ResponseEntity<BaseResponse<PublisherDto>> getPublisherById(@PathVariable Long publisherId) {
         return ResponseEntity.ok(new BaseResponse<PublisherDto>()
                 .data(publisherService.getPublisherById(publisherId)));
-    }*/
-
-    @PostMapping
-    public Publisher createPublisher(@RequestBody Publisher publisher) {
-        return publisherService.createPublisher(publisher);
     }
 
-    @DeleteMapping("/{publisherId}")
-    public ResponseEntity<Void> deletePublisher(@PathVariable Long publisherId) {
+    @PostMapping("/publishers/{publisherId}/details")
+    public ResponseEntity<BaseResponse<PublisherDto>> createPublisher(@PathVariable("publisherId") Long publisherId,
+                                                                      @Valid @RequestBody PublisherCreationRequest request) {
+        return ResponseEntity.ok(new BaseResponse<PublisherDto>()
+                .data(publisherService.createPublisher(publisherId, request)));
+    }
+
+    @PutMapping(value = "/publishers/{publisherId}")
+    public ResponseEntity<BaseResponse<PublisherDto>> updatePublisher(@PathVariable Long publisherId, @RequestParam String publisherName, @RequestParam String publisherEmail) {
+        return ResponseEntity.ok(new BaseResponse<PublisherDto>()
+                .data(publisherService.updatePublisher(publisherId, publisherName, publisherEmail)));
+    }
+
+    @DeleteMapping("/publishers/{publisherId}")
+    public ResponseEntity<BaseResponse<Void>> deletePublisher(@PathVariable("publishers") Long publisherId) {
         publisherService.deletePublisher(publisherId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{publisherId}")
-    public ResponseEntity<Publisher> updatePublisher(@PathVariable Long publisherId) {
-        Publisher updatedPublisher = publisherService.updatePublisher(publisherId);
-        return ResponseEntity.ok(updatedPublisher);
+        return ResponseEntity.ok(new BaseResponse<Void>());
     }
 }
