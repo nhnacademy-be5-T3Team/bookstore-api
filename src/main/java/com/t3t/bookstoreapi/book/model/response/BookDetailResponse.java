@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class BookSearchResultDetailResponse {
+public class BookDetailResponse {
     private String name; // 도서 제목
     private BigDecimal price; // 정가
     private BigDecimal discountRate; // 할인율
@@ -23,6 +23,7 @@ public class BookSearchResultDetailResponse {
     private String bookIsbn; // isbn
     private boolean orderAvailableStatus; // 재고 여부 (주문 가능 여부)
     private boolean packagingAvailableStatus; // 포장 가능 여부
+    private List<PackagingInfo> packagingInfoList; // 포장 종류 리스트
     private List<TagInfo> tagList; // 연결된 태그 리스트
     private List<CategoryInfo> catgoryInfoList; //연결된 카테고리 리스트
     private String coverImageUrl; // 도서 커버 이미지 url
