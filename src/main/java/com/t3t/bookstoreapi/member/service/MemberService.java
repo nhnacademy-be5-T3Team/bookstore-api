@@ -14,6 +14,7 @@ import com.t3t.bookstoreapi.member.repository.BookstoreAccountRepository;
 import com.t3t.bookstoreapi.member.repository.MemberGradeRepository;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class MemberService{
     private final BookstoreAccountRepository bookstoreAccountRepository;
     private final AccountRepository accountRepository;
     private final MemberGradeRepository memberGradeRepository;
-
+    private final BCryptPasswordEncoder passwordEncoder;
     /**
      * 회원 가입
      *
@@ -53,6 +54,7 @@ public class MemberService{
 
         BookstoreAccount bookstoreAccount = bookstoreAccountRepository.save(BookstoreAccount.builder()
                 .id(request.getAccountId())
+                .AccountPassword(passwordEncoder.encode(request.getPassword()))
                 .member(member)
                 .build());
 
