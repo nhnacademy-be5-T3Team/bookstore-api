@@ -1,8 +1,6 @@
 package com.t3t.bookstoreapi.book.service;
 
 import com.t3t.bookstoreapi.book.exception.AuthorNotFoundException;
-import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
-import com.t3t.bookstoreapi.book.exception.BookNotFoundForCategoryIdException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
 import com.t3t.bookstoreapi.book.model.response.AuthorInfo;
@@ -10,12 +8,12 @@ import com.t3t.bookstoreapi.book.model.response.BookSearchResultResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
+import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
+import com.t3t.bookstoreapi.model.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +33,11 @@ public class BookCategoryService {
     private final BookCategoryRepository bookCategoryRepository;
 
     @Transactional(readOnly = true)
-    public Page<BookSearchResultResponse> findBooksByCategoryId(Integer categoryId, Pageable pageable) {
+    public PageResponse<BookSearchResultResponse> findBooksByCategoryId(Integer categoryId, Pageable pageable) {
+
+        if(!categoryRepository.existsById(categoryId)) {
+            throw new CategoryNotFoundException();
+        }
 
         // 요청 카테고리 ID에 해당하는 자식 카테고리 조회
         List<Category> childCategoryList = categoryRepository.getChildCategoriesById(categoryId);
@@ -49,25 +51,14 @@ public class BookCategoryService {
         // 요청 카테고리 ID에 해당하는 BookCategory를 조회
         List<BookCategory> bookCategories = bookCategoryRepository.findByCategoryCategoryIdIn(targetCategoryIdList);
 
-        if(bookCategories.isEmpty()) {
-            throw new BookNotFoundForCategoryIdException(categoryId);
-        }
-
         // 도서 ID 목록 추출
         List<Long> bookIds = bookCategories.stream()
                 .map(BookCategory::getBook)
                 .map(Book::getBookId)
                 .collect(Collectors.toList());
 
-        // 페이징 처리
-        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-
         // 도서 ID에 해당하는 도서 데이터 조회
-        Page<Book> booksPage = bookRepository.findByBookIdIn(bookIds, pageRequest);
-
-        if(booksPage.isEmpty()) {
-            throw new BookNotFoundException();
-        }
+        Page<Book> booksPage = bookRepository.findByBookIdIn(bookIds, pageable);
 
         // 페이징 결과를 BookSearchResultResponse로 변환
         List<BookSearchResultResponse> responses = booksPage.getContent().stream()
@@ -80,7 +71,14 @@ public class BookCategoryService {
                 })
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(responses, pageRequest, booksPage.getTotalElements());
+        return PageResponse.<BookSearchResultResponse>builder()
+                .content(responses)
+                .pageNo(booksPage.getNumber())
+                .pageSize(booksPage.getSize())
+                .totalElements(booksPage.getTotalElements())
+                .totalPages(booksPage.getTotalPages())
+                .last(booksPage.isLast())
+                .build();
     }
 
     public BookSearchResultResponse buildBookSearchResultResponse(Book book, List<AuthorInfo> authorInfoList) {
