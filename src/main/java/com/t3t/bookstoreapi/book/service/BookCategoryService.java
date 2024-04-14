@@ -85,6 +85,7 @@ public class BookCategoryService {
         BigDecimal discountedPrice = calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount());
 
         return BookSearchResultResponse.builder()
+                .bookId(book.getBookId())
                 .name(book.getBookName())
                 .price(book.getBookPrice())
                 .discountRate(book.getBookDiscount())
