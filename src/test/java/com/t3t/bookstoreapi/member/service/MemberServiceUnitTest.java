@@ -23,6 +23,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -38,6 +40,8 @@ class MemberServiceUnitTest {
     private AccountRepository accountRepository;
     @Mock
     private MemberGradeRepository memberGradeRepository;
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
     @InjectMocks
     private MemberService memberService;
 
@@ -79,10 +83,12 @@ class MemberServiceUnitTest {
         Mockito.when(accountRepository.existsAccountById(request.getAccountId())).thenReturn(false);
         Mockito.when(memberGradeRepository.findByName(memberGrade.getName())).thenReturn(Optional.of(memberGrade));
         Mockito.when(memberRepository.save(Mockito.any(Member.class))).thenReturn(member);
+        Mockito.when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedPassword");
         Mockito.when(bookstoreAccountRepository.save(Mockito.any(BookstoreAccount.class))).thenReturn(BookstoreAccount.builder()
                         .id(request.getAccountId())
                         .member(member)
                         .build());
+
 
         // when
         MemberRegistrationResponse response = memberService.registerMember(request);
@@ -90,6 +96,7 @@ class MemberServiceUnitTest {
 
         // then
         Assertions.assertEquals(request.getAccountId(), response.getAccountId());
+        Assertions.assertEquals(member.getId(), response.getMemberId());
         Assertions.assertEquals(request.getName(), response.getName());
         Assertions.assertEquals(request.getBirthDate(), response.getBirthDate());
         Assertions.assertEquals(request.getPhone(), response.getPhone());
