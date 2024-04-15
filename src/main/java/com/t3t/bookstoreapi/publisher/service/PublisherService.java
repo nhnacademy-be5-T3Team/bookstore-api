@@ -20,8 +20,8 @@ public class PublisherService {
     private final PublisherRepository publisherRepository;
 
     @Transactional(readOnly = true)
-    public List<Publisher> getPublisherList() {
-        return publisherRepository.findAll().stream().collect(Collectors.toList());
+    public List<PublisherDto> getPublisherList() {
+        return publisherRepository.findAll().stream().map(PublisherDto::of).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

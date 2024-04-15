@@ -18,13 +18,13 @@ import java.util.List;
 public class PublisherController {
     private final PublisherService publisherService;
 
-    @GetMapping("/publishers/{publisherId}")
-    public ResponseEntity<BaseResponse<List<Publisher>>> getPulisherList(@PathVariable("publisherId") Long publisherId) {
-        List<Publisher> publisherList = publisherService.getPublisherList();
+    @GetMapping("/publishers")
+    public ResponseEntity<BaseResponse<List<PublisherDto>>> getPulisherList() {
+        List<PublisherDto> publisherList = publisherService.getPublisherList();
 
         return publisherList.isEmpty() ?
-                ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<List<Publisher>>().message("등록된 출판사가 없습니다.")) :
-                ResponseEntity.ok(new BaseResponse<List<Publisher>>().data(publisherList));
+                ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<List<PublisherDto>>().message("등록된 출판사가 없습니다.")) :
+                ResponseEntity.ok(new BaseResponse<List<PublisherDto>>().data(publisherList));
     }
 
     @GetMapping("/publishers/{publisherId}")
