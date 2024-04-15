@@ -26,11 +26,6 @@ public class Book {
     private Long bookId;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publisher_id")
-    private Publisher publisher;
-
-    @NotNull
     @Column(name = "book_name")
     private String bookName;
 
@@ -75,12 +70,27 @@ public class Book {
     @Column(name = "book_like_count")
     private Integer bookLikeCount;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "publisher_id")
+    private Publisher publisher;
+
     @OneToOne(mappedBy = "book", fetch = FetchType.LAZY)
     private BookThumbnail bookThumbnail;
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    List<BookImage> bookImageList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     List<ParticipantRoleRegistration> authors = new ArrayList<>();
 
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    List<BookCategory> bookCategoryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    List<BookTag> bookTagList = new ArrayList<>();
+
+    // todo : 도서 좋아요 동시성 문제 관련해 수정해야함
     public void incrementLikes() {
         this.bookLikeCount++;
     }
