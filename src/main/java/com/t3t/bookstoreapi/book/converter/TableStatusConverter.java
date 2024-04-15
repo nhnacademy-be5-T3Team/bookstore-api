@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.book.converter;
 
-import com.t3t.bookstoreapi.book.controller.enums.TableStatus;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Convert;

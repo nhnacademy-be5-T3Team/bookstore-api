@@ -1,42 +1,18 @@
 package com.t3t.bookstoreapi.book.service;
 
-import com.t3t.bookstoreapi.book.controller.enums.TableStatus;
-import com.t3t.bookstoreapi.book.exception.BookNotFoundForCategoryIdException;
-import com.t3t.bookstoreapi.book.model.entity.Book;
-import com.t3t.bookstoreapi.book.model.entity.BookCategory;
-import com.t3t.bookstoreapi.book.model.entity.BookThumbnail;
-import com.t3t.bookstoreapi.book.model.entity.ParticipantRoleRegistration;
-import com.t3t.bookstoreapi.book.model.response.BookSearchResultResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
-import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
-import com.t3t.bookstoreapi.participant.model.entity.Participant;
-import com.t3t.bookstoreapi.participant.model.entity.ParticipantRole;
-import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookCategoryServiceUnitTest {

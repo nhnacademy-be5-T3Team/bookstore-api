@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.entity;
 
-import com.t3t.bookstoreapi.book.controller.enums.TableStatus;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.category.model.entity.Category;
