@@ -33,11 +33,10 @@ public class PublisherController {
                 .data(publisherService.getPublisherById(publisherId)));
     }
 
-    @PostMapping("/publishers/{publisherId}/details")
+    @PostMapping("/publishers/{publisherId}")
     public ResponseEntity<BaseResponse<PublisherDto>> createPublisher(@PathVariable("publisherId") Long publisherId,
                                                                       @Valid @RequestBody PublisherCreationRequest request) {
-        return ResponseEntity.ok(new BaseResponse<PublisherDto>()
-                .data(publisherService.createPublisher(publisherId, request)));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping(value = "/publishers/{publisherId}")
