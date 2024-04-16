@@ -5,10 +5,11 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @Entity
 @Table(name = "publishers")
 public class Publisher {
@@ -24,5 +25,4 @@ public class Publisher {
     @NotNull
     @Column(name = "publisher_email")
     private String publisherEmail;
-
 }
