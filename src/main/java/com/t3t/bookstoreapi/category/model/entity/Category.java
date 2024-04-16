@@ -17,11 +17,11 @@ public class Category {
     @Column(name = "category_id")
     private Integer categoryId;
 
-    @Column(name = "parent_category_id")
-    private Integer parentCategoryId;
-
     @NotNull
     @Column(name = "category_name")
     private String categoryName;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_category_id")
+    private Category parentCategory;
 }
