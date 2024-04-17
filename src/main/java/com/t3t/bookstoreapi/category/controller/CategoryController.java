@@ -17,6 +17,14 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    /**
+     * 카테고리 목록을 카테고리 depth 범위로 조회
+     *
+     * @param request 조회할 카테고리의 depth 범위
+     * @return 200 OK, 카테고리 목록 리스트<br>
+     *         204 NO_CONTENT, 카테고리 데이터가 없는 경우 메시지 반환
+     * @author Yujin-nKim(김유진)
+     */
     @GetMapping("/categories")
     public ResponseEntity<BaseResponse<List<CategoryTreeResponse>>> getCategoryTreeByDepth(
             @Valid @RequestBody CategoryListRequest request) {

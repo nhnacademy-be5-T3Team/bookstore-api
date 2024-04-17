@@ -5,6 +5,11 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * 카테고리(categories) 엔티티
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

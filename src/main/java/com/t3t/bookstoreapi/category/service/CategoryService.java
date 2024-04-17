@@ -17,6 +17,14 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    /**
+     * 카테고리 목록을 카테고리 depth 범위로 조회
+     *
+     * @param startDepth 루트 카테고리로 지정할 depth
+     * @param maxDepth 최대 depth
+     * @return 카테고리 depth 범위에 해당하는 카테고리 목록 리스트
+     * @author Yujin-nKim(김유진)
+     */
     @Transactional(readOnly = true)
     public List<CategoryTreeResponse> getCategoryTreeByDepth(int startDepth, int maxDepth) {
 
