@@ -64,7 +64,13 @@ public class CategoryService {
         return rootCategoryList;
     }
 
-    // 트리 구조를 재귀적으로 구성함
+    /**
+     * 주어진 부모 카테고리에 대해 자식 카테고리를 재귀적으로 찾아 트리를 구성
+     *
+     * @param parentCategory 부모 카테고리
+     * @param childCategoryList 자식 카테고리 리스트
+     * @author Yujin-nKim(김유진)
+     */
     private void buildTree(CategoryTreeResponse parentCategory, List<CategoryTreeResponse> childCategoryList) {
         for (CategoryTreeResponse childCategory : childCategoryList) {
             // 노드가 부모-자식 관계인지 확인함 (depth와 부모 카테고리 id 비교)
