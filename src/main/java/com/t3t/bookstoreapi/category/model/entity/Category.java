@@ -21,6 +21,9 @@ public class Category {
     @Column(name = "category_name")
     private String categoryName;
 
+    @NotNull
+    private int depth;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
