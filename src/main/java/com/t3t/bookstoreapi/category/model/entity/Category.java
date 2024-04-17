@@ -27,7 +27,7 @@ public class Category {
     private String categoryName;
 
     @NotNull
-    private int depth;
+    private Integer depth;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
