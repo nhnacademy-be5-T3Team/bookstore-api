@@ -1,11 +1,10 @@
 package com.t3t.bookstoreapi.category.service;
 
-import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
-import com.t3t.bookstoreapi.category.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.category.model.entity.Category;
-import com.t3t.bookstoreapi.category.model.response.CategoryListResponse;
+import com.t3t.bookstoreapi.category.model.response.CategoryTreeResponse;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,57 +15,67 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+/**
+ * CategoryService 단위 테스트 <br>
+ * 1. 카테고리 목록 조회시 올바른 트리가 만들어지는지 테스트
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceUnitTest {
-
     @Mock
     private CategoryRepository categoryRepository;
 
     @InjectMocks
     private CategoryService categoryService;
 
+    @Order(1)
+    @DisplayName("카테고리 목록 조회 테스트")
     @Test
-    @DisplayName("카테고리 전체 목록 조회 서비스 테스트")
-    void testGetCategoriesHierarchy() {
+    public void getCategoryTreeByDepth_ReturnsCorrectTree() {
 
-        Category parentCategory = Category.builder()
-                .categoryId(1)
-                .parentCategoryId(null)
-                .categoryName("가정/요리/뷰티")
-                .build();
+        List<Category> dummyCategoryList = new ArrayList<>();
 
-        Category childCategory = Category.builder()
-                .categoryId(2)
-                .parentCategoryId(parentCategory.getCategoryId())
-                .categoryName("가계부")
-                .build();
+        // 1계층 카테고리 (최상위)
+        Category rootCategory1 = Category.builder().categoryId(1).categoryName("rootCategory1").depth(1).build();
+        Category rootCategory2 = Category.builder().categoryId(2).categoryName("rootCategory2").depth(1).build();
+        dummyCategoryList.add(rootCategory1);
+        dummyCategoryList.add(rootCategory2);
 
-        List<Category> categoryList = new ArrayList<>();
-        categoryList.add(parentCategory);
-        categoryList.add(childCategory);
+        for(int i = 0; i < 5; i++) {
+            // 2계층 카테고리
+            Category category = Category.builder()
+                    .categoryId(3 + i)
+                    .categoryName("childCategory" + i + "_under_rootCategory1")
+                    .parentCategory(rootCategory1).depth(2).build();
+            dummyCategoryList.add(category);
 
-        given(categoryRepository.findAll()).willReturn(categoryList);
+            // 3계층 카테고리
+            dummyCategoryList.add(Category.builder()
+                    .categoryId(8 + i)
+                    .categoryName("childCategory" + i + "_under_childCategory" + i)
+                    .parentCategory(category).depth(3).build());
+        }
 
-        List<CategoryListResponse> result = categoryService.getCategoriesHierarchy();
+        // 2계층 카테고리
+        for(int i = 0; i < 3; i++) {
+            dummyCategoryList.add(Category.builder()
+                    .categoryId(13 + i)
+                    .categoryName("childCategory" + i + "_under_rootCategory2")
+                    .parentCategory(rootCategory2).depth(2).build());
+        }
 
-        assertEquals(1, result.size());
-        CategoryListResponse response = result.get(0);
-        assertEquals(parentCategory.getCategoryId(), response.getParent().getId());
-        assertEquals(parentCategory.getCategoryName(), response.getParent().getName());
-        assertEquals(1, response.getChildCategoryList().size());
-        CategoryDto childDto = response.getChildCategoryList().get(0);
-        assertEquals(childCategory.getCategoryId(), childDto.getId());
-        assertEquals(childCategory.getCategoryName(), childDto.getName());
-    }
+        when(categoryRepository.findByDepthBetween(anyInt(), anyInt())).thenReturn(dummyCategoryList);
 
-    @Test
-    @DisplayName("카테고리가 존재하지 않을 때 CategoryNotFoundException이 발생하는지 확인 테스트")
-    void testGetCategoriesHierarchy_CategoryNotFound() {
-        when(categoryRepository.findAll()).thenReturn(new ArrayList<>());
-        assertThrows(CategoryNotFoundException.class, () -> categoryService.getCategoriesHierarchy());
+        List<CategoryTreeResponse> result = categoryService.getCategoryTreeByDepth(1, 3);
+
+        assertEquals(2, result.size());
+        assertEquals(5, result.get(0).getChildren().size());
+        assertEquals(3, result.get(1).getChildren().size());
+        assertEquals(1, result.get(0).getChildren().get(0).getChildren().size());
+        assertEquals(0, result.get(1).getChildren().get(0).getChildren().size());
     }
 }
