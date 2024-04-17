@@ -74,6 +74,7 @@ public class BookService {
         List<PackagingInfo> packagingInfoList = book.getBookPackage().isValue() ? extractPackagingInfoList() : null;
 
         return BookDetailResponse.builder()
+                .bookId(book.getBookId())
                 .name(book.getBookName())
                 .price(book.getBookPrice())
                 .discountRate(book.getBookDiscount())

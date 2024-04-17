@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.book.service;
 
-import com.t3t.bookstoreapi.book.controller.enums.TableStatus;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.model.entity.*;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;

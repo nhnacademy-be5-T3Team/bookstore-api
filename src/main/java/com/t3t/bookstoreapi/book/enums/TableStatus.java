@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.book.controller.enums;
+package com.t3t.bookstoreapi.book.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

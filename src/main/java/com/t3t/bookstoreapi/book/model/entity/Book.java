@@ -2,7 +2,7 @@ package com.t3t.bookstoreapi.book.model.entity;
 
 import javax.validation.constraints.NotNull;
 
-import com.t3t.bookstoreapi.book.controller.enums.TableStatus;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import lombok.*;

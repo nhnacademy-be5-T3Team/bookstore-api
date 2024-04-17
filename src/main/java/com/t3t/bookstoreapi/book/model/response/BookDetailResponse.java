@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Builder
 public class BookDetailResponse {
+    private Long bookId; // 도서 id
     private String name; // 도서 제목
     private BigDecimal price; // 정가
     private BigDecimal discountRate; // 할인율
