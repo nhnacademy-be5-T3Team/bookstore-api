@@ -44,3 +44,5 @@ t3t:
         keyId: "f008c1d3f87f4f88ae57bd03871eb10d"
       databaseServerPassword:
         keyId: "8a65684780224384a681c3e9035ca7d6"
+      tossWidgetSecretKey:
+        keyId: "23083fa9a5dc4775946875f891b35632"
