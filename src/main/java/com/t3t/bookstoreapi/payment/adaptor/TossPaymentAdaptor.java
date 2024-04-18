@@ -1,8 +1,8 @@
 package com.t3t.bookstoreapi.payment.adaptor;
 
 import com.t3t.bookstoreapi.payment.exception.TossPaymentApiRequestFailedException;
-import com.t3t.bookstoreapi.payment.model.entity.TossPayment;
 import com.t3t.bookstoreapi.payment.model.request.PaymentConfirmRequest;
+import com.t3t.bookstoreapi.payment.model.response.PaymentConfirmResponse;
 import com.t3t.bookstoreapi.property.TossPaymentProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +18,7 @@ import java.util.Base64;
 
 /**
  * Toss 결제 서비스 API 를 호출하고 응답을 처리하는 어댑터 클래스
+ *
  * @author woody35545(구건모)
  */
 @Slf4j
@@ -31,11 +32,12 @@ public class TossPaymentAdaptor implements PaymentAdaptor {
 
     /**
      * {@inheritDoc}
+     *
      * @see <a href="https://docs.tosspayments.com/reference#%EA%B2%B0%EC%A0%9C-%EC%8A%B9%EC%9D%B8">toss 결제 승인 api reference</a>
      * @author woody35545(구건모)
      */
     @Override
-    public TossPayment confirmPayment(PaymentConfirmRequest paymentConfirmRequest) {
+    public PaymentConfirmResponse confirmPayment(PaymentConfirmRequest paymentConfirmRequest) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -45,24 +47,24 @@ public class TossPaymentAdaptor implements PaymentAdaptor {
         HttpEntity<PaymentConfirmRequest> requestEntity = new HttpEntity<>(paymentConfirmRequest, headers);
 
         try {
-            ResponseEntity<TossPayment> responseEntity = restTemplate.exchange(
+            ResponseEntity<PaymentConfirmResponse> responseEntity = restTemplate.exchange(
                     "https://api.tosspayments.com/v1/payments/confirm",
-                    HttpMethod.POST, requestEntity, TossPayment.class);
+                    HttpMethod.POST, requestEntity, PaymentConfirmResponse.class);
 
-            HttpStatus statusCode = responseEntity.getStatusCode();
-            TossPayment tossPayment = responseEntity.getBody();
+            HttpStatus httpStatusCode = responseEntity.getStatusCode();
+            PaymentConfirmResponse providerConfirmResponse = responseEntity.getBody();
 
-            if (statusCode != HttpStatus.OK) {
-                throw new TossPaymentApiRequestFailedException("statusCode: " + statusCode.value());
+            if (!HttpStatus.OK.equals(httpStatusCode)) {
+                throw new TossPaymentApiRequestFailedException("statusCode: " + httpStatusCode.value());
             }
 
-            if (tossPayment == null) {
+            if (providerConfirmResponse == null) {
                 throw new TossPaymentApiRequestFailedException("응답 데이터가 없습니다.");
             }
 
-            return tossPayment;
+            return providerConfirmResponse;
 
-        } catch(HttpClientErrorException httpClientErrorException){
+        } catch (HttpClientErrorException httpClientErrorException) {
             try {
                 throw new TossPaymentApiRequestFailedException(
                         ((JSONObject) new JSONParser().parse(httpClientErrorException.getResponseBodyAsString())).get("message").toString());

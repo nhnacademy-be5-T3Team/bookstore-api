@@ -1,7 +1,7 @@
 package com.t3t.bookstoreapi.payment.adaptor;
 
-import com.t3t.bookstoreapi.payment.model.entity.Payment;
 import com.t3t.bookstoreapi.payment.model.request.PaymentConfirmRequest;
+import com.t3t.bookstoreapi.payment.model.response.PaymentConfirmResponse;
 import org.json.simple.parser.ParseException;
 
 /**
@@ -14,5 +14,5 @@ public interface PaymentAdaptor {
      * 결제 승인 API 를 호출하여 결제 제공자측에서 결제가 처리되도록 요청한다.
      * @author woody35545(구건모)
      */
-    Payment confirmPayment(PaymentConfirmRequest paymentRequestBody) throws ParseException;
+    PaymentConfirmResponse confirmPayment(PaymentConfirmRequest paymentRequestBody) throws ParseException;
 }
