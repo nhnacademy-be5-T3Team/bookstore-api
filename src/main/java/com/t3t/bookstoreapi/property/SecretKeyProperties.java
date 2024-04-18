@@ -23,4 +23,6 @@ public class SecretKeyProperties {
     private String databaseUsernameKeyId;
     @Value("${t3t.secretKeyManager.secrets.databaseServerPassword.keyId}")
     private String databasePasswordKeyId;
+    @Value("${t3t.secretKeyManager.secrets.tossWidgetSecretKey.keyId}")
+    private String tossWidgetSecretKeyKeyId;
 }
