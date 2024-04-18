@@ -42,7 +42,7 @@ public class GlobalAuthFilter implements Filter {
 
                 Map<String, String> header = new HashMap<>();
 
-                header.put("member", userId);
+                header.put("memberId", userId);
                 header.put("role", role);
 
                 RequestWrapper wrapper = new RequestWrapper(request,header);
