@@ -54,8 +54,7 @@ public class DeliveryController {
     @PostMapping("/deliveries")
     public ResponseEntity<BaseResponse<DeliveryDto>> createDelivery(@Valid @RequestBody DeliveryCreationRequest request) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<DeliveryDto>().data(
-                deliveryService.createDelivery(request.getPrice(), request.getAddressNumber(), request.getRoadnameAddress(), request.getDetailAddress(),
-                        request.getDeliveryDate(), request.getRecipientName(), request.getRecipientPhoneNumber())));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<DeliveryDto>()
+                .data(deliveryService.createDelivery(request)));
     }
 }
