@@ -5,7 +5,15 @@ package com.t3t.bookstoreapi.payment.exception;
  * @author woody35545(구건모)
  */
 public class TossPaymentApiRequestFailedException extends RuntimeException {
-    public TossPaymentApiRequestFailedException(String message) {
-        super(message);
+    private static final String DEFAULT_MESSAGE = "Toss API 호출에 실패하였습니다.";
+
+    public TossPaymentApiRequestFailedException() {
+        super(DEFAULT_MESSAGE);
     }
+
+    public TossPaymentApiRequestFailedException(String message) {
+        super(new StringBuilder().append(DEFAULT_MESSAGE).append(" - ").append(message).toString());
+    }
+
+
 }
