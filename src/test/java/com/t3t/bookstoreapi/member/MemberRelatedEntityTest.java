@@ -191,7 +191,7 @@ class MemberRelatedEntityTest {
                 .build());
 
         // when
-        Optional<MemberAddress> resultMemberAddress = memberAddressRepository.findById(memberAddress.getMemberAddressId());
+        Optional<MemberAddress> resultMemberAddress = memberAddressRepository.findById(memberAddress.getId());
 
         // then
         Assertions.assertTrue(resultMemberAddress.isPresent());
