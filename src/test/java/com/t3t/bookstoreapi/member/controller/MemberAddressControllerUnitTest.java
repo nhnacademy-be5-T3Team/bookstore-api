@@ -11,7 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -19,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberAddressController.class)
-@DisplayName("MemberController 단위 테스트")
+@DisplayName("MemberAddressController 단위 테스트")
 class MemberAddressControllerUnitTest {
 
     @MockBean
@@ -37,7 +36,7 @@ class MemberAddressControllerUnitTest {
     @DisplayName("회원 주소 조회 - 식별자로 조회")
     void getMemberAddressByIdTest() throws Exception {
         // given
-        MemberAddressDto testMemberAddressDto = MemberAddressDto.builder()
+        final MemberAddressDto testMemberAddressDto = MemberAddressDto.builder()
                 .id(1L)
                 .memberId(1L)
                 .addressNumber(12345)
@@ -54,12 +53,14 @@ class MemberAddressControllerUnitTest {
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.id", equalTo(testMemberAddressDto.getId().intValue())))
-                .andExpect(jsonPath("$.data.memberId", equalTo(testMemberAddressDto.getMemberId().intValue())))
-                .andExpect(jsonPath("$.data.addressNumber", equalTo(testMemberAddressDto.getAddressNumber())))
-                .andExpect(jsonPath("$.data.addressNickname", equalTo(testMemberAddressDto.getAddressNickname())))
-                .andExpect(jsonPath("$.data.roadNameAddress", equalTo(testMemberAddressDto.getRoadNameAddress())))
-                .andExpect(jsonPath("$.data.addressDetail", equalTo(testMemberAddressDto.getAddressDetail())));
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.data").isNotEmpty())
+                .andExpect(jsonPath("$.data.id").value(testMemberAddressDto.getId().intValue()))
+                .andExpect(jsonPath("$.data.memberId").value(testMemberAddressDto.getMemberId().intValue()))
+                .andExpect(jsonPath("$.data.addressNumber").value(testMemberAddressDto.getAddressNumber()))
+                .andExpect(jsonPath("$.data.addressNickname").value(testMemberAddressDto.getAddressNickname()))
+                .andExpect(jsonPath("$.data.roadNameAddress").value(testMemberAddressDto.getRoadNameAddress()))
+                .andExpect(jsonPath("$.data.addressDetail").value(testMemberAddressDto.getAddressDetail()));
     }
 
     /**
@@ -71,9 +72,9 @@ class MemberAddressControllerUnitTest {
      */
     @Test
     @DisplayName("회원 주소 조회 - 식별자로 조회(존재하지 않는 회원 주소)")
-    void getMemberAddressByIdTest_NotFound() throws Exception {
+    void getMemberAddressByIdTestWithNotExistsMemberId() throws Exception {
         // given
-        long testMemberAddressId = 1L;
+        final long testMemberAddressId = 1L;
 
         when(memberAddressService.getMemberAddressById(testMemberAddressId))
                 .thenThrow(new MemberNotFoundForIdException(testMemberAddressId));
