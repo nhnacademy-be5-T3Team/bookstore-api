@@ -39,4 +39,23 @@ public class MemberAddressRepositoryCustomImpl implements MemberAddressRepositor
                 .where(memberAddress.id.eq(memberAddressId))
                 .fetchOne());
     }
+
+    /**
+     * {@inheritDoc}
+     * @author woody35545(구건모)
+     */
+    @Override
+    public List<MemberAddressDto> getMemberAddressDtoListByMemberId(long memberId) {
+        return queryFactory.select(Projections.bean(
+                        MemberAddressDto.class,
+                        memberAddress.id,
+                        memberAddress.member.id.as("memberId"),
+                        memberAddress.address.addressNumber,
+                        memberAddress.address.roadNameAddress,
+                        memberAddress.addressDetail,
+                        memberAddress.addressNickname))
+                .from(memberAddress)
+                .where(memberAddress.member.id.eq(memberId))
+                .fetch();
+    }
 }

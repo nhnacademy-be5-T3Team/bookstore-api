@@ -19,4 +19,13 @@ public interface MemberAddressRepositoryCustom {
      * @author woody35545(구건모)
      */
     Optional<MemberAddressDto> getMemberAddressDtoById(long memberAddressId);
+
+    /**
+     * 회원 식별자로 등록된 모든 회원 주소 정보를 조회한다.<br>
+     *
+     * @param memberId 조회하려는 회원의 식별자
+     * @return 회원 주소에 관한 정보를 담은 DTO 리스트
+     * @author woody35545(구건모)
+     */
+    List<MemberAddressDto> getMemberAddressDtoListByMemberId(long memberId);
 }
