@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.book.repository;
+package com.t3t.bookstoreapi.book.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -6,6 +6,7 @@ import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
 import com.t3t.bookstoreapi.book.model.dto.TagDto;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
+import com.t3t.bookstoreapi.book.repository.BookRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -22,10 +23,17 @@ import static com.t3t.bookstoreapi.participant.model.entity.QParticipantRole.par
 import static com.t3t.bookstoreapi.tag.model.entity.QTag.tag;
 
 @RequiredArgsConstructor
-public class BookRepositoryCustomImpl implements BookRepositoryCustom{
+public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    /**
+     * 주어진 책의 ID를 사용하여 책의 상세 정보를 검색
+     *
+     * @param bookId 검색할 책의 ID
+     * @return 주어진 ID에 해당하는 책의 상세 정보를 담은 BookDetailResponse 객체
+     * @author Yujin-nKim(김유진)
+     */
     @Override
     public BookDetailResponse getBookDetailsById(Long bookId) {
 
@@ -58,6 +66,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom{
         return bookDetailResponse;
     }
 
+    /**
+     * 주어진 책의 ID를 사용하여 해당 책의 이미지 URL 리스트를 검색
+     *
+     * @param bookId 검색할 책의 ID
+     * @return 주어진 책의 이미지 URL 리스트
+     * @author Yujin-nKim(김유진)
+     */
     @Override
     public List<String> getBookImageDtoListById(Long bookId) {
         return jpaQueryFactory
@@ -67,6 +82,12 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom{
                 .fetch();
     }
 
+    /**
+     * 주어진 책의 ID를 사용하여 해당 책에 연결된 태그 DTO 리스트를 검색합니다.
+     *
+     * @param bookId 검색할 책의 ID
+     * @return 주어진 책에 연결된 태그 DTO 리스트
+     */
     @Override
     public List<TagDto> getBookTagDtoListById(Long bookId) {
         return jpaQueryFactory
@@ -79,6 +100,12 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom{
                 .fetch();
     }
 
+    /**
+     * 주어진 책의 ID를 사용하여 해당 책에 연결된 카테고리 DTO 리스트를 검색합니다.
+     *
+     * @param bookId 검색할 책의 ID
+     * @return 주어진 책에 연결된 카테고리 DTO 리스트
+     */
     @Override
     public List<CategoryDto> getBookCategoryDtoListById(Long bookId) {
         return jpaQueryFactory
@@ -91,6 +118,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom{
                 .fetch();
     }
 
+    /**
+     * 주어진 책의 ID를 사용하여 해당 책에 참여자 DTO 리스트를 검색합니다.
+     *
+     * @param bookId 검색할 책의 ID
+     * @return 주어진 책에 참여자 DTO 리스트
+     * @author Yujin-nKim(김유진)
+     */
     @Override
     public List<ParticipantRoleRegistrationDto> getBookParticipantDtoListById(Long bookId) {
         return jpaQueryFactory

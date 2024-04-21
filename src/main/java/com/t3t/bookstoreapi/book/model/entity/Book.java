@@ -11,6 +11,11 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * 도서(books) 엔티티
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

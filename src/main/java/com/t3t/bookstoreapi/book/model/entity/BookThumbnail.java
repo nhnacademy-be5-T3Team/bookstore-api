@@ -5,6 +5,11 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * 도서 썸네일(book_thumbnails) 엔티티
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

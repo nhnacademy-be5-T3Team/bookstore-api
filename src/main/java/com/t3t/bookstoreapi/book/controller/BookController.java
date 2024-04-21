@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
+    /**
+     * 도서 식별자로 도서 상세 조회
+     *
+     * @param bookId 조회할 도서의 id
+     * @return 200 OK, 도서의 상세 정보<br>
+     * @author Yujin-nKim(김유진)
+     */
     @GetMapping("/books/{bookId}")
     public ResponseEntity<BaseResponse<BookDetailResponse>> getBookDetailsById(@PathVariable Long bookId) {
         return ResponseEntity.status(HttpStatus.OK).body(

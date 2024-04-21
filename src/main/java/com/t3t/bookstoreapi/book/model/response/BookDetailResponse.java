@@ -11,6 +11,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * 책의 상세 정보를 담은 데이터 전송 객체(DTO)
+ * 책의 여러 속성과 연결된 정보를 포함하고 있으며, 추가적인 로직을 통해 일부 속성들을 설정
+ * @author Yujin-nKim(김유진)
+ */
 @Data
 @Builder
 @RequiredArgsConstructor
@@ -42,6 +47,7 @@ public class BookDetailResponse {
     private List<TagDto> tagList; // 연결된 태그 리스트
     private List<ParticipantRoleRegistrationDto> participantList; // 도서 참여자 리스트
 
+    // 정가, 할인율로 할인된 가격을 설정하는 메서드
     public void setDiscountedPrice() {
 
         BigDecimal discountPercentage = discountRate.divide(BigDecimal.valueOf(100));
@@ -50,10 +56,12 @@ public class BookDetailResponse {
         discountedPrice = price.subtract(discountAmount);
     }
 
+    // 재고 값을 통해 주문 가능 여부를 설정하는 메서드
     public void setBookStock() {
         orderAvailableStatus = stock > 0;
     }
 
+    // 포장 정보 리스트를 설정하는 메서드
     public void setPackaingInfoList(List<PackagingDto> packagingDtos) {
         this.packagingInfoList = packagingDtos;
     }
