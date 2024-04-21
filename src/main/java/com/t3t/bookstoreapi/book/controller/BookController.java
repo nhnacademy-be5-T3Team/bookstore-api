@@ -17,9 +17,9 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping("/books/{bookId}")
-    public ResponseEntity<BaseResponse<BookDetailResponse>> getBook(@PathVariable Long bookId) {
+    public ResponseEntity<BaseResponse<BookDetailResponse>> getBookDetailsById(@PathVariable Long bookId) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new BaseResponse<BookDetailResponse>().data(bookService.getBook(bookId))
+                new BaseResponse<BookDetailResponse>().data(bookService.getBookDetailsById(bookId))
         );
     }
 }
