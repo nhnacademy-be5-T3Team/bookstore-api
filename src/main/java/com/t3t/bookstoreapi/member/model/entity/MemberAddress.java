@@ -1,9 +1,6 @@
 package com.t3t.bookstoreapi.member.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
@@ -19,14 +16,14 @@ public class MemberAddress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_address_id")
     @Comment("회원 주소 식별자")
-    private Long memberAddressId;
+    private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     @Comment("대상 회원")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)
     @Comment("주소")
     private Address address;
