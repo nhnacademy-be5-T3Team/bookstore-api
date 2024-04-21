@@ -1,6 +1,6 @@
 package com.t3t.bookstoreapi.member.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
 import com.t3t.bookstoreapi.member.service.MemberAddressService;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(MemberAddressController.class)
 @DisplayName("MemberController 단위 테스트")
-public class MemberAddressControllerUnitTest {
+class MemberAddressControllerUnitTest {
 
     @MockBean
     private MemberAddressService memberAddressService;
@@ -59,5 +60,30 @@ public class MemberAddressControllerUnitTest {
                 .andExpect(jsonPath("$.data.addressNickname", equalTo(testMemberAddressDto.getAddressNickname())))
                 .andExpect(jsonPath("$.data.roadNameAddress", equalTo(testMemberAddressDto.getRoadNameAddress())))
                 .andExpect(jsonPath("$.data.addressDetail", equalTo(testMemberAddressDto.getAddressDetail())));
+    }
+
+    /**
+     * 회원 주소 조회 - 식별자로 조회 테스트<br>
+     * 존재하지 않는 회원 주소 식별자로 조회하는 경우, 404 NOT_FOUND 상태코드와 메시지를 반환하는지 테스트
+     * @see MemberAddressController#getMemberAddressById(long)
+     * @see MemberNotFoundForIdException
+     * @author woody35545(구건모)
+     */
+    @Test
+    @DisplayName("회원 주소 조회 - 식별자로 조회(존재하지 않는 회원 주소)")
+    void getMemberAddressByIdTest_NotFound() throws Exception {
+        // given
+        long testMemberAddressId = 1L;
+
+        when(memberAddressService.getMemberAddressById(testMemberAddressId))
+                .thenThrow(new MemberNotFoundForIdException(testMemberAddressId));
+
+        // when
+        mockMvc.perform(get("/member-addresses/{memberAddressId}", testMemberAddressId)
+                        .accept(MediaType.APPLICATION_JSON))
+                // then
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", notNullValue()))
+                .andExpect(jsonPath("$.data").doesNotExist());
     }
 }
