@@ -23,7 +23,7 @@ public class MemberAddressController {
      */
     @GetMapping("/member-addresses/{memberAddressId}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse<MemberAddressDto> getById(@PathVariable("memberAddressId") long memberAddressId) {
+    public BaseResponse<MemberAddressDto> getMemberAddressById(@PathVariable("memberAddressId") long memberAddressId) {
 
         return new BaseResponse<MemberAddressDto>()
                 .data(memberAddressService.getMemberAddressById(memberAddressId));
