@@ -4,6 +4,7 @@ import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsException;
 import com.t3t.bookstoreapi.member.exception.MemberAddressCountLimitExceededException;
+import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundException;
 import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
@@ -150,6 +151,16 @@ public class GlobalExceptionHandler {
                 .body(new BaseResponse<Void>().message(memberAddressCountLimitExceededException.getMessage()));
     }
 
+    /**
+     * 회원 주소가 존재하지 않는 경우에 대한 예외 처리 핸들러
+     * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundException
+     */
+    @ExceptionHandler(MemberAddressNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMemberAddressNotFoundException(MemberAddressNotFoundException memberAddressNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(memberAddressNotFoundException.getMessage()));
+    }
 
     /**
      * validation 실패 시 발생하는 MethodArgumentNotValidException 예외 처리 핸들러
