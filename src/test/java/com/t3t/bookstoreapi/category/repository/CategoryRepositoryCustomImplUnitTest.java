@@ -20,6 +20,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * CategoryRepositoryCustomImpl 단위 테스트 <br>
+ * 1. 요청 하위 카테고리의 하위 자식 카테고리를 모두 가져오는지 테스트
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({DataSourceConfig.class, DatabasePropertiesConfig.class,
@@ -32,23 +38,26 @@ class CategoryRepostioryUnitTest {
 
     @Test
     @DisplayName("특정 카테고리 밑의 하위 카테고리를 모두 반환하는지 테스트")
-    void test() {
+    void testGetChildCategoriesById() {
         Category rootCategory = categoryRepository.save(Category.builder()
                 .parentCategory(null)
                 .categoryId(1)
                 .categoryName("최상단 카테고리")
+                .depth(1)
                 .build());
 
         Category level1Category = categoryRepository.save(Category.builder()
                 .parentCategory(rootCategory)
                 .categoryId(2)
                 .categoryName("1계층 카테고리")
+                .depth(2)
                 .build());
 
         Category level2Category = categoryRepository.save(Category.builder()
                 .parentCategory(level1Category)
                 .categoryId(3)
                 .categoryName("2계층 카테고리")
+                .depth(3)
                 .build());
 
         List<Category> categoryList = categoryRepository.getChildCategoriesById(rootCategory.getCategoryId());
@@ -56,5 +65,4 @@ class CategoryRepostioryUnitTest {
         assertTrue(categoryList.contains(level1Category));
         assertTrue(categoryList.contains(level2Category));
     }
-
 }
