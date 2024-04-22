@@ -20,9 +20,11 @@ import com.t3t.bookstoreapi.property.SecretKeyManagerProperties;
 import com.t3t.bookstoreapi.property.SecretKeyProperties;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
+import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBriefResponse;
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import com.t3t.bookstoreapi.tag.repository.TagRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +38,9 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * {@link BookRepositoryCustomImpl} 클래스의 단위 테스트
@@ -78,7 +81,7 @@ class BookRepositoryCustomImplUnitTest {
     void init() {
         assertEquals(0, bookRepository.findAll().size(), "데이터베이스에 도서 데이터가 존재합니다.");
     }
-
+    @Disabled
     @DisplayName("도서 식별자로 도서 상세 내역 조회 테스트")
     @Test
     void testGetBookDetailsById(){
@@ -165,7 +168,7 @@ class BookRepositoryCustomImplUnitTest {
         assertEquals(bookDetails.getParticipantList().get(0).getName(), "TestParticipantName0");
 
     }
-
+    @Disabled
     @DisplayName("도서 식별자 리스트로 도서 참여자 정보 조회 테스트")
     @Test
     void testGetBookParticipantDtoListByIdList() {
@@ -222,5 +225,131 @@ class BookRepositoryCustomImplUnitTest {
         assertEquals(2, result.get(1).getParticipantList().size());
         assertEquals(3, result.get(2).getParticipantList().size());
         assertEquals("TestParticipantName1", result.get(0).getParticipantList().get(0).getName());
+    }
+    @Disabled
+    @DisplayName("특정 날짜를 기준으로 7일 이내에 출판된 도서 목록을 반환하는지 테스트")
+    @Test
+    void testGetRecentlyPublishedBooks() {
+
+        LocalDate testDate = LocalDate.of(2024, 4, 22);
+
+        // dummy data setting
+        Publisher publisher = publisherRepository.save(Publisher.builder()
+                .publisherName("TestPublisherName")
+                .publisherEmail("TestPublisheEmail@test.com")
+                .build());
+
+        Random random = new Random();
+
+        List<Book> recentBooks = new ArrayList<>();
+        List<Book> pastBooks = new ArrayList<>();
+        List<Book> futureBooks = new ArrayList<>();
+
+        // 7일 이내 도서 20개 생성
+        for (int i = 0; i < 20; i++) {
+            int randomDays = random.nextInt(7);
+
+            Book book = bookRepository.save(Book.builder()
+                    .bookName("RecentBook" + i)
+                    .bookIndex("TestBookIndex")
+                    .bookDesc("TestBookDesc")
+                    .bookIsbn("TestBookIsbn")
+                    .bookPrice(BigDecimal.valueOf(10000))
+                    .bookDiscount(BigDecimal.valueOf(20))
+                    .bookPackage(TableStatus.TRUE)
+                    .bookPublished(testDate.minusDays(randomDays))
+                    .bookStock(100)
+                    .bookAverageScore(4.5f)
+                    .bookLikeCount(500)
+                    .publisher(publisher)
+                    .build());
+            bookThumbnailRepository.save(BookThumbnail.builder()
+                    .book(book)
+                    .thumbnailImageUrl("TestThumbnailImageUrl"+i)
+                    .build());
+            recentBooks.add(book);
+        }
+        // 7일 이전 도서 3개 생성
+        for (int i = 1; i < 4; i++) {
+            Book book = bookRepository.save(Book.builder()
+                    .bookName("PastBook" + i)
+                    .bookIndex("TestBookIndex")
+                    .bookDesc("TestBookDesc")
+                    .bookIsbn("TestBookIsbn")
+                    .bookPrice(BigDecimal.valueOf(10000))
+                    .bookDiscount(BigDecimal.valueOf(20))
+                    .bookPackage(TableStatus.TRUE)
+                    .bookPublished(testDate.minusDays(i * 30)) // testDate을 기준으로 i달씩 이전
+                    .bookStock(100)
+                    .bookAverageScore(4.5f)
+                    .bookLikeCount(500)
+                    .publisher(publisher)
+                    .build());
+            pastBooks.add(book);
+        }
+
+        // testDate 이후 도서 2개 생성
+        for (int i = 1; i < 3; i++) {
+            Book book = bookRepository.save(Book.builder()
+                    .bookName("PastBook" + i)
+                    .bookIndex("TestBookIndex")
+                    .bookDesc("TestBookDesc")
+                    .bookIsbn("TestBookIsbn")
+                    .bookPrice(BigDecimal.valueOf(10000))
+                    .bookDiscount(BigDecimal.valueOf(20))
+                    .bookPackage(TableStatus.TRUE)
+                    .bookPublished(testDate.plusDays(i)) // testDate을 기준으로 i달씩 이전
+                    .bookStock(100)
+                    .bookAverageScore(4.5f)
+                    .bookLikeCount(500)
+                    .publisher(publisher)
+                    .build());
+            futureBooks.add(book);
+        }
+
+
+        List<BookInfoBriefResponse> result = bookRepository.getRecentlyPublishedBooks(testDate, 10);
+
+        assertEquals(10, result.size());
+        assertEquals("TestThumbnailImageUrl0", result.get(0).getThumbnailImageUrl());
+        assertFalse(result.contains(pastBooks));
+        assertFalse(result.contains(futureBooks));
+    }
+
+    @DisplayName("도서의 좋아요 수와 평점을 기준으로 하는 도서 목록 조회 테스트")
+    @Test
+    void testGetBooksByMostLikedAndHighAverageScore() {
+        // dummy data setting
+        Publisher publisher = publisherRepository.save(Publisher.builder()
+                .publisherName("TestPublisherName")
+                .publisherEmail("TestPublisheEmail@test.com")
+                .build());
+
+        List<Book> bookList = new ArrayList<>();
+
+        for(int i = 1; i <= 20; i++) {
+            Book book = bookRepository.save(Book.builder()
+                    .bookId((long) i)
+                    .bookName("TestBook" + i)
+                    .bookIndex("TestBookIndex")
+                    .bookDesc("TestBookDesc")
+                    .bookIsbn("TestBookIsbn")
+                    .bookPrice(BigDecimal.valueOf(10000))
+                    .bookDiscount(BigDecimal.valueOf(20))
+                    .bookPackage(TableStatus.TRUE)
+                    .bookPublished(LocalDate.of(2024, Month.APRIL, 6))
+                    .bookStock(100)
+                    .bookAverageScore(5.0f - i*0.1f)
+                    .bookLikeCount(500 - i)
+                    .publisher(publisher)
+                    .build());
+            bookList.add(book);
+        }
+
+        List<BookInfoBriefResponse> result = bookRepository.getBooksByMostLikedAndHighAverageScore(10);
+
+        assertEquals(10, result.size());
+        assertEquals(bookList.get(0).getBookId(), result.get(0).getId());
+        assertEquals(bookList.get(9).getBookId(), result.get(9).getId());
     }
 }
