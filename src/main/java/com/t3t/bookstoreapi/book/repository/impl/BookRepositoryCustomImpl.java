@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.book.repository.impl;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
@@ -9,8 +10,10 @@ import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookI
 import com.t3t.bookstoreapi.book.model.dto.TagDto;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.repository.BookRepositoryCustom;
+import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBriefResponse;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -194,5 +197,53 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                             .participantList(entry.getValue())
                             .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 최근에 출판된 최대 {@code maxCount}개의 도서 목록을 조회
+     *
+     * @param date      기준 날짜. 해당 날짜를 기준으로 7일 이내에 출판된 도서를 검색
+     * @param maxCount  가져올 도서 목록의 최대 개수
+     * @return 최대 {@code maxCount}개의 도서 정보로 구성된 리스트
+     * @author Yujin-nKim(김유진)
+     */
+    @Override
+    public List<BookInfoBriefResponse> getRecentlyPublishedBooks(LocalDate date, int maxCount) {
+
+        LocalDate sevenDaysAgo = date.minusDays(7);
+        BooleanExpression condition = book.bookPublished.between(sevenDaysAgo, date);
+
+        return jpaQueryFactory
+                .select(Projections.fields(BookInfoBriefResponse.class,
+                        book.bookId.as("id"),
+                        book.bookName.as("name"),
+                        bookThumbnail.thumbnailImageUrl.as("thumbnailImageUrl")))
+                .from(book)
+                .leftJoin(bookThumbnail).on(book.bookId.eq(bookThumbnail.book.bookId))
+                .where(condition)
+                .limit(maxCount)
+                .fetch();
+
+    }
+
+    /**
+     * 도서를 좋아요 수와 평점을 기준으로 정렬하여 최대 {@code maxCount}개의 도서 목록을 조회
+     *
+     * @param maxCount 가져올 도서 목록의 최대 개수
+     * @return 최대 {@code maxCount}개의 도서 정보로 구성된 리스트
+     * @author Yujin-nKim(김유진)
+     */
+    @Override
+    public List<BookInfoBriefResponse> getBooksByMostLikedAndHighAverageScore(int maxCount) {
+        return jpaQueryFactory
+                .select(Projections.fields(BookInfoBriefResponse.class,
+                        book.bookId.as("id"),
+                        book.bookName.as("name"),
+                        bookThumbnail.thumbnailImageUrl.as("thumbnailImageUrl")))
+                .from(book)
+                .leftJoin(bookThumbnail).on(book.bookId.eq(bookThumbnail.book.bookId))
+                .orderBy(book.bookLikeCount.desc(), book.bookAverageScore.desc())
+                .limit(maxCount)
+                .fetch();
     }
 }
