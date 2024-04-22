@@ -1,15 +1,21 @@
 package com.t3t.bookstoreapi.book.repository.impl;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
+import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookId;
 import com.t3t.bookstoreapi.book.model.dto.TagDto;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.repository.BookRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.model.entity.QBook.book;
 import static com.t3t.bookstoreapi.book.model.entity.QBookCategory.bookCategory;
@@ -83,7 +89,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     }
 
     /**
-     * 주어진 책의 ID를 사용하여 해당 책에 연결된 태그 DTO 리스트를 검색합니다.
+     * 주어진 책의 ID를 사용하여 해당 책에 연결된 태그 DTO 리스트를 검색
      *
      * @param bookId 검색할 책의 ID
      * @return 주어진 책에 연결된 태그 DTO 리스트
@@ -101,7 +107,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     }
 
     /**
-     * 주어진 책의 ID를 사용하여 해당 책에 연결된 카테고리 DTO 리스트를 검색합니다.
+     * 주어진 책의 ID를 사용하여 해당 책에 연결된 카테고리 DTO 리스트를 검색
      *
      * @param bookId 검색할 책의 ID
      * @return 주어진 책에 연결된 카테고리 DTO 리스트
@@ -119,7 +125,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     }
 
     /**
-     * 주어진 책의 ID를 사용하여 해당 책에 참여자 DTO 리스트를 검색합니다.
+     * 주어진 책의 ID를 사용하여 해당 책에 참여자 DTO 리스트를 검색
      *
      * @param bookId 검색할 책의 ID
      * @return 주어진 책에 참여자 DTO 리스트
@@ -139,5 +145,54 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                 .leftJoin(participantRoleRegistration.participantRole, participantRole)
                 .where(participantRoleRegistration.book.bookId.eq(bookId))
                 .fetch();
+    }
+
+    /**
+     * 제공된 도서 ID로 참여자 역할 등록 정보 목록을 가져옴 <br>
+     * 지정된 도서 ID에 대한 데이터베이스 쿼리를 수행하여 참여자 역할 등록 정보를 검색
+     * 각 도서 ID와 그에 연관된 참여자 역할 등록 정보 목록을 포함하는 ParticipantRoleRegistrationDtoByBookId 객체의 목록을 반환
+     *
+     * @param bookIdList 검색할 책의 ID
+     * @return ParticipantRoleRegistrationDtoByBookId 객체의 목록. 각 객체는 해당 도서 ID와 그에 연관된
+     * 참여자 역할 등록 정보 목록을 가지고 있음
+     * @author Yujin-nKim(김유진)
+     *
+     */
+    @Override
+    public List<ParticipantRoleRegistrationDtoByBookId> getBookParticipantDtoListByIdList(List<Long> bookIdList) {
+        return jpaQueryFactory
+                .select(
+                        participantRoleRegistration.book.bookId,
+                        Projections.fields(
+                                ParticipantRoleRegistrationDto.class,
+                                participant.participantName.as("name"),
+                                participantRole.participantRoleNameKr.as("role")
+                        )
+                )
+                .from(participantRoleRegistration)
+                .leftJoin(participantRoleRegistration.participant, participant)
+                .leftJoin(participantRoleRegistration.participantRole, participantRole)
+                .where(participantRoleRegistration.book.bookId.in(bookIdList))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> tuple.get(participantRoleRegistration.book.bookId), // bookId를 기준으로 그룹핑
+                        LinkedHashMap::new, // LinkedHashMap에 그룹핑 결과를 유지
+                        Collectors.mapping( // 그룹화된 각 요소에 대해 맵핑 작업을 수행
+                                tuple -> tuple.get(Projections.fields( // 각 요소에 대해 ParticipantRoleRegistrationDto 객체를 생성해 리스트로 반환
+                                        ParticipantRoleRegistrationDto.class,
+                                        participant.participantName.as("name"),
+                                        participantRole.participantRoleNameKr.as("role")
+                                )),
+                                Collectors.toList()
+                        )
+                ))
+                .entrySet()
+                .stream()
+                .map(entry -> ParticipantRoleRegistrationDtoByBookId.builder()
+                            .bookId(entry.getKey())
+                            .participantList(entry.getValue())
+                            .build())
+                .collect(Collectors.toList());
     }
 }

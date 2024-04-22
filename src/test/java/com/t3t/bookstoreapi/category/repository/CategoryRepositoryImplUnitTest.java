@@ -1,20 +1,31 @@
 package com.t3t.bookstoreapi.category.repository;
 
 import com.t3t.bookstoreapi.category.model.entity.Category;
+import com.t3t.bookstoreapi.config.DataSourceConfig;
+import com.t3t.bookstoreapi.config.DatabasePropertiesConfig;
+import com.t3t.bookstoreapi.config.QueryDslConfig;
+import com.t3t.bookstoreapi.config.RestTemplateConfig;
+import com.t3t.bookstoreapi.keymanager.service.SecretKeyManagerService;
+import com.t3t.bookstoreapi.property.SecretKeyManagerProperties;
+import com.t3t.bookstoreapi.property.SecretKeyProperties;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@Transactional
-@ActiveProfiles("prod")
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({DataSourceConfig.class, DatabasePropertiesConfig.class,
+        QueryDslConfig.class, RestTemplateConfig.class,
+        SecretKeyManagerService.class, SecretKeyManagerProperties.class, SecretKeyProperties.class})
+@ActiveProfiles("test")
 class CategoryRepostioryUnitTest {
     @Autowired
     private CategoryRepository categoryRepository;
@@ -23,19 +34,19 @@ class CategoryRepostioryUnitTest {
     @DisplayName("특정 카테고리 밑의 하위 카테고리를 모두 반환하는지 테스트")
     void test() {
         Category rootCategory = categoryRepository.save(Category.builder()
-                .parentCategoryId(null)
+                .parentCategory(null)
                 .categoryId(1)
                 .categoryName("최상단 카테고리")
                 .build());
 
         Category level1Category = categoryRepository.save(Category.builder()
-                .parentCategoryId(1)
+                .parentCategory(rootCategory)
                 .categoryId(2)
                 .categoryName("1계층 카테고리")
                 .build());
 
         Category level2Category = categoryRepository.save(Category.builder()
-                .parentCategoryId(2)
+                .parentCategory(level1Category)
                 .categoryId(3)
                 .categoryName("2계층 카테고리")
                 .build());
@@ -45,4 +56,5 @@ class CategoryRepostioryUnitTest {
         assertTrue(categoryList.contains(level1Category));
         assertTrue(categoryList.contains(level2Category));
     }
+
 }

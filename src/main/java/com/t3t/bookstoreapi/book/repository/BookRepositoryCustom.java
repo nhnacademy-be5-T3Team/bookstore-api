@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.book.repository;
 
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
+import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookId;
 import com.t3t.bookstoreapi.book.model.dto.TagDto;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 
@@ -53,4 +54,13 @@ public interface BookRepositoryCustom {
      * @author Yujin-nKim(김유진)
      */
     List<ParticipantRoleRegistrationDto> getBookParticipantDtoListById(Long bookId);
+
+    /**
+     * 도서 참여자 정보 조회
+     *
+     * @param bookIdList 조회할 도서의 id 리스트
+     * @return 도서의 참여자 정보
+     * @author Yujin-nKim(김유진)
+     */
+    List<ParticipantRoleRegistrationDtoByBookId> getBookParticipantDtoListByIdList(List<Long> bookIdList);
 }
