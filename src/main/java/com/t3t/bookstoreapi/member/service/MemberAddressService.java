@@ -3,6 +3,11 @@ package com.t3t.bookstoreapi.member.service;
 import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundForIdException;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
+import com.t3t.bookstoreapi.member.model.entity.Address;
+import com.t3t.bookstoreapi.member.model.entity.Member;
+import com.t3t.bookstoreapi.member.model.entity.MemberAddress;
+import com.t3t.bookstoreapi.member.model.request.MemberAddressCreationRequest;
+import com.t3t.bookstoreapi.member.repository.AddressRepository;
 import com.t3t.bookstoreapi.member.repository.MemberAddressRepository;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MemberAddressService {
 
     private final MemberAddressRepository memberAddressRepository;
     private final MemberRepository memberRepository;
+    private final AddressRepository addressRepository;
 
     /**
      * 회원 주소 식별자로 특정 회원 주소 정보를 조회한다.
@@ -44,5 +51,31 @@ public class MemberAddressService {
         }
 
         return memberAddressRepository.getMemberAddressDtoListByMemberId(memberId);
+    }
+
+    /**
+     * 회원 주소를 생성한다.
+     *
+     * @param request 회원 주소 생성 요청 정보
+     * @author woody35545(구건모)
+     */
+    public MemberAddressDto createMemberAddress(MemberAddressCreationRequest request) {
+        Member member = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new MemberNotFoundForIdException(request.getMemberId()));
+
+        Address address = addressRepository.findByRoadNameAddressAndAddressNumber(request.getRoadNameAddress(), request.getAddressNumber())
+                .orElseGet(() -> addressRepository.save(Address.builder()
+                        .roadNameAddress(request.getRoadNameAddress())
+                        .addressNumber(request.getAddressNumber())
+                        .build()));
+
+        MemberAddress memberAddress = memberAddressRepository.save(MemberAddress.builder()
+                .address(address)
+                .member(member)
+                .addressNickname(request.getAddressNickname())
+                .addressDetail(request.getAddressDetail())
+                .build());
+
+        return MemberAddressDto.of(memberAddress);
     }
 }
