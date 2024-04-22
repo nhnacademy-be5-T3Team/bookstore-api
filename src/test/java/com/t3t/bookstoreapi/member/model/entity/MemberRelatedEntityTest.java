@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.member;
+package com.t3t.bookstoreapi.member.model.entity;
 
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
@@ -191,7 +191,7 @@ class MemberRelatedEntityTest {
                 .build());
 
         // when
-        Optional<MemberAddress> resultMemberAddress = memberAddressRepository.findById(memberAddress.getMemberAddressId());
+        Optional<MemberAddress> resultMemberAddress = memberAddressRepository.findById(memberAddress.getId());
 
         // then
         Assertions.assertTrue(resultMemberAddress.isPresent());
