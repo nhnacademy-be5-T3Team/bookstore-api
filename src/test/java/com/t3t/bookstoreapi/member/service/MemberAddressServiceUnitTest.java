@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.member.service;
 
+import com.t3t.bookstoreapi.member.exception.MemberAddressCountLimitExceededException;
 import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundForIdException;
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
 import com.t3t.bookstoreapi.member.model.entity.Address;
@@ -185,6 +186,8 @@ class MemberAddressServiceUnitTest {
             when(memberRepository.findById(any(Long.class)))
                     .thenReturn(Optional.of(testMember));
 
+            when(memberAddressRepository.countByMemberId(testMember.getId())).thenReturn(0);
+
             when(addressRepository.findByRoadNameAddressAndAddressNumber(any(String.class), any(Integer.class)))
                     .thenReturn(Optional.of(testAddress));
 
@@ -196,6 +199,36 @@ class MemberAddressServiceUnitTest {
 
             // then
             assertEquals(MemberAddressDto.of(testMemberAddress), resultMemberAddressDto);
+        }
+
+        @Test
+        @DisplayName("회원 주소 생성 - 회원 주소 등록 제한 초과")
+        void createMemberAddressTestWithExceedLimit() {
+            // given
+            final int maxMemberAddressCount = 10;
+
+            final long testMemberId = 1L;
+
+            final MemberAddressCreationRequest testMemberAddressCreationRequest = MemberAddressCreationRequest.builder()
+                    .memberId(testMemberId)
+                    .addressNumber(12345)
+                    .addressNickname("testAddressNickname")
+                    .roadNameAddress("testRoadNameAddress")
+                    .addressDetail("testAddressDetail")
+                    .build();
+
+            final Member testMember = Member.builder()
+                    .id(testMemberId)
+                    .build();
+
+            when(memberRepository.findById(any(Long.class)))
+                    .thenReturn(Optional.of(testMember));
+
+            when(memberAddressRepository.countByMemberId(testMember.getId())).thenReturn(maxMemberAddressCount);
+
+            // when & then
+            assertThrows(MemberAddressCountLimitExceededException.class,
+                    () -> memberAddressService.createMemberAddress(testMemberAddressCreationRequest));
         }
     }
 }
