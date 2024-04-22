@@ -1,7 +1,7 @@
 package com.t3t.bookstoreapi.book.repository;
 
-import com.netflix.discovery.converters.Auto;
 import com.t3t.bookstoreapi.book.enums.TableStatus;
+import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookId;
 import com.t3t.bookstoreapi.book.model.entity.*;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.category.model.entity.Category;
@@ -33,9 +33,18 @@ import org.springframework.test.context.ActiveProfiles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * BookRepositoryCustomImpl 단위 테스트 <br>
+ * 1. 단일 도서 식별자로 도서 상세 내역 조회 테스트 <br>
+ * 2. 도서 식별자 리스트로 도서 참여자 정보 조회 테스트
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({DataSourceConfig.class, DatabasePropertiesConfig.class,
@@ -68,7 +77,7 @@ class BookRepositoryCustomImplUnitTest {
 
     @BeforeEach
     void init() {
-        assertEquals(0, bookRepository.findAll().size(), "데이터베이스에 카테고리 데이터가 존재합니다.");
+        assertEquals(0, bookRepository.findAll().size(), "데이터베이스에 도서 데이터가 존재합니다.");
     }
 
     @DisplayName("도서 식별자로 도서 상세 내역 조회 테스트")
@@ -156,5 +165,63 @@ class BookRepositoryCustomImplUnitTest {
         assertEquals(bookDetails.getParticipantList().size(), 3);
         assertEquals(bookDetails.getParticipantList().get(0).getName(), "TestParticipantName0");
 
+    }
+
+    @DisplayName("도서 식별자 리스트로 도서 참여자 정보 조회 테스트")
+    @Test
+    void testGetBookParticipantDtoListByIdList() {
+
+        // dummy data setting
+        List<Long> dummybookIdList = new ArrayList<>();
+
+        for(int i = 1; i < 4; i++) {
+            Publisher publisher = publisherRepository.save(Publisher.builder()
+                    .publisherName("TestPublisherName" + i)
+                    .publisherEmail("TestPublisheEmail@test.com")
+                    .build());
+
+            Book book = bookRepository.save(Book.builder()
+                    .bookName("TestBookName" + i)
+                    .bookIndex("TestBookIndex")
+                    .bookDesc("TestBookDesc")
+                    .bookIsbn("TestBookIsbn")
+                    .bookPrice(BigDecimal.valueOf(10000))
+                    .bookDiscount(BigDecimal.valueOf(20))
+                    .bookPackage(TableStatus.TRUE)
+                    .bookPublished(LocalDate.of(2024, Month.APRIL, 6))
+                    .bookStock(100)
+                    .bookAverageScore(4.5f)
+                    .bookLikeCount(500)
+                    .publisher(publisher)
+                    .build());
+
+            dummybookIdList.add(book.getBookId());
+
+            for(int j = 0; j < i; j++) {
+                Participant participant = participantRepository.save(Participant.builder()
+                        .participantName("TestParticipantName" + i)
+                        .participantEmail("TestParticipantEmail@test.com" + i)
+                        .build());
+
+                ParticipantRole participantRole = roleRepository.save(ParticipantRole.builder()
+                        .participantRoleNameKr("participantRoleNameKr"+i)
+                        .participantRoleNameEn("participantRoleNameEn"+i)
+                        .build());
+
+                registrationRepository.save(ParticipantRoleRegistration.builder()
+                        .book(book)
+                        .participant(participant)
+                        .participantRole(participantRole)
+                        .build());
+            }
+        }
+
+        List<ParticipantRoleRegistrationDtoByBookId> result =  bookRepository.getBookParticipantDtoListByIdList(dummybookIdList);
+
+        assertEquals(dummybookIdList.size(), result.size());
+        assertEquals(1, result.get(0).getParticipantList().size());
+        assertEquals(2, result.get(1).getParticipantList().size());
+        assertEquals(3, result.get(2).getParticipantList().size());
+        assertEquals("TestParticipantName1", result.get(0).getParticipantList().get(0).getName());
     }
 }
