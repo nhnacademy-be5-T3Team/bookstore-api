@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.member.service;
 
+import com.t3t.bookstoreapi.member.exception.MemberAddressCountLimitExceededException;
 import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundForIdException;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
@@ -11,6 +12,7 @@ import com.t3t.bookstoreapi.member.repository.AddressRepository;
 import com.t3t.bookstoreapi.member.repository.MemberAddressRepository;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.junit.Test;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ public class MemberAddressService {
     private final MemberAddressRepository memberAddressRepository;
     private final MemberRepository memberRepository;
     private final AddressRepository addressRepository;
+    private static final int MAX_MEMBER_ADDRESS_COUNT = 10;
 
     /**
      * 회원 주소 식별자로 특정 회원 주소 정보를 조회한다.
@@ -60,8 +63,13 @@ public class MemberAddressService {
      * @author woody35545(구건모)
      */
     public MemberAddressDto createMemberAddress(MemberAddressCreationRequest request) {
+
         Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new MemberNotFoundForIdException(request.getMemberId()));
+
+        if(memberAddressRepository.countByMemberId(member.getId()) >= MAX_MEMBER_ADDRESS_COUNT) {
+            throw new MemberAddressCountLimitExceededException();
+        }
 
         Address address = addressRepository.findByRoadNameAddressAndAddressNumber(request.getRoadNameAddress(), request.getAddressNumber())
                 .orElseGet(() -> addressRepository.save(Address.builder()
