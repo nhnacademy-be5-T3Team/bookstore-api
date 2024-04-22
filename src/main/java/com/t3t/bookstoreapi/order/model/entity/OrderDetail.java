@@ -33,7 +33,7 @@ public class OrderDetail {
     private Book book;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pacakge_id", nullable = false)
+    @JoinColumn(name = "package_id", nullable = false)
     @Comment("주문 상세 항목에 사용된 포장지")
     private Packaging packaging;
 
