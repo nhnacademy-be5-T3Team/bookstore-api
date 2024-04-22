@@ -21,8 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * CategoryRepositoryCustomImpl 단위 테스트 <br>
- * 1. 요청 하위 카테고리의 하위 자식 카테고리를 모두 가져오는지 테스트
+ * {@link CategoryRepositoryCustomImpl} 클래스의 단위 테스트
  *
  * @author Yujin-nKim(김유진)
  */
@@ -32,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         QueryDslConfig.class, RestTemplateConfig.class,
         SecretKeyManagerService.class, SecretKeyManagerProperties.class, SecretKeyProperties.class})
 @ActiveProfiles("test")
-class CategoryRepostioryUnitTest {
+class CategoryRepositoryCustomImplUnitTest {
     @Autowired
     private CategoryRepository categoryRepository;
 

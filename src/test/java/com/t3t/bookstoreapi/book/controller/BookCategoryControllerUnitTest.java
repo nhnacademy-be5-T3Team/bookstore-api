@@ -1,6 +1,5 @@
 package com.t3t.bookstoreapi.book.controller;
 
-import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.service.BookCategoryService;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
@@ -24,6 +23,11 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+/**
+ * {@link BookCategoryController} 클래스의 단위 테스트
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = BookCategoryController.class)
 @ActiveProfiles("test")
@@ -57,7 +61,7 @@ class BookCategoryControllerUnitTest {
 
     @DisplayName("존재하지 않는 카테고리 식별자로 도서 목록 조회시 예외 발생 테스트")
     @Test
-    public void getBookDetailsById_thenReturns404() throws Exception {
+    void getBookDetailsById_thenReturns404() throws Exception {
 
         Integer invalidCategoryId = -1;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("bookId").descending());

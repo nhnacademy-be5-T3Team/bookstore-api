@@ -20,6 +20,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * {@link BookController} 클래스의 단위 테스트
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = BookController.class)
 @ActiveProfiles("test")
@@ -46,7 +51,7 @@ class BookControllerUnitTest {
 
     @DisplayName("존재하지 않는 도서 식별자로 도서 상세 조회 테스트")
     @Test
-    public void getBookDetailsById_thenReturns404() throws Exception {
+    void getBookDetailsById_thenReturns404() throws Exception {
 
         Long invalidBookId = -1L;
         given(bookService.getBookDetailsById(invalidBookId)).willThrow(new BookNotFoundForIdException(any()));

@@ -4,6 +4,7 @@ import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookId;
 import com.t3t.bookstoreapi.book.model.entity.*;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
+import com.t3t.bookstoreapi.book.repository.impl.BookRepositoryCustomImpl;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
 import com.t3t.bookstoreapi.config.DataSourceConfig;
@@ -39,9 +40,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * BookRepositoryCustomImpl 단위 테스트 <br>
- * 1. 단일 도서 식별자로 도서 상세 내역 조회 테스트 <br>
- * 2. 도서 식별자 리스트로 도서 참여자 정보 조회 테스트
+ * {@link BookRepositoryCustomImpl} 클래스의 단위 테스트
  *
  * @author Yujin-nKim(김유진)
  */

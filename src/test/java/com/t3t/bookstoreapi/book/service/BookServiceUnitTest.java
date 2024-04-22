@@ -26,6 +26,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * {@link BookService} 클래스의 단위 테스트
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @ExtendWith(MockitoExtension.class)
 class BookServiceUnitTest {
     @Mock
@@ -86,7 +91,7 @@ class BookServiceUnitTest {
 
         assertEquals(3, bookDetailResponse.getBookImageUrlList().size());
         assertEquals(BigDecimal.valueOf(8000.0), bookDetailResponse.getDiscountedPrice());
-        assertEquals(true, bookDetailResponse.isOrderAvailableStatus());
+        assertTrue(bookDetailResponse.isOrderAvailableStatus());
         assertEquals(3, bookDetailResponse.getPackagingInfoList().size());
 
     }

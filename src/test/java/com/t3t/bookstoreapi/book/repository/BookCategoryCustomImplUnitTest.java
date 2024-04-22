@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.book.repository;
 
+import com.t3t.bookstoreapi.book.repository.impl.BookCategoryCustomImpl;
 import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.entity.BookCategory;
@@ -36,8 +37,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * BookCategoryCustomImpl 단위 테스트 <br>
- * 1. 카테고리 리스트에 해당하는 도서를 반환하는지 테스트 <br>
+ * {@link BookCategoryCustomImpl} 클래스의 단위 테스트
  *
  * @author Yujin-nKim(김유진)
  */

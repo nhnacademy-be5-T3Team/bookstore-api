@@ -25,6 +25,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * {@link BookCategoryService} 클래스의 단위 테스트
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @ExtendWith(MockitoExtension.class)
 class BookCategoryServiceUnitTest {
     @Mock

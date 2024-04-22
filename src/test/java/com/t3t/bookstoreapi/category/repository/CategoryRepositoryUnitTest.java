@@ -22,8 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * CategoryRepository 단위 테스트 <br>
- * 1. Depth 범위로 카테고리 조회 시 값을 정상적으로 가져오는지 테스트
+ * {@link CategoryRepository} 클래스의 단위 테스트
  *
  * @author Yujin-nKim(김유진)
  */
