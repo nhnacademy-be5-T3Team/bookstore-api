@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderDetailService {
@@ -14,7 +16,8 @@ public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
 
     /**
-     * 주문 상세 정보 조회
+     * 주문 상세 DTO 조회
+     *
      * @param orderDetailId 조회하려는 주문 상세 식별자
      * @author woody35545(구건모)
      */
@@ -22,5 +25,13 @@ public class OrderDetailService {
     public OrderDetailDto getOrderDetailDtoById(long orderDetailId) {
         return orderDetailRepository.getOrderDetailDtoById(orderDetailId)
                 .orElseThrow(() -> new OrderDetailNotFoundForIdException(orderDetailId));
+    }
+
+    /**
+     * 주문에 대한 주문 상세 DTO 리스트 조회
+     */
+    @Transactional(readOnly = true)
+    public List<OrderDetailDto> getOrderDetailDtoListByOrderId(long orderId) {
+        return orderDetailRepository.getOrderDetailDtoListByOrderId(orderId);
     }
 }
