@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -184,5 +185,66 @@ public class OrderDetailRepositoryTest {
         assertEquals(testOrderDetail.getPackaging().getPrice(), optOrderDetailDto.get().getPackagingPrice());
         assertEquals(testOrderDetail.getOrderStatus().getName(), optOrderDetailDto.get().getOrderStatusName());
 
+    }
+
+
+    /**
+     * 주문 식별자로 주문 상세 조회 DTO 리스트 조회
+     *
+     * @author woody35545(구건모)
+     * @see OrderDetailRepositoryCustom#getOrderDetailDtoListByOrderId(long)
+     */
+    @Test
+    @DisplayName("주문 식별자로 주문 상세 DTO 리스트 조회")
+    void getOrderDetailDtoListByOrderIdTest() {
+        // given
+        final List<OrderDetail> testOrderDetailList =
+                List.of(
+                        orderDetailRepository.save(
+                                OrderDetail.builder()
+                                        .book(testBook)
+                                        .packaging(testPackaging)
+                                        .order(testOrder)
+                                        .orderStatus(testOrderStatus)
+                                        .createdAt(LocalDateTime.now().withNano(0))
+                                        .quantity(1L)
+                                        .build()
+                        ),
+                        orderDetailRepository.save(
+                                OrderDetail.builder()
+                                        .book(testBook)
+                                        .packaging(testPackaging)
+                                        .order(testOrder)
+                                        .orderStatus(testOrderStatus)
+                                        .createdAt(LocalDateTime.now().withNano(0))
+                                        .quantity(2L)
+                                        .build()
+                        )
+                );
+
+
+        // when
+        final List<OrderDetailDto> orderDetailDtoList = orderDetailRepository.getOrderDetailDtoListByOrderId(testOrder.getId());
+
+        orderDetailDtoList.sort((o1, o2) -> (int) (o1.getId() - o2.getId()));
+
+
+        // then
+        assertEquals(testOrderDetailList.size(), orderDetailDtoList.size());
+        for (int i = 0; i < testOrderDetailList.size(); i++) {
+            log.info("OrderDetailDto => {}", orderDetailDtoList.get(i));
+            assertEquals(testOrderDetailList.get(i).getId(), orderDetailDtoList.get(i).getId());
+            assertEquals(testOrderDetailList.get(i).getQuantity(), orderDetailDtoList.get(i).getQuantity());
+            assertEquals(testOrderDetailList.get(i).getCreatedAt(), orderDetailDtoList.get(i).getCreatedAt());
+            assertEquals(testOrderDetailList.get(i).getOrder().getId(), orderDetailDtoList.get(i).getOrderId());
+            assertEquals(testOrderDetailList.get(i).getBook().getBookId(), orderDetailDtoList.get(i).getBookId());
+            assertEquals(testOrderDetailList.get(i).getBook().getBookName(), orderDetailDtoList.get(i).getBookName());
+            assertEquals(testOrderDetailList.get(i).getBook().getPublisher().getPublisherName(), orderDetailDtoList.get(i).getBookPublisherName());
+            assertEquals(testOrderDetailList.get(i).getBook().getBookPrice(), orderDetailDtoList.get(i).getBookPrice());
+            assertEquals(testOrderDetailList.get(i).getBook().getBookDiscount(), orderDetailDtoList.get(i).getBookDiscount());
+            assertEquals(testOrderDetailList.get(i).getPackaging().getName(), orderDetailDtoList.get(i).getPackagingName());
+            assertEquals(testOrderDetailList.get(i).getPackaging().getPrice(), orderDetailDtoList.get(i).getPackagingPrice());
+            assertEquals(testOrderDetailList.get(i).getOrderStatus().getName(), orderDetailDtoList.get(i).getOrderStatusName());
+        }
     }
 }
