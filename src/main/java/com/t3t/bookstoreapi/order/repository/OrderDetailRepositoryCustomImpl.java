@@ -24,14 +24,16 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
                 .select(Projections.fields(BookInfoBriefResponse.class,
                         book.bookId.as("id"),
                         book.bookName.as("name"),
-                        bookThumbnail.thumbnailImageUrl.as("thumbnailImageUrl")))
+                        bookThumbnail.thumbnailImageUrl.as("thumbnailImageUrl")
+                ))
                 .from(orderDetail)
                 .join(orderDetail.orderStatus, orderStatus)
-                .leftJoin(orderDetail.book).fetchJoin()
-                .leftJoin(bookThumbnail).on(book.bookId.eq(bookThumbnail.book.bookId))
+                .leftJoin(orderDetail.book, book)
+                .leftJoin(bookThumbnail).on(bookThumbnail.book.bookId.eq(book.bookId))
                 .where(orderStatus.name.in("PENDING", "DELIVERING", "DELIVERED"))
-                .groupBy(orderDetail.book.bookId)
+                .groupBy(book.bookId, bookThumbnail.thumbnailImageUrl)
                 .orderBy(orderDetail.quantity.sum().desc())
+                .limit(maxCount)
                 .fetch();
     }
 }
