@@ -19,8 +19,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 /**
- * CategoryService 단위 테스트 <br>
- * 1. 카테고리 목록 조회시 올바른 트리가 만들어지는지 테스트
+ * {@link CategoryService} 클래스의 단위 테스트
  *
  * @author Yujin-nKim(김유진)
  */

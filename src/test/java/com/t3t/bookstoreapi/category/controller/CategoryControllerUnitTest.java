@@ -29,13 +29,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 /**
- * CategoryController 단위 테스트 <br>
- * 1. 카테고리 목록 조회시 정상상황에서 200 Ok 반환하고 데이터가 담겨오는지 테스트 <br>
- * 2. 카테고리 목록 조회시 데이터가 없는 경우 204 No Content 반환하는지 테스트 <br>
- * 3. 카테고리 목록 조회 요청시 request validation에 대해 테스트 <br>
- *      3-1. request 변수 중 null이 존재하는 경우 <br>
- *      3-2. request 변수 중 1 미만의 값이 존재하는 경우 <br>
- *      3-3. maxDepth보다 startDepth가 큰 경우 <br>
+ * {@link CategoryController} 클래스의 단위 테스트
  *
  * @author Yujin-nKim(김유진)
  */

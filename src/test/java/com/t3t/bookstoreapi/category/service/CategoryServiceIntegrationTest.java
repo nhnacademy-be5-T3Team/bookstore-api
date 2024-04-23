@@ -18,9 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * CategoryService 통합 테스트 <br>
- * 1. 카테고리 목록 조회시 루트 노드들이 같은 depth에 있는 경우 올바른 트리가 만들어지는지 테스트
- * 2. 카테고리 목록 조회시 루트 노드들이 다른 depth에 있는 경우 올바른 트리가 만들어지는지 테스트
+ * {@link CategoryService} 클래스의 통합 테스트
  *
  * @author Yujin-nKim(김유진)
  */
