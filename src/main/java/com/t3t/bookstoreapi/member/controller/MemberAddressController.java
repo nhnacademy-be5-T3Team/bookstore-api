@@ -1,14 +1,14 @@
 package com.t3t.bookstoreapi.member.controller;
 
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
+import com.t3t.bookstoreapi.member.model.request.MemberAddressCreationRequest;
 import com.t3t.bookstoreapi.member.service.MemberAddressService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,5 +27,18 @@ public class MemberAddressController {
 
         return new BaseResponse<MemberAddressDto>()
                 .data(memberAddressService.getMemberAddressById(memberAddressId));
+    }
+
+    /**
+     * 회원 주소를 생성하는 API
+     *
+     * @author woody35545(구건모)
+     */
+    @PostMapping("/member-addresses")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BaseResponse<MemberAddressDto> createMemberAddress(@Valid @RequestBody MemberAddressCreationRequest request) {
+
+        return new BaseResponse<MemberAddressDto>()
+                .data(memberAddressService.createMemberAddress(request));
     }
 }

@@ -27,5 +27,5 @@ public class Address {
 
     @Column(name = "address_number", nullable = false)
     @Comment("우편 주소")
-    private int addressNumber;
+    private Integer addressNumber;
 }
