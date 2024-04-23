@@ -13,6 +13,10 @@ public interface OrderDetailRepositoryCustom {
      * @author woody35545(구건모)
      */
     Optional<OrderDetailDto> getOrderDetailDtoById(long orderDetailId);
-
+    /**
+     * 주문 식별자로 주문 상세 DTO 리스트 조회
+     * @author woody35545(구건모)
+     */
+    List<OrderDetailDto> getOrderDetailDtoListByOrderId(long orderId);
     List<Book> getSalesCountPerBook();
 }
