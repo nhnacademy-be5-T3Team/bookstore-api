@@ -34,7 +34,7 @@ public class ElasticService {
         List<ElasticResponse> lists = searchHits.getSearchHits().stream()
                 .map(hit -> {
                     ElasticDocument document = hit.getContent();
-                    return buildElasticSearchResultResponse(document, hit);
+                    return buildElasticSearchResultResponse(document, hit.getScore());
                 })
                 .collect(Collectors.toList());
 
@@ -49,10 +49,13 @@ public class ElasticService {
                 .last(page.isLast())
                 .build();
     }
-    public ElasticResponse buildElasticSearchResultResponse(ElasticDocument document, SearchHit hit) {
+    public ElasticResponse buildElasticSearchResultResponse(ElasticDocument document, float score) {
+
         BigDecimal discountedPrice = calculateDiscountedPrice(document.getPrice(), document.getDiscount());
+
         Instant instant = Instant.parse(document.getPublished());
         LocalDate localDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
+
         return ElasticResponse.builder()
                 .bookId(document.getBookId())
                 .name(document.getName())
@@ -66,7 +69,7 @@ public class ElasticService {
                 .coverImageUrl(document.getCoverImageUrl())
                 .authorName(document.getAuthorName())
                 .authorRole(document.getAuthorRole())
-                .score(hit.getScore())
+                .score(score)
                 .build();
     }
 
