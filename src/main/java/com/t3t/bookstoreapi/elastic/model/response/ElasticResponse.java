@@ -1,10 +1,6 @@
 package com.t3t.bookstoreapi.elastic.model.response;
 
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.annotations.Field;
-
-import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -13,14 +9,13 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class ElasticResponse {
     private BigDecimal bookId;
     private String name;
     private BigDecimal price;
     private BigDecimal discountRate;
-    private BigDecimal discountPrice;
-    private String published;
+    private BigDecimal discountedPrice;
+    private LocalDate published;
     private Float averageScore;
     private Integer likeCount;
     private String publisher;

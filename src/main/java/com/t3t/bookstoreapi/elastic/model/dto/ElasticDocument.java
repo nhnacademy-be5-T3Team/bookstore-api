@@ -8,7 +8,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 
 import javax.persistence.Id;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
