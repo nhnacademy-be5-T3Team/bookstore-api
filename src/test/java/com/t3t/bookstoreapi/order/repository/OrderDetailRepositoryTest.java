@@ -3,6 +3,11 @@ package com.t3t.bookstoreapi.order.repository;
 import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.config.DataSourceConfig;
+import com.t3t.bookstoreapi.config.DatabasePropertiesConfig;
+import com.t3t.bookstoreapi.config.QueryDslConfig;
+import com.t3t.bookstoreapi.config.RestTemplateConfig;
+import com.t3t.bookstoreapi.keymanager.service.SecretKeyManagerService;
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
 import com.t3t.bookstoreapi.member.model.entity.Member;
@@ -13,6 +18,8 @@ import com.t3t.bookstoreapi.member.repository.MemberGradeRepository;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
 import com.t3t.bookstoreapi.order.model.entity.*;
+import com.t3t.bookstoreapi.property.SecretKeyManagerProperties;
+import com.t3t.bookstoreapi.property.SecretKeyProperties;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +27,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,9 +43,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@SpringBootTest
-@Transactional
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
+@Import({DataSourceConfig.class, DatabasePropertiesConfig.class,
+        QueryDslConfig.class, RestTemplateConfig.class,
+        SecretKeyManagerService.class, SecretKeyManagerProperties.class, SecretKeyProperties.class})
 public class OrderDetailRepositoryTest {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
