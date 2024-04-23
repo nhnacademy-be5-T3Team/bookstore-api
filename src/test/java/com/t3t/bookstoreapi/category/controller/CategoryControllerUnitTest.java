@@ -2,7 +2,6 @@ package com.t3t.bookstoreapi.category.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.t3t.bookstoreapi.category.model.request.CategoryListRequest;
 import com.t3t.bookstoreapi.category.model.response.CategoryTreeResponse;
 import com.t3t.bookstoreapi.category.service.CategoryService;
 import org.junit.jupiter.api.DisplayName;
@@ -66,14 +65,13 @@ class CategoryControllerUnitTest {
                         .build()
         );
 
-        CategoryListRequest request = CategoryListRequest.builder().startDepth(1).maxDepth(2).build();
-
         when(categoryService.getCategoryTreeByDepth(anyInt(), anyInt()))
                 .thenReturn(dummyResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .param("startDepth", "1")
+                        .param("maxDepth", "2"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists());
     }
@@ -83,13 +81,12 @@ class CategoryControllerUnitTest {
     @Test
     void getCategoryTreeByDepth_Returns204NoContent_WhenCategoriesDoNotExist() throws Exception {
 
-        CategoryListRequest request = CategoryListRequest.builder().startDepth(1).maxDepth(2).build();
-
         when(categoryService.getCategoryTreeByDepth(anyInt(), anyInt())).thenReturn(Collections.emptyList());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .param("startDepth", "1")
+                        .param("maxDepth", "2"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("등록된 카테고리가 없습니다"));
     }
@@ -99,11 +96,8 @@ class CategoryControllerUnitTest {
     @Test
     void getCategoryTreeByDepth_Returns400BadRequest_WhenInvalidRequest_HavingNullValue() throws Exception {
 
-        CategoryListRequest invalidRequest = CategoryListRequest.builder().startDepth(null).maxDepth(null).build();
-
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/categories")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
@@ -111,8 +105,7 @@ class CategoryControllerUnitTest {
         JsonNode responseBodyJson = objectMapper.readTree(contentBytes);
 
         assertTrue(responseBodyJson.has("message"));
-        assertTrue(responseBodyJson.get("message").asText().contains("startDepth는 null일 수 없습니다."));
-        assertTrue(responseBodyJson.get("message").asText().contains("maxDepth는 null일 수 없습니다."));
+        assertTrue(responseBodyJson.get("message").asText().contains("Required request parameter 'startDepth' for method parameter type Integer is not present"));
     }
 
     @Order(4)
@@ -120,11 +113,10 @@ class CategoryControllerUnitTest {
     @Test
     void getCategoryTreeByDepth_Returns400BadRequest_WhenInvalidRequest_HavingMinusValue() throws Exception {
 
-        CategoryListRequest invalidRequest = CategoryListRequest.builder().startDepth(-1).maxDepth(1).build();
-
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                        .param("startDepth", "-1")
+                        .param("maxDepth", "1"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
@@ -132,7 +124,7 @@ class CategoryControllerUnitTest {
         JsonNode responseBodyJson = objectMapper.readTree(contentBytes);
 
         assertTrue(responseBodyJson.has("message"));
-        assertTrue(responseBodyJson.get("message").asText().contains("startDepth는 1이상의 값이어야 합니다"));
+        assertTrue(responseBodyJson.get("message").asText().contains("startDepth는 1이상의 값이어야 합니다."));
     }
 
     @Order(5)
@@ -140,11 +132,10 @@ class CategoryControllerUnitTest {
     @Test
     void getCategoryTreeByDepth_Returns400BadRequest_WhenInvalidRequest_HavingInvalidRange() throws Exception {
 
-        CategoryListRequest invalidRequest = CategoryListRequest.builder().startDepth(2).maxDepth(1).build();
-
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                        .param("startDepth", "2")
+                        .param("maxDepth", "1"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
