@@ -27,6 +27,7 @@ public class PaymentDto {
     private Long paymentId;
     private Long orderId;
     private BigDecimal totalAmount;
+    private LocalDateTime createdAt;
 
     /**
      * 결제 제공자 정보
