@@ -11,11 +11,11 @@ import java.math.BigDecimal;
 @Getter
 public class PaymentConfirmRequest {
     /**
-     * 결제 제공처를 사용하는 결제의 경우 해당 결제 제공처에서 사용하는 결제 ID를 사용한다.
+     * 결제 제공처를 사용하는 결제의 경우 해당 결제 제공처에서 사용하는 결제 식별자를 사용한다.
      * @author woody35545(구건모)
      */
     @NotBlank
-    private String orderId;
+    private String paymentOrderId;
     @NotBlank
     private String paymentKey;
     @NotBlank
