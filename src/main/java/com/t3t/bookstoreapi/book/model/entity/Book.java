@@ -10,9 +10,12 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * 도서(books) 엔티티
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -24,11 +27,6 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
     private Long bookId;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publisher_id")
-    private Publisher publisher;
 
     @NotNull
     @Column(name = "book_name")
@@ -75,12 +73,12 @@ public class Book {
     @Column(name = "book_like_count")
     private Integer bookLikeCount;
 
-    @OneToOne(mappedBy = "book", fetch = FetchType.LAZY)
-    private BookThumbnail bookThumbnail;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "publisher_id")
+    private Publisher publisher;
 
-    @OneToMany(mappedBy = "book")
-    List<ParticipantRoleRegistration> authors = new ArrayList<>();
-
+    // todo : 도서 좋아요 동시성 문제 관련해 수정해야함
     public void incrementLikes() {
         this.bookLikeCount++;
     }

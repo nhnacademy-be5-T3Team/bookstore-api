@@ -3,7 +3,10 @@ package com.t3t.bookstoreapi.common.exception;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsException;
+import com.t3t.bookstoreapi.member.exception.MemberAddressCountLimitExceededException;
+import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundException;
 import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException;
+import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
@@ -125,6 +128,41 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 회원이 존재하지 않는 경우에 대한 예외 처리 핸들러
+     * @param memberNotFoundException 회원이 존재하지 않는 경우 발생하는 예외
+     * @see com.t3t.bookstoreapi.member.exception.MemberNotFoundException
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMemberNotFoundException(MemberNotFoundException memberNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(memberNotFoundException.getMessage()));
+    }
+
+    /**
+     * 회원 주소의 개수 제한을 초과했을 때 발생하는 예외 처리 핸들러
+     * @return 400 BAD_REQUEST
+     * @see com.t3t.bookstoreapi.member.exception.MemberAddressCountLimitExceededException
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(MemberAddressCountLimitExceededException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMemberAddressCountLimitExceededException(MemberAddressCountLimitExceededException memberAddressCountLimitExceededException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new BaseResponse<Void>().message(memberAddressCountLimitExceededException.getMessage()));
+    }
+
+    /**
+     * 회원 주소가 존재하지 않는 경우에 대한 예외 처리 핸들러
+     * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundException
+     */
+    @ExceptionHandler(MemberAddressNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMemberAddressNotFoundException(MemberAddressNotFoundException memberAddressNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(memberAddressNotFoundException.getMessage()));
+    }
+
+    /**
      * validation 실패 시 발생하는 MethodArgumentNotValidException 예외 처리 핸들러
      * @param  methodArgumentNotValidException validation 실패 시 발생하는 예외
      * @return 400 BAD_REQUEST - 만족하지 못한 validation 항목에 대한 메시지 반환
@@ -141,5 +179,4 @@ public class GlobalExceptionHandler {
                         .map(error -> String.format("* %s  ", error.getDefaultMessage()))
                         .collect(Collectors.joining()))));
     }
-
 }

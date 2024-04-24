@@ -7,6 +7,11 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * 도서 참여자(participant_role_registrations) 엔티티
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
