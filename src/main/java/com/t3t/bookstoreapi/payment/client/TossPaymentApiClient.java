@@ -1,4 +1,4 @@
-package com.t3t.bookstoreapi.payment.adaptor;
+package com.t3t.bookstoreapi.payment.client;
 
 import com.t3t.bookstoreapi.payment.exception.TossPaymentApiRequestFailedException;
 import com.t3t.bookstoreapi.payment.model.request.PaymentConfirmRequest;
@@ -24,7 +24,7 @@ import java.util.Base64;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TossPaymentAdaptor implements PaymentAdaptor {
+public class TossPaymentApiClient implements PaymentApiClient {
 
     private final RestTemplate restTemplate;
     private final TossPaymentProperties tossPaymentProperties;
