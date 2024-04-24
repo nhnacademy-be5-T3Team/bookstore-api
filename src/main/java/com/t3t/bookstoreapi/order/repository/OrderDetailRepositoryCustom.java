@@ -19,6 +19,5 @@ public interface OrderDetailRepositoryCustom {
      * @author woody35545(구건모)
      */
     List<OrderDetailDto> getOrderDetailDtoListByOrderId(long orderId);
-    List<Book> getSalesCountPerBook();
     List<BookInfoBriefResponse> getSalesCountPerBook(int maxCount);
 }
