@@ -13,9 +13,12 @@ import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -178,5 +181,28 @@ public class GlobalExceptionHandler {
                         .stream()
                         .map(error -> String.format("* %s  ", error.getDefaultMessage()))
                         .collect(Collectors.joining()))));
+    }
+
+    /**
+     * ConstraintViolationException을 처리하는 핸들러
+     * @param constraintViolationException 제약 조건 위반 예외 객체
+     * @return 400 Bad Request 응답과 함께 에러 메시지를 포함한 응답 본문
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<BaseResponse<Void>> handleIllegalArgumentException(ConstraintViolationException constraintViolationException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new BaseResponse<Void>().message(constraintViolationException.getMessage()));
+    }
+
+    /**
+     * MissingServletRequestParameterException을 처리하는 핸들러
+     *
+     * @param missingParamException 요청 파라미터 누락 예외 객체
+     * @return 400 Bad Request 응답과 함께 에러 메시지를 포함한 응답 본문
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMissingServletRequestParameterException(MissingServletRequestParameterException missingParamException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new BaseResponse<Void>().message(missingParamException.getMessage()));
     }
 }
