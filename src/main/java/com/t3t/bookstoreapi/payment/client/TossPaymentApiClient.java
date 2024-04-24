@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Base64;
 
 /**
- * Toss 결제 서비스 API 를 호출하고 응답을 처리하는 어댑터 클래스
+ * Toss 결제 서비스 API 를 호출하고 응답을 처리하는 클래스
  *
  * @author woody35545(구건모)
  */

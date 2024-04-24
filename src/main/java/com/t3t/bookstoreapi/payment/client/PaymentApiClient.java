@@ -5,7 +5,7 @@ import com.t3t.bookstoreapi.payment.model.response.PaymentConfirmResponse;
 import org.json.simple.parser.ParseException;
 
 /**
- * 여러 결제 제공자에서 제공하는 API 를 호출하기 위한 어댑터 인터페이스
+ * 여러 결제 제공자에서 제공하는 API 를 호출하기 위한 인터페이스
  * @author woody35545(구건모)
  */
 public interface PaymentApiClient {

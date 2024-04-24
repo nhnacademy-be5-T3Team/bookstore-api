@@ -7,6 +7,7 @@ import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
+import com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -125,6 +126,19 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 결제 제공자가 존재하지 않는 경우에 대한 예외 처리 핸들러
+     * @param paymentProviderNotFoundException 결제 제공자가 존재하지 않는 경우 발생하는 예외
+     * @return 404 NOT_FOUND - 예외 메시지 반환
+     * @see com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundException
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(PaymentProviderNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handlePaymentProviderNotFoundException(PaymentProviderNotFoundException paymentProviderNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(paymentProviderNotFoundException.getMessage()));
+    }
+
+    /**
      * validation 실패 시 발생하는 MethodArgumentNotValidException 예외 처리 핸들러
      * @param  methodArgumentNotValidException validation 실패 시 발생하는 예외
      * @return 400 BAD_REQUEST - 만족하지 못한 validation 항목에 대한 메시지 반환
@@ -141,5 +155,4 @@ public class GlobalExceptionHandler {
                         .map(error -> String.format("* %s  ", error.getDefaultMessage()))
                         .collect(Collectors.joining()))));
     }
-
 }
