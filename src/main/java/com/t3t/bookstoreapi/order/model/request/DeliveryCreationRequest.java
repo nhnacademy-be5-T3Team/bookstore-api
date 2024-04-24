@@ -50,11 +50,6 @@ public class DeliveryCreationRequest {
     @Pattern(regexp = "^\\d{3}-\\d{4}-\\d{4}$", message = "올바른 전화번호 형식이 아닙니다. (예시: 010-1234-5678)")
     private String recipientPhoneNumber;
 
-    @AssertFalse(message = "우편 주소와 도로명 주소는 동시에 포함될 수 없습니다.")
-    private boolean isBothAddressPresent() {
-        return addressNumber != null && roadnameAddress != null;
-    }
-
     @AssertTrue(message = "우편 주소와 도로명 주소 중 하나는 반드시 입력되어야 합니다.")
     private boolean isEitherAddressNotNull() {
         return addressNumber != null || roadnameAddress != null;
