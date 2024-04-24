@@ -1,6 +1,5 @@
 package com.t3t.bookstoreapi.payment.service;
 
-import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.order.exception.OrderNotFoundForIdException;
 import com.t3t.bookstoreapi.order.model.entity.Order;
 import com.t3t.bookstoreapi.order.repository.OrderRepository;
@@ -8,9 +7,7 @@ import com.t3t.bookstoreapi.payment.client.TossPaymentApiClient;
 import com.t3t.bookstoreapi.payment.constant.PaymentProviderType;
 import com.t3t.bookstoreapi.payment.constant.TossPaymentStatus;
 import com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundForNameException;
-import com.t3t.bookstoreapi.payment.exception.UnsupportedPaymentProviderTypeException;
 import com.t3t.bookstoreapi.payment.model.dto.PaymentDto;
-import com.t3t.bookstoreapi.payment.model.entity.Payment;
 import com.t3t.bookstoreapi.payment.model.entity.PaymentProvider;
 import com.t3t.bookstoreapi.payment.model.entity.TossPayment;
 import com.t3t.bookstoreapi.payment.model.request.PaymentConfirmRequest;
@@ -20,10 +17,12 @@ import com.t3t.bookstoreapi.payment.repository.PaymentProviderRepository;
 import com.t3t.bookstoreapi.payment.repository.TossPaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TossPaymentService implements ProviderPaymentService {
 
