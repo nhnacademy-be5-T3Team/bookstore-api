@@ -52,7 +52,7 @@ public class OrderDetail {
 
     @Column(name = "order_quantity", nullable = false)
     @Comment("주문 수량")
-    private Long quantity;
+    private Integer quantity;
 
     /**
      * 주문 상세 단건 가격<br>

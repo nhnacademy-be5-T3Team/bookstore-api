@@ -38,7 +38,7 @@ public class OrderDetailServiceUnitTest {
         long orderDetailId = 0L;
         OrderDetailDto testOrderDetailDto = OrderDetailDto.builder()
                 .id(0L)
-                .quantity(1L)
+                .quantity(1)
                 .createdAt(LocalDateTime.now())
                 .orderId(0L)
                 .bookId(0L)
@@ -86,7 +86,7 @@ public class OrderDetailServiceUnitTest {
         long orderId = 0L;
         OrderDetailDto testOrderDetailDto = OrderDetailDto.builder()
                 .id(0L)
-                .quantity(1L)
+                .quantity(1)
                 .createdAt(LocalDateTime.now())
                 .orderId(0L)
                 .bookId(0L)

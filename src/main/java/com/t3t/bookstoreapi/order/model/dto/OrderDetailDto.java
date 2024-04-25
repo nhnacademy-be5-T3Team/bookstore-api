@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OrderDetailDto {
     private Long id; // 주문 상세 식별자
-    private Long quantity; // 주문 수량
+    private Integer quantity; // 주문 수량
     private LocalDateTime createdAt; // 주문 상세 생성 일시
     // order
     private Long orderId; // 주문 상세 항목이 속한 주문 정보 식별자

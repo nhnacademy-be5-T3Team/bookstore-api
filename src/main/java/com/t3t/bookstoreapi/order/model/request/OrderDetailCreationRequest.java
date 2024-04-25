@@ -39,7 +39,7 @@ public class OrderDetailCreationRequest {
 
     @NotNull(message = "수량이 누락되었습니다.")
     @Min(value = 1, message = "수량은 1개 이상이어야 합니다.")
-    private Long quantity;
+    private Integer quantity;
 
     /**
      * 주문 상세 단건 가격<br>
