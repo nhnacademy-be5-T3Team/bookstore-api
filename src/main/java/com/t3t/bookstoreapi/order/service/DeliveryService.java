@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.order.service;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundForIdException;
 import com.t3t.bookstoreapi.order.model.dto.DeliveryDto;
 import com.t3t.bookstoreapi.order.model.entity.Delivery;
+import com.t3t.bookstoreapi.order.model.request.DeliveryCreationRequest;
 import com.t3t.bookstoreapi.order.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,24 +49,25 @@ public class DeliveryService {
 
     /**
      * 배송을 생성한다.
-     * @param price 배송비
-     * @param addressNumber 배송 우편 주소
-     * @param roadnameAddress 배송 도로명 주소
-     * @param detailAddress 배송 상세 주소
-     * @param recipientName 배송 수령인 이름
-     * @param recipientPhoneNumber 배송 수령인 전화번호
+     * @param request 생성하고자 하는 배송에 대한 정보를 담은 DTO<br>
+     * - price 배송비<br>
+     * - addressNumber 배송 우편 주소<br>
+     * - roadnameAddress 배송 도로명 주소<br>
+     * - detailAddress 배송 상세 주소<br>
+     * - recipientName 배송 수령인 이름<br>
+     * - recipientPhoneNumber 배송 수령인 전화번호<br>
      * @return 생성된 배송에 대한 DTO
      * @author woody35545(구건모)
      */
-    public DeliveryDto createDelivery(BigDecimal price, int addressNumber, String roadnameAddress, String detailAddress, LocalDate deliveryDate, String recipientName, String recipientPhoneNumber) {
+    public DeliveryDto createDelivery(DeliveryCreationRequest request) {
         return DeliveryDto.of(deliveryRepository.save(Delivery.builder()
-                .price(price)
-                .addressNumber(addressNumber)
-                .roadnameAddress(roadnameAddress)
-                .detailAddress(detailAddress)
-                .recipientName(recipientName)
-                .recipientPhoneNumber(recipientPhoneNumber)
-                .deliveryDate(deliveryDate)
+                .price(request.getPrice())
+                .addressNumber(request.getAddressNumber())
+                .roadnameAddress(request.getRoadnameAddress())
+                .detailAddress(request.getDetailAddress())
+                .recipientName(request.getRecipientName())
+                .recipientPhoneNumber(request.getRecipientPhoneNumber())
+                .deliveryDate(request.getDeliveryDate())
                 .build()));
     }
 }

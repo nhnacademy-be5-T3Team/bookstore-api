@@ -1,84 +1,75 @@
 package com.t3t.bookstoreapi.payment.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.t3t.bookstoreapi.payment.model.entity.TossPayments;
-import com.t3t.bookstoreapi.payment.model.response.TossPaymentResponse;
+import com.t3t.bookstoreapi.order.exception.OrderNotFoundForIdException;
+import com.t3t.bookstoreapi.order.model.entity.Order;
+import com.t3t.bookstoreapi.order.repository.OrderRepository;
+import com.t3t.bookstoreapi.payment.client.TossPaymentApiClient;
+import com.t3t.bookstoreapi.payment.constant.PaymentProviderType;
+import com.t3t.bookstoreapi.payment.constant.TossPaymentStatus;
+import com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundForNameException;
+import com.t3t.bookstoreapi.payment.model.dto.PaymentDto;
+import com.t3t.bookstoreapi.payment.model.entity.PaymentProvider;
+import com.t3t.bookstoreapi.payment.model.entity.TossPayment;
+import com.t3t.bookstoreapi.payment.model.request.PaymentConfirmRequest;
+import com.t3t.bookstoreapi.payment.model.request.PaymentCreationRequest;
+import com.t3t.bookstoreapi.payment.model.response.PaymentConfirmResponse;
+import com.t3t.bookstoreapi.payment.repository.PaymentProviderRepository;
 import com.t3t.bookstoreapi.payment.repository.TossPaymentRepository;
-import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.*;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
-import java.util.Base64;
-import java.util.Optional;
-
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
-@Qualifier("tossPaymentService")
+@RequiredArgsConstructor
 public class TossPaymentService implements ProviderPaymentService {
 
-
+    private final PaymentProviderRepository paymentProviderRepository;
+    private final TossPaymentApiClient tossPaymentApiAdaptor;
     private final TossPaymentRepository tossPaymentRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    public TossPaymentService(TossPaymentRepository tossPaymentRepository) {
-        this.tossPaymentRepository = tossPaymentRepository;
+    @Override
+    public PaymentConfirmResponse confirmPayment(PaymentConfirmRequest paymentRequestBody) {
+        return tossPaymentApiAdaptor.confirmPayment(paymentRequestBody);
     }
 
+    @Override
+    public PaymentDto createPayment(PaymentCreationRequest request) {
 
-    public void saveTossPayment(TossPaymentResponse tossPaymentResponse) {
-        TossPayments tossPayment = mapToTossPaymentEntity(tossPaymentResponse);
-        tossPaymentRepository.save(tossPayment);
-    }
+        PaymentProvider paymentProvider = paymentProviderRepository.findByName(PaymentProviderType.TOSS.toString())
+                .orElseThrow(() -> new PaymentProviderNotFoundForNameException(PaymentProviderType.TOSS.toString()));
 
-    private TossPayments mapToTossPaymentEntity(TossPaymentResponse tossPaymentResponse) {
-        TossPayments tossPayment = new TossPayments();
-        tossPayment.setTossPaymentKey(tossPaymentResponse.getPaymentKey());
-        tossPayment.setTossOrderId(tossPaymentResponse.getOrderId());
-        tossPayment.setTossPaymentStatus(tossPaymentResponse.getStatus());
-        tossPayment.setTossPaymentReceiptUrl(tossPaymentResponse.getReceipt().getUrl());
+        Order order = orderRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new OrderNotFoundForIdException(request.getOrderId()));
 
-        return tossPayment;
-    }
+        TossPayment tossPayment = tossPaymentRepository.save(TossPayment.builder()
+                .order(order)
+                .paymentProvider(paymentProvider)
+                .totalAmount(request.getTotalAmount())
+                .createdAt(LocalDateTime.now())
+                .tossPaymentKey(request.getProviderPaymentKey())
+                .tossOrderId(request.getProviderOrderId())
+                .tossPaymentStatus(TossPaymentStatus.valueOf(request.getProviderPaymentStatus()))
+                .tossPaymentReceiptUrl(request.getProviderPaymentReceiptUrl())
+                .tossPaymentRequestedAt(request.getProviderPaymentRequestedAt())
+                .tossPaymentApprovedAt(request.getProviderPaymentApprovedAt())
+                .build());
 
-    @Transactional(readOnly = true)
-    public TossPayments getTossPaymentsByPaymentId(Long paymentId) {
-
-        Optional<TossPayments> tossPaymentsOptional = tossPaymentRepository.findByTossPaymentIdPayment(paymentId);
-        if (tossPaymentsOptional.isPresent()) {
-            TossPayments tossPayments = tossPaymentsOptional.get();
-            return tossPayments;
-        } else {
-            return null;
-        }
-
-    }
-
-    public void updateTossPayment(TossPaymentResponse tossPaymentResponse) {
-        Optional<TossPayments> existingPaymentOptional = tossPaymentRepository.findByTossPaymentKey(tossPaymentResponse.getPaymentKey());
-        if (existingPaymentOptional.isPresent()) {
-            TossPayments existingPayment = existingPaymentOptional.get();
-            existingPayment.setTossOrderId(tossPaymentResponse.getOrderId());
-            existingPayment.setTossPaymentStatus(tossPaymentResponse.getStatus());
-            existingPayment.setTossPaymentReceiptUrl(tossPaymentResponse.getReceipt().getUrl());
-            tossPaymentRepository.save(existingPayment);
-        }
+        return PaymentDto.builder()
+                .paymentId(tossPayment.getId())
+                .orderId(order.getId())
+                .paymentProvider(paymentProvider)
+                .totalAmount(tossPayment.getTotalAmount())
+                .createdAt(tossPayment.getCreatedAt())
+                .providerPaymentKey(tossPayment.getTossPaymentKey())
+                .providerOrderId(tossPayment.getTossOrderId())
+                .providerPaymentStatus(tossPayment.getTossPaymentStatus().name())
+                .providerPaymentReceiptUrl(tossPayment.getTossPaymentReceiptUrl())
+                .providerPaymentRequestedAt(tossPayment.getTossPaymentRequestedAt())
+                .providerPaymentApprovedAt(tossPayment.getTossPaymentApprovedAt())
+                .build();
     }
 }
-
-
-
-

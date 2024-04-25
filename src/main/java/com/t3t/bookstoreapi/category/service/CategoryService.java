@@ -1,56 +1,83 @@
 package com.t3t.bookstoreapi.category.service;
 
 import com.t3t.bookstoreapi.category.model.entity.Category;
+import com.t3t.bookstoreapi.category.model.response.CategoryTreeResponse;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@RequiredArgsConstructor
+@Transactional
 @Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    /**
+     * 카테고리 목록을 카테고리 depth 범위로 조회
+     *
+     * @param startDepth 루트 카테고리로 지정할 depth
+     * @param maxDepth 최대 depth
+     * @return 카테고리 depth 범위에 해당하는 카테고리 목록 리스트
+     * @author Yujin-nKim(김유진)
+     */
+    @Transactional(readOnly = true)
+    public List<CategoryTreeResponse> getCategoryTreeByDepth(int startDepth, int maxDepth) {
 
-    public Map<String, Object> getCategoriesHierarchy() {
+        // startDepth ~ maxDepth 범위에 해당하는 카테고리 조회
+        List<Category> categoryList = categoryRepository.findByDepthBetween(startDepth, maxDepth);
 
-        Map<String, Object> response = new HashMap<>();
+        List<CategoryTreeResponse> rootCategoryList = new ArrayList<>();
+        List<CategoryTreeResponse> childCategoryList = new ArrayList<>();
 
-        // 데이터베이스로부터 모든 카테고리 데이터 가져옴
-        List<Category> categoryList = categoryRepository.findAll();
-
-        List<Map<String, Object>> parentCategoryList = new ArrayList<>();
-
-        // 부모 카테고리를 순회하면서 자식 카테고리 정보를 가져와서 맵핑함
-        for(Category parentCategory : categoryList) {
-            // 부모 카테고리인 경우
-            if(parentCategory.getParentCategoryId() == null) {
-                Map<String, Object> parentCategoryMap = new HashMap<>();
-                parentCategoryMap.put("parent", parentCategory);
-
-                // 해당 부모 카테고리에 속하는 자식 카테고리 찾기
-                List<Map<String, Object>> childCategoryList = new ArrayList<>();
-                for(Category childCategory : categoryList) {
-                    if(childCategory.getParentCategoryId()!= null && childCategory.getParentCategoryId().equals(parentCategory.getCategoryId())) {
-                        Map<String, Object> childCategoryMap = new HashMap<>();
-                        childCategoryMap.put("id", childCategory.getCategoryId());
-                        childCategoryMap.put("name", childCategory.getCategoryName());
-                        childCategoryList.add(childCategoryMap);
-                    }
-                }
-                parentCategoryMap.put("childCategoryList", childCategoryList);
-                parentCategoryList.add(parentCategoryMap);
+        for(Category category : categoryList) {
+            // 최상위 카테고리를 찾아서 리스트에 저장
+            if(category.getDepth() == startDepth || category.getParentCategory() == null) {
+                rootCategoryList.add(CategoryTreeResponse.builder()
+                        .categoryId(category.getCategoryId())
+                        .categoryName(category.getCategoryName())
+                        .depth(category.getDepth())
+                        .parentId(null)
+                        .children(new ArrayList<>())
+                        .build());
+            // 최상위 카테고리 외의 자식 카테고리를 찾아서 리스트에 저장
+            }else {
+                childCategoryList.add(CategoryTreeResponse.builder()
+                        .categoryId(category.getCategoryId())
+                        .categoryName(category.getCategoryName())
+                        .depth(category.getDepth())
+                        .parentId(category.getParentCategory().getCategoryId())
+                        .children(new ArrayList<>())
+                        .build());
             }
         }
-        response.put("parentCategoryList", parentCategoryList);
-        return response;
+
+        // 루트 노드부터 자식카테고리를 찾아서 트리를 구성
+        for(CategoryTreeResponse parentCategoryNode : rootCategoryList) {
+            buildTree(parentCategoryNode, childCategoryList);
+        }
+
+        return rootCategoryList;
+    }
+
+    /**
+     * 주어진 부모 카테고리에 대해 자식 카테고리를 재귀적으로 찾아 트리를 구성
+     *
+     * @param parentCategory 부모 카테고리
+     * @param childCategoryList 자식 카테고리 리스트
+     * @author Yujin-nKim(김유진)
+     */
+    private void buildTree(CategoryTreeResponse parentCategory, List<CategoryTreeResponse> childCategoryList) {
+        for (CategoryTreeResponse childCategory : childCategoryList) {
+            // 노드가 부모-자식 관계인지 확인함 (depth와 부모 카테고리 id 비교)
+            if (childCategory.getDepth() == parentCategory.getDepth() + 1 && childCategory.getParentId() == parentCategory.getCategoryId()) {
+                parentCategory.addChild(childCategory);
+                buildTree(childCategory, childCategoryList);
+            }
+        }
     }
 }

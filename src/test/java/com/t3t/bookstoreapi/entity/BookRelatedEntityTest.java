@@ -1,14 +1,17 @@
 package com.t3t.bookstoreapi.entity;
 
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.entity.*;
 import com.t3t.bookstoreapi.book.repository.*;
 import com.t3t.bookstoreapi.booklike.model.entity.BookLike;
 import com.t3t.bookstoreapi.booklike.repository.BookLikeRepository;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
-import com.t3t.bookstoreapi.member.domain.Member;
-import com.t3t.bookstoreapi.member.domain.MemberGrade;
-import com.t3t.bookstoreapi.member.domain.MemberGradePolicy;
+import com.t3t.bookstoreapi.member.model.constant.MemberRole;
+import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
+import com.t3t.bookstoreapi.member.model.entity.Member;
+import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
+import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
 import com.t3t.bookstoreapi.member.repository.MemberGradePolicyRepository;
 import com.t3t.bookstoreapi.member.repository.MemberGradeRepository;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
@@ -98,7 +101,7 @@ class BookRelatedEntityTest {
                 .bookIsbn("9788966863307")
                 .bookPrice(new BigDecimal("19.99"))
                 .bookDiscount(new BigDecimal("0.1"))
-                .bookPackage(1)
+                .bookPackage(TableStatus.TRUE)
                 .bookPublished(LocalDate.of(1943, Month.APRIL, 6))
                 .bookStock(100)
                 .bookAverageScore(4.5f)
@@ -126,9 +129,9 @@ class BookRelatedEntityTest {
                 .phone("010-1234-5678")
                 .latestLogin(LocalDateTime.now())
                 .birthDate(LocalDateTime.now().toLocalDate())
-                .gradeId(memberGrade)
-                .status("ACTIVE")
-                .role(1)
+                .grade(memberGrade)
+                .status(MemberStatus.ACTIVE)
+                .role(MemberRole.USER)
                 .build());
 
     }

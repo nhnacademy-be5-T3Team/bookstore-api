@@ -1,102 +1,57 @@
 package com.t3t.bookstoreapi.book.service;
 
-import com.t3t.bookstoreapi.book.model.entity.Book;
-import com.t3t.bookstoreapi.book.model.entity.BookCategory;
-import com.t3t.bookstoreapi.book.model.entity.BookImage;
-import com.t3t.bookstoreapi.book.model.entity.BookTag;
-import com.t3t.bookstoreapi.book.model.response.AuthorInfo;
-import com.t3t.bookstoreapi.book.model.response.BookSearchResultDetailResponse;
-import com.t3t.bookstoreapi.book.model.response.CategoryInfo;
-import com.t3t.bookstoreapi.book.model.response.TagInfo;
-import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
-import com.t3t.bookstoreapi.book.repository.BookImageRepository;
+import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
+import com.t3t.bookstoreapi.book.model.dto.PackagingDto;
+import com.t3t.bookstoreapi.book.model.response.*;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
-import com.t3t.bookstoreapi.book.repository.BookTagRepository;
-import com.t3t.bookstoreapi.book.util.BookServiceUtils;
-import com.t3t.bookstoreapi.category.model.entity.Category;
-import com.t3t.bookstoreapi.model.enums.TableStatus;
-import com.t3t.bookstoreapi.tag.model.entity.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.t3t.bookstoreapi.order.model.entity.Packaging;
+import com.t3t.bookstoreapi.order.repository.PackagingRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
 
+@RequiredArgsConstructor
+@Transactional
 @Service
 public class BookService {
     private final BookRepository bookRepository;
-    private final BookImageRepository bookImageRepository;
-    private final BookCategoryRepository bookCategoryRepository;
-    private final BookTagRepository bookTagRepository;
+    private final PackagingRepository packagingRepository;
 
-    @Autowired
-    public BookService(BookRepository bookRepository, BookImageRepository bookImageRepository, BookCategoryRepository bookCategoryRepository, BookTagRepository bookTagRepository) {
-        this.bookRepository = bookRepository;
-        this.bookImageRepository = bookImageRepository;
-        this.bookCategoryRepository = bookCategoryRepository;
-        this.bookTagRepository = bookTagRepository;
-    }
+    /**
+     * 도서 식별자로 도서 상세 조회, 도서의 포장 여부를 확인하고 포장 가능한 도서인 경우
+     * 포장지 리스트를 불러옴.
+     * 존재하지 않는 도서인 경우 예외 발생
+     *
+     * @param bookId 조회할 도서의 id
+     * @return 도서의 상세 정보
+     * @author Yujin-nKim(김유진)
+     */
+    @Transactional(readOnly = true)
+    public BookDetailResponse getBookDetailsById(Long bookId) {
 
-    public BookSearchResultDetailResponse getBook(Long bookId) {
+        BookDetailResponse bookDetails = bookRepository.getBookDetailsById(bookId);
 
-        Book book = bookRepository.findByBookId(bookId);
-        List<AuthorInfo> authorInfoList = BookServiceUtils.extractAuthorInfo(book.getAuthors());
+        // 존재하지 않는 도서의 식별자로 조회시 예외 발생
+        if(bookDetails == null) {
+            throw new BookNotFoundForIdException(bookId);
+        }
 
-        return buildBookSearchResultDetailResponse(book, authorInfoList);
-    }
+        bookDetails.setDiscountedPrice();
+        bookDetails.setBookStock();
 
-    public BookSearchResultDetailResponse buildBookSearchResultDetailResponse(Book book, List<AuthorInfo> authorInfoList) {
-        BigDecimal discountedPrice = calculateDiscountedPrice(book.getBookPrice(), book.getBookDiscount());
+        if(bookDetails.getPackagingAvailableStatus().isValue()) {
+            List<Packaging> packages = packagingRepository.findAll();
+            List<PackagingDto> packagingList = packages.stream()
+                    .map(packaging -> PackagingDto.builder().id(packaging.getId()).name(packaging.getName()).build())
+                    .collect(Collectors.toList());
 
-        List<BookCategory> bookCategories = bookCategoryRepository.findByBookBookId(book.getBookId());
-        List<BookTag> bookTags = bookTagRepository.findByBookBookId(book.getBookId());
-        List<BookImage> bookImages = bookImageRepository.findByBookBookId(book.getBookId());
+            bookDetails.setPackaingInfoList(packagingList);
+        }
 
-        List<CategoryInfo> categoryInfoList = bookCategories.stream()
-                .map(bookCategory -> CategoryInfo.builder()
-                        .id(bookCategory.getCategory().getCategoryId())
-                        .name(bookCategory.getCategory().getCategoryName())
-                        .build())
-                .collect(Collectors.toList());
-
-        List<TagInfo> tagInfoList = bookTags.stream()
-                .map(bookTag -> TagInfo.builder()
-                        .id(bookTag.getTag().getTagId())
-                        .name(bookTag.getTag().getTagName())
-                        .build())
-                .collect(Collectors.toList());
-
-        List<String> imgUrlList = bookImages.stream()
-                .map(BookImage::getBookImageUrl)
-                .collect(Collectors.toList());
-
-        return BookSearchResultDetailResponse.builder()
-                .name(book.getBookName())
-                .price(book.getBookPrice())
-                .discountRate(book.getBookDiscount())
-                .discountedPrice(discountedPrice)
-                .published(book.getBookPublished())
-                .publisher(book.getPublisher().getPublisherName())
-                .averageScore(book.getBookAverageScore())
-                .likeCount(book.getBookLikeCount())
-                .bookIndex(book.getBookIndex())
-                .bookDesc(book.getBookDesc())
-                .bookIsbn(book.getBookIsbn())
-                .isStockAvailable(checkStockAvailability(book.getBookStock()))
-                .isPackagingAvailable(TableStatus.getStatusFromValue(book.getBookPackage()))
-                .tagList(tagInfoList)
-                .catgoryInfoList(categoryInfoList)
-                .imageUrlList(imgUrlList)
-                .coverImageUrl(book.getBookThumbnail().getThumbnailImageUrl())
-                .authorInfoList(authorInfoList)
-                .build();
-    }
-
-    public boolean checkStockAvailability(int stock) {
-        return stock >= 0;
+        return bookDetails;
     }
 }
