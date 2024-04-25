@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class RedisProperties {
     private String redisServerIpAddress;
-    private String redisServerPort;
     private String redisServerPassword;
+    private String redisServerPort;
+    private Integer redisDatabase;
 }
