@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -37,5 +36,5 @@ public class Order {
 
     @Column(name = "order_datetime" , nullable = false)
     @Comment("주문 일시")
-    private LocalDateTime orderDatetime;
+    private LocalDateTime createdAt;
 }
