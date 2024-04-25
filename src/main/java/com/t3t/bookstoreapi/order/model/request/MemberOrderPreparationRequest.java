@@ -10,7 +10,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * 주문 생성 요청 객체
+ * 회원 임시 주문 생성 요청 객체<br>
+ * 결제 대기 상태로 임시 주문을 생성하기 위한 요청 정보를 담고 있다.
  *
  * @auhtor woody35545(구건모)
  */
@@ -18,7 +19,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderCreationRequest {
+public class MemberOrderPreparationRequest {
 
     /**
      * 회원 정보
@@ -28,38 +29,25 @@ public class OrderCreationRequest {
 
     /**
      * 결제 정보
-     */
-    @NotNull(message = "결제 식별자가 누락되었습니다.")
-    private Long paymentId; // 결제 식별자
-
-    @NotNull(message = "결제 제공자가 누락되었습니다.")
+     */@NotNull(message = "결제 제공자가 누락되었습니다.")
     private PaymentProviderType paymentProviderType; // 결제 제공자
-
-    @NotBlank(message = "결제 제공자 결제 식별자가 누락되었습니다.")
-    private String providerPaymentKey;
-
-    @NotBlank(message = "결제 제공자 주문 식별자가 누락되었습니다.")
-    private String providerOrderId;
-
-    @NotNull(message = "결제 금액이 누락되었습니다.")
-    private BigDecimal paymentAmount; // 결제 금액
 
     /**
      * 주문 상세 정보 (상품, 수량, 포장 정보)
      */
     @NotEmpty(message = "주문 상세 정보가 누락되었습니다.")
-    private List<OrderDetailInfo> orderDetailInfoList;
+    private List<OrderDetailInfo> orderDetailInfoList; // 주문 상세 정보
 
     /**
      * 배송 정보
      */
-    @NotNull(message = "우편 주소가 누락되었습니다.")
+    @Nullable
     private Integer addressNumber; // 배송 우편 주소
 
-    @NotBlank(message = "도로명 주소가 누락되었습니다.")
+    @Nullable
     private String roadnameAddress; // 배송 도로명 주소
 
-    @NotBlank(message = "상세 주소가 누락되었습니다.")
+    @NotNull(message = "배송 상세 주소가 누락되었습니다.")
     private String detailAddress; // 배송 상세 주소
 
     @NotNull(message = "희망 배송 일자가 누락되었습니다.")
@@ -92,7 +80,7 @@ public class OrderCreationRequest {
         @NotNull(message = "책 식별자가 누락되었습니다.")
         private Long bookId; // 책 식별자
         @NotNull(message = "수량이 누락되었습니다.")
-        private Long quantity; // 주문 수량
+        private Integer quantity; // 주문 수량
         @Nullable
         private Long packagingId; // 포장 식별자
     }
