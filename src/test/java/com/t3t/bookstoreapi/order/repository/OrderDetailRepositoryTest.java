@@ -2,7 +2,6 @@ package com.t3t.bookstoreapi.order.repository;
 
 import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.entity.Book;
-import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.config.DataSourceConfig;
 import com.t3t.bookstoreapi.config.DatabasePropertiesConfig;
 import com.t3t.bookstoreapi.config.QueryDslConfig;
@@ -13,15 +12,11 @@ import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
 import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
-import com.t3t.bookstoreapi.member.repository.MemberGradePolicyRepository;
-import com.t3t.bookstoreapi.member.repository.MemberGradeRepository;
-import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
 import com.t3t.bookstoreapi.order.model.entity.*;
 import com.t3t.bookstoreapi.property.SecretKeyManagerProperties;
 import com.t3t.bookstoreapi.property.SecretKeyProperties;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
-import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +35,8 @@ import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @Slf4j
@@ -52,28 +48,13 @@ import static org.junit.jupiter.api.Assertions.*;
         SecretKeyManagerService.class, SecretKeyManagerProperties.class, SecretKeyProperties.class})
 public class OrderDetailRepositoryTest {
     @Autowired
-    private TestEntityManager entityManager;
+    private TestEntityManager em;
     @Autowired
     private OrderDetailRepository orderDetailRepository;
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private PublisherRepository publisherRepository;
-    @Autowired
-    private PackagingRepository packagingRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private DeliveryRepository deliveryRepository;
-    @Autowired
-    private OrderStatusRepository orderStatusRepository;
-    @Autowired
-    private MemberGradePolicyRepository memberGradePolicyRepository;
-    @Autowired
-    private MemberGradeRepository memberGradeRepository;
 
+    /**
+     * OrderDetail 의 의존 관계 엔티티
+     */
     private Publisher testPublisher;
     private Book testBook;
     private Packaging testPackaging;
@@ -91,12 +72,12 @@ public class OrderDetailRepositoryTest {
      */
     @BeforeEach
     void setUp() {
-        testPublisher = publisherRepository.save(Publisher.builder()
+        testPublisher = em.persist(Publisher.builder()
                 .publisherName("testPublisherName")
                 .publisherEmail("test@mail.com")
                 .build());
 
-        testBook = bookRepository.save(Book.builder()
+        testBook = em.persist(Book.builder()
                 .publisher(testPublisher)
                 .bookName("testBookName")
                 .bookIndex("testBookIndex")
@@ -111,21 +92,21 @@ public class OrderDetailRepositoryTest {
                 .bookLikeCount(500)
                 .build());
 
-        testPackaging = packagingRepository.save(Packaging.builder()
+        testPackaging = em.persist(Packaging.builder()
                 .name("testPackaging")
                 .price(BigDecimal.valueOf(1L)).build());
 
-        testMemberPolicy = memberGradePolicyRepository.save(MemberGradePolicy.builder()
+        testMemberPolicy = em.persist(MemberGradePolicy.builder()
                 .startAmount(new BigDecimal("0"))
                 .endAmount(new BigDecimal("100000"))
                 .build());
 
-        testMemberGrade = memberGradeRepository.save(MemberGrade.builder()
+        testMemberGrade = em.persist(MemberGrade.builder()
                 .policy(testMemberPolicy)
                 .name("test")
                 .build());
 
-        testMember = memberRepository.save(Member.builder()
+        testMember = em.persist(Member.builder()
                 .email("testEmail@mail.com")
                 .name("testName")
                 .latestLogin(LocalDateTime.now().withNano(0))
@@ -137,7 +118,7 @@ public class OrderDetailRepositoryTest {
                 .role(MemberRole.USER)
                 .build());
 
-        testDelivery = deliveryRepository.save(Delivery.builder()
+        testDelivery = em.persist(Delivery.builder()
                 .price(new BigDecimal("3000"))
                 .addressNumber(12345)
                 .roadnameAddress("testRoadnameAddress")
@@ -147,18 +128,18 @@ public class OrderDetailRepositoryTest {
                 .deliveryDate(LocalDate.now())
                 .build());
 
-
-        testOrderStatus = orderStatusRepository.save(OrderStatus.builder()
+        testOrderStatus = em.persist(OrderStatus.builder()
                 .name("testOrderStatus")
                 .build());
 
-        testOrder = orderRepository.save(Order.builder()
+        testOrder = em.persist(Order.builder()
                 .member(testMember)
                 .createdAt(LocalDateTime.now().withNano(0))
                 .delivery(testDelivery)
                 .build());
 
-        entityManager.clear();
+        em.flush();
+        em.clear();
     }
 
     /**
@@ -300,7 +281,7 @@ public class OrderDetailRepositoryTest {
                                         .multiply(testBook.getBookDiscount().divide(new BigDecimal("100")))))
                                 .build()));
 
-        entityManager.clear();
+        em.clear();
 
         // when
         List<OrderDetail> orderDetailList = orderDetailRepository.getOrderDetailListByOrderId(testOrder.getId());
