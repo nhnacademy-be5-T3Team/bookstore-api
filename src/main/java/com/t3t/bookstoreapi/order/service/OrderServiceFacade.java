@@ -46,6 +46,7 @@ public class OrderServiceFacade {
     private final OrderDetailService orderDetailService;
     private final DeliveryService deliveryService;
     private final GuestOrderService guestOrderService;
+    private final ProviderPaymentServiceFactory providerPaymentServiceFactory;
 
 
     /**
@@ -179,7 +180,7 @@ public class OrderServiceFacade {
                 .memberId(null)
                 .deliveryId(deliveryDto.getId())
                 .build());
-        
+
         GuestOrderDto guestOrderDto = guestOrderService.createGuestOrder(GuestOrderCreationRequest.builder()
                 .orderId(orderDto.getId())
                 .password(orderPrepareRequest.getGuestOrderPassword())
@@ -228,5 +229,51 @@ public class OrderServiceFacade {
                 .orderId(orderDto.getId())
                 .deliveryId(deliveryDto.getId())
                 .build();
+    }
+
+    /**
+     * 주문 승인<br>
+     * 결제가 완료된 결제를 검증하고 승인한다.<br>
+     * 성공적으로 승인되면, 주문 상태가 승인(CONFIRMED)으로 변경된다.<br>
+     *
+     * @param request 주문 승인 요청 객체
+     * @author woody35545(구건모)
+     */
+    public void confirmOrder(OrderConfirmRequest request) {
+
+        PaymentConfirmResponse paymentConfirmResponse = providerPaymentServiceFactory.get(request.getPaymentProviderType())
+                .confirmPayment(PaymentConfirmRequest.builder()
+                        .paymentKey(request.getPaymentKey())
+                        .paymentOrderId(request.getPaymentOrderId())
+                        .amount(request.getPaidAmount())
+                        .build());
+
+        List<OrderDetailDto> orderDetailDtoList = orderDetailService.getOrderDetailDtoListByOrderId(request.getOrderId());
+
+        // 주문된 상품들에 대한 가격 계산 (구매 시점 기준 총 금액)
+        BigDecimal totalPrice = orderDetailDtoList.stream()
+                .map(orderDetailDto -> orderDetailDto.getPrice().multiply(BigDecimal.valueOf(orderDetailDto.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // 결제 금액 검증
+        if (totalPrice.compareTo(request.getPaidAmount()) != 0) {
+            throw new PaymentAmountMismatchException();
+        }
+
+        // 결제 정보 저장
+        providerPaymentServiceFactory.get(request.getPaymentProviderType()).createPayment(
+                PaymentCreationRequest.builder()
+                        .orderId(request.getOrderId())
+                        .totalAmount(totalPrice)
+                        .providerPaymentKey(paymentConfirmResponse.getProviderPaymentKey())
+                        .providerOrderId(paymentConfirmResponse.getProviderOrderId())
+                        .providerPaymentStatus(paymentConfirmResponse.getProviderPaymentStatus().toString())
+                        .providerPaymentReceiptUrl(paymentConfirmResponse.getProviderPaymentReceiptUrl())
+                        .providerPaymentRequestedAt(paymentConfirmResponse.getProviderPaymentRequestedAt())
+                        .providerPaymentApprovedAt(paymentConfirmResponse.getProviderPaymentApprovedAt())
+                        .build());
+
+        // 주문 상태 변경
+        orderService.modifyOrderStatusByOrderId(request.getOrderId(), OrderStatusType.CONFIRMED);
     }
 }
