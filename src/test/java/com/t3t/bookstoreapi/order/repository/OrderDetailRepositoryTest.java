@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -39,8 +40,8 @@ import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @Slf4j
 @DataJpaTest
@@ -50,6 +51,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         QueryDslConfig.class, RestTemplateConfig.class,
         SecretKeyManagerService.class, SecretKeyManagerProperties.class, SecretKeyProperties.class})
 public class OrderDetailRepositoryTest {
+    @Autowired
+    private TestEntityManager entityManager;
     @Autowired
     private OrderDetailRepository orderDetailRepository;
     @Autowired
@@ -151,10 +154,11 @@ public class OrderDetailRepositoryTest {
 
         testOrder = orderRepository.save(Order.builder()
                 .member(testMember)
-                .orderDatetime(LocalDateTime.now().withNano(0))
+                .createdAt(LocalDateTime.now().withNano(0))
                 .delivery(testDelivery)
                 .build());
 
+        entityManager.clear();
     }
 
     /**
@@ -175,6 +179,8 @@ public class OrderDetailRepositoryTest {
                         .orderStatus(testOrderStatus)
                         .createdAt(LocalDateTime.now().withNano(0))
                         .quantity(1L)
+                        .price(testBook.getBookPrice().subtract(testBook.getBookPrice()
+                                .multiply(testBook.getBookDiscount().divide(new BigDecimal("100")))))
                         .build());
 
         // when
@@ -195,7 +201,6 @@ public class OrderDetailRepositoryTest {
         assertEquals(testOrderDetail.getPackaging().getName(), optOrderDetailDto.get().getPackagingName());
         assertEquals(testOrderDetail.getPackaging().getPrice(), optOrderDetailDto.get().getPackagingPrice());
         assertEquals(testOrderDetail.getOrderStatus().getName(), optOrderDetailDto.get().getOrderStatusName());
-
     }
 
 
@@ -219,6 +224,8 @@ public class OrderDetailRepositoryTest {
                                         .orderStatus(testOrderStatus)
                                         .createdAt(LocalDateTime.now().withNano(0))
                                         .quantity(1L)
+                                        .price(testBook.getBookPrice().subtract(testBook.getBookPrice()
+                                                .multiply(testBook.getBookDiscount().divide(new BigDecimal("100")))))
                                         .build()
                         ),
                         orderDetailRepository.save(
@@ -229,6 +236,8 @@ public class OrderDetailRepositoryTest {
                                         .orderStatus(testOrderStatus)
                                         .createdAt(LocalDateTime.now().withNano(0))
                                         .quantity(2L)
+                                        .price(testBook.getBookPrice().subtract(testBook.getBookPrice()
+                                                .multiply(testBook.getBookDiscount().divide(new BigDecimal("100")))))
                                         .build()
                         )
                 );
@@ -257,5 +266,58 @@ public class OrderDetailRepositoryTest {
             assertEquals(testOrderDetailList.get(i).getPackaging().getPrice(), orderDetailDtoList.get(i).getPackagingPrice());
             assertEquals(testOrderDetailList.get(i).getOrderStatus().getName(), orderDetailDtoList.get(i).getOrderStatusName());
         }
+    }
+
+    /**
+     * 주문 식별자로 주문 상세 엔티티 리스트를 조회하는 QueryDSL 메서드 테스트
+     *
+     * @author woody35545(구건모)
+     * @see OrderDetailRepositoryCustom#getOrderDetailListByOrderId(long)
+     */
+    @Test
+    @DisplayName("주문 식별자로 주문 상세 엔티티 리스트 조회")
+    void getOrderDetailListByOrderIdTest() {
+        //given
+        final List<OrderDetail> testOrderDetailList =
+                List.of(orderDetailRepository.save(OrderDetail.builder()
+                                .book(testBook)
+                                .packaging(testPackaging)
+                                .order(testOrder)
+                                .orderStatus(testOrderStatus)
+                                .createdAt(LocalDateTime.now().withNano(0))
+                                .quantity(1L)
+                                .price(testBook.getBookPrice().subtract(testBook.getBookPrice()
+                                        .multiply(testBook.getBookDiscount().divide(new BigDecimal("100")))))
+                                .build()),
+                        orderDetailRepository.save(OrderDetail.builder()
+                                .book(testBook)
+                                .packaging(testPackaging)
+                                .order(testOrder)
+                                .orderStatus(testOrderStatus)
+                                .createdAt(LocalDateTime.now().withNano(0))
+                                .quantity(2L)
+                                .price(testBook.getBookPrice().subtract(testBook.getBookPrice()
+                                        .multiply(testBook.getBookDiscount().divide(new BigDecimal("100")))))
+                                .build()));
+
+        entityManager.clear();
+
+        // when
+        List<OrderDetail> orderDetailList = orderDetailRepository.getOrderDetailListByOrderId(testOrder.getId());
+        orderDetailList.sort((o1, o2) -> (int) (o1.getId() - o2.getId()));
+
+        // then
+        assertEquals(testOrderDetailList.size(), orderDetailList.size());
+        for (int i = 0; i < testOrderDetailList.size(); i++) {
+
+            assertEquals(testOrderDetailList.get(i).getId(), orderDetailList.get(i).getId());
+            assertEquals(testOrderDetailList.get(i).getQuantity(), orderDetailList.get(i).getQuantity());
+            assertEquals(testOrderDetailList.get(i).getCreatedAt(), orderDetailList.get(i).getCreatedAt());
+            assertEquals(testOrderDetailList.get(i).getOrder().getId(), orderDetailList.get(i).getOrder().getId());
+            assertEquals(testOrderDetailList.get(i).getBook().getBookId(), orderDetailList.get(i).getBook().getBookId());
+            assertEquals(testOrderDetailList.get(i).getPackaging().getId(), orderDetailList.get(i).getPackaging().getId());
+            assertEquals(testOrderDetailList.get(i).getOrderStatus().getId(), orderDetailList.get(i).getOrderStatus().getId());
+        }
+
     }
 }
