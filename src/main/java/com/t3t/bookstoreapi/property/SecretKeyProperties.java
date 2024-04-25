@@ -30,5 +30,11 @@ public class SecretKeyProperties {
     @Value("${t3t.secretKeyManager.secrets.objectStoragePassword.keyId}")
     private String objectStoragePasswordKeyId;
     @Value("${t3t.secretKeyManager.secrets.objectStorageAuthUrl.keyId}")
-    private String objectStorageAuthUrl;
+    private String objectStorageAuthUrlKeyId;
+    @Value("${t3t.secretKeyManager.secrets.redisServerIpAddressKeyId.keyId}")
+    private String redisServerIpAddressKeyId;
+    @Value("${t3t.secretKeyManager.secrets.redisServerPortKeyId.keyId}")
+    private String redisServerPortKeyId;
+    @Value("${t3t.secretKeyManager.secrets.redisServerPasswordKeyId.keyId}")
+    private String redisServerPasswordKeyId;
 }
