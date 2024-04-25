@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -52,4 +53,13 @@ public class OrderDetail {
     @Column(name = "order_quantity", nullable = false)
     @Comment("주문 수량")
     private Long quantity;
+
+    /**
+     * 주문 상세 단건 가격<br>
+     * 주문 요청 시점의 책 가격과 할인율 등 결제 금액에 영향을 주는 요인들을 고려해서 산출된 금액으로<br>
+     * 최종적으로 사용자가 결제해야하는 상품 단건 가격을 의미한다.
+     */
+    @Column(name = "order_detail_price", nullable = false)
+    @Comment("주문 상세 단건 가격")
+    private BigDecimal price;
 }
