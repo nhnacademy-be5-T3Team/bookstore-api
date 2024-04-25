@@ -44,3 +44,11 @@ t3t:
         keyId: "f008c1d3f87f4f88ae57bd03871eb10d"
       databaseServerPassword:
         keyId: "8a65684780224384a681c3e9035ca7d6"
+      objectStorageTenantId:
+        keyId: "88e172457ae848f08457db082037d831"
+      objectStorageUserName:
+        keyId: "b3cfc1e3842342618d710531ff595fc1"
+      objectStoragePassword:
+        keyId: "346326f7e4da49369eea4472d2f99119"
+      objectStorageAuthUrl:
+        keyId: "aa39f2ea0fa4424084baf657d34d1fc2"
