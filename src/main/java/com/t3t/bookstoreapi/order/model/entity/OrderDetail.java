@@ -1,10 +1,7 @@
 package com.t3t.bookstoreapi.order.model.entity;
 
 import com.t3t.bookstoreapi.book.model.entity.Book;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
@@ -33,7 +30,7 @@ public class OrderDetail {
     private Book book;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "package_id", nullable = false)
+    @JoinColumn(name = "package_id")
     @Comment("주문 상세 항목에 사용된 포장지")
     private Packaging packaging;
 
@@ -42,6 +39,7 @@ public class OrderDetail {
     @Comment("주문 상세 항목이 속한 주문 정보")
     private Order order;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_status_id", nullable = false)
     @Comment("주문 상태")
