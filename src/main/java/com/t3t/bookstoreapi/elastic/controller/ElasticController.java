@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,15 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ElasticController {
     private final ElasticService elasticService;
-    @PostMapping("/search")
+    @GetMapping("/search")
     public ResponseEntity<BaseResponse<PageResponse<ElasticResponse>>> getSearchPage(
             @RequestParam(value = "query") String query,
+            @RequestParam(value = "searchType") String searchType,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "_score", required = false) String sortBy) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
-        PageResponse<ElasticResponse> searchList = elasticService.search(query, pageable);
+
+        PageResponse<ElasticResponse> searchList = elasticService.search(query,searchType, pageable);
         BaseResponse<PageResponse<ElasticResponse>> responseBody = new BaseResponse<>();
 
         if (query != null) {

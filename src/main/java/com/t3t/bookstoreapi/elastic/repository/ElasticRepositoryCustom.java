@@ -7,5 +7,8 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
 public interface ElasticRepositoryCustom {
-    SearchHits<ElasticDocument> search(String query, Pageable pageable);
+    SearchHits<ElasticDocument> findByAll(String query, Pageable pageable);
+    SearchHits<ElasticDocument> findByBookName(String query, Pageable pageable);
+    SearchHits<ElasticDocument> findByPublisher(String query, Pageable pageable);
+    SearchHits<ElasticDocument> findByAuthorName(String query, Pageable pageable);
 }

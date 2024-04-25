@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.elastic.service;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.core.search.TotalHits;
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
 import com.t3t.bookstoreapi.elastic.model.response.ElasticResponse;
 import com.t3t.bookstoreapi.elastic.repository.ElasticRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -27,14 +29,16 @@ import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscounte
 @RequiredArgsConstructor
 public class ElasticService {
     private final ElasticRepository elasticRepository;
-    public PageResponse<ElasticResponse> search(String query, Pageable pageable) {
+    @Transactional(readOnly = true)
+    public PageResponse<ElasticResponse> search(String query,String searchType, Pageable pageable) {
 
-        SearchHits<ElasticDocument> searchHits = elasticRepository.search(query, pageable);
+        SearchHits<ElasticDocument> searchHits = searchType(query, searchType, pageable);
+        long searchBookCount = searchHits.getTotalHits();
 
         List<ElasticResponse> lists = searchHits.getSearchHits().stream()
                 .map(hit -> {
                     ElasticDocument document = hit.getContent();
-                    return buildElasticSearchResultResponse(document, hit.getScore());
+                    return buildElasticSearchResultResponse(document, hit.getScore(), searchBookCount);
                 })
                 .collect(Collectors.toList());
 
@@ -49,8 +53,7 @@ public class ElasticService {
                 .last(page.isLast())
                 .build();
     }
-    public ElasticResponse buildElasticSearchResultResponse(ElasticDocument document, float score) {
-
+    public ElasticResponse buildElasticSearchResultResponse(ElasticDocument document, float score, long searchBookCount) {
         BigDecimal discountedPrice = calculateDiscountedPrice(document.getPrice(), document.getDiscount());
 
         Instant instant = Instant.parse(document.getPublished());
@@ -70,7 +73,20 @@ public class ElasticService {
                 .authorName(document.getAuthorName())
                 .authorRole(document.getAuthorRole())
                 .score(score)
+                .count(searchBookCount)
                 .build();
     }
+    public  SearchHits<ElasticDocument> searchType(String query, String searchType, Pageable pageable) {
+        switch (searchType) {
+            case "book_name":
+                return elasticRepository.findByBookName(query,pageable);
+            case "publisher_name":
+                return elasticRepository.findByPublisher(query,pageable);
+            case "participant_name":
+                return elasticRepository.findByAuthorName(query,pageable);
+            default:
+                return elasticRepository.findByAll(query,pageable);
+        }
 
+    }
 }

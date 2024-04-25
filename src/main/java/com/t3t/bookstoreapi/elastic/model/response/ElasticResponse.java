@@ -23,7 +23,5 @@ public class ElasticResponse {
     private String authorName;
     private String authorRole;
     private float score;
-
-
-
+    private long count; //검색한 책의 수
 }
