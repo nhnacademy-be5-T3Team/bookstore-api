@@ -31,6 +31,7 @@ public class OrderDetailDto {
     private BigDecimal bookPrice; // 주문한 책 가격
     private BigDecimal bookDiscount; // 주문한 책 할인 가격
     // packaging
+    private Long packagingId; // 주문 상세 항목에 사용된 포장지 식별자
     private String packagingName; // 주문 상세 항목에 사용된 포장지 이름
     private BigDecimal packagingPrice; // 주문 상세 항목에 사용된 포장지 가격
     // orderStatus
