@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -25,11 +26,11 @@ public class DeliveryCreationRequest {
     private BigDecimal price;
 
     // 배송 우편 주소
-    @NotNull(message = "우편 주소가 누락되었습니다.")
+    @Nullable
     private Integer addressNumber;
 
     // 배송 도로명 주소
-    @NotBlank(message = "도로명 주소가 누락되었습니다.")
+    @Nullable
     private String roadnameAddress;
 
     // 배송 상세 주소
