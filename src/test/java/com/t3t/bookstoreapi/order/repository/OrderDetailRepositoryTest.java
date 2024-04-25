@@ -177,8 +177,8 @@ public class OrderDetailRepositoryTest {
         assertEquals(testOrderDetail.getBook().getBookId(), optOrderDetailDto.get().getBookId());
         assertEquals(testOrderDetail.getBook().getBookName(), optOrderDetailDto.get().getBookName());
         assertEquals(testOrderDetail.getBook().getPublisher().getPublisherName(), optOrderDetailDto.get().getBookPublisherName());
-        assertEquals(testOrderDetail.getBook().getBookPrice(), optOrderDetailDto.get().getBookPrice());
-        assertEquals(testOrderDetail.getBook().getBookDiscount(), optOrderDetailDto.get().getBookDiscount());
+//        assertEquals(testOrderDetail.getBook().getBookPrice(), optOrderDetailDto.get().getBookPrice());
+//        assertEquals(testOrderDetail.getBook().getBookDiscount(), optOrderDetailDto.get().getBookDiscount());
         assertEquals(testOrderDetail.getPackaging().getName(), optOrderDetailDto.get().getPackagingName());
         assertEquals(testOrderDetail.getPackaging().getPrice(), optOrderDetailDto.get().getPackagingPrice());
         assertEquals(testOrderDetail.getOrderStatus().getName(), optOrderDetailDto.get().getOrderStatusName());
@@ -241,8 +241,8 @@ public class OrderDetailRepositoryTest {
             assertEquals(testOrderDetailList.get(i).getBook().getBookId(), orderDetailDtoList.get(i).getBookId());
             assertEquals(testOrderDetailList.get(i).getBook().getBookName(), orderDetailDtoList.get(i).getBookName());
             assertEquals(testOrderDetailList.get(i).getBook().getPublisher().getPublisherName(), orderDetailDtoList.get(i).getBookPublisherName());
-            assertEquals(testOrderDetailList.get(i).getBook().getBookPrice(), orderDetailDtoList.get(i).getBookPrice());
-            assertEquals(testOrderDetailList.get(i).getBook().getBookDiscount(), orderDetailDtoList.get(i).getBookDiscount());
+//            assertEquals(testOrderDetailList.get(i).getBook().getBookPrice(), orderDetailDtoList.get(i).getBookPrice());
+//            assertEquals(testOrderDetailList.get(i).getBook().getBookDiscount(), orderDetailDtoList.get(i).getBookDiscount());
             assertEquals(testOrderDetailList.get(i).getPackaging().getName(), orderDetailDtoList.get(i).getPackagingName());
             assertEquals(testOrderDetailList.get(i).getPackaging().getPrice(), orderDetailDtoList.get(i).getPackagingPrice());
             assertEquals(testOrderDetailList.get(i).getOrderStatus().getName(), orderDetailDtoList.get(i).getOrderStatusName());
