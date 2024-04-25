@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.order.model.entity;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,8 +25,9 @@ public class Order {
     @Comment("주문 식별자")
     private Long id;
 
+    @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     @Comment("주문한 회원")
     private Member member;
 
