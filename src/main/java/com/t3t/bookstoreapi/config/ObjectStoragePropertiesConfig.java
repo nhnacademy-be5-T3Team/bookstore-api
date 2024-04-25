@@ -13,7 +13,7 @@ public class ObjectStoragePropertiesConfig {
     public ObjectStorageProperties objectStorageProperties(SecretKeyManagerService secretKeyManagerService,
                                                            SecretKeyProperties secretKeyProperties) {
         return ObjectStorageProperties.builder()
-                .authUrl(secretKeyManagerService.getSecretValue(secretKeyProperties.getObjectStorageAuthUrl()))
+                .authUrl(secretKeyManagerService.getSecretValue(secretKeyProperties.getObjectStorageAuthUrlKeyId()))
                 .tenantId(secretKeyManagerService.getSecretValue(secretKeyProperties.getObjectStorageTenantIdKeyId()))
                 .userName(secretKeyManagerService.getSecretValue(secretKeyProperties.getObjectStorageUserNameKeyId()))
                 .password(secretKeyManagerService.getSecretValue(secretKeyProperties.getObjectStoragePasswordKeyId()))
