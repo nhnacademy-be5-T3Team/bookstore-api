@@ -17,6 +17,7 @@ import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.model.entity.QBook.book;
@@ -43,13 +44,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
      * @author woody35545(구건모)
      */
     @Override
-    public Book getBookByIdUsingLock(Long bookId) {
-        return jpaQueryFactory
-                .selectFrom(book)
-                .where(book.bookId.eq(bookId))
-                .join(book.publisher).fetchJoin()
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                .fetchOne();
+    public Optional<Book> getBookByIdUsingLock(Long bookId) {
+        return Optional.ofNullable(jpaQueryFactory
+                        .selectFrom(book)
+                        .where(book.bookId.eq(bookId))
+                        .join(book.publisher).fetchJoin()
+                        .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                        .fetchOne());
     }
 
     /**

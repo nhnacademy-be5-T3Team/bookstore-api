@@ -10,6 +10,7 @@ import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBriefResponse;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepositoryCustom {
     /**
@@ -17,7 +18,7 @@ public interface BookRepositoryCustom {
      * Pessimistic Lock 을 사용하는 도서 조회로, 동시성 문제를 방지해야할 때 사용한다.
      * @author woody35545(구건모)
      */
-    Book getBookByIdUsingLock(Long bookId);
+    Optional<Book> getBookByIdUsingLock(Long bookId);
 
     /**
      * 도서 식별자로 도서 상세 조회
