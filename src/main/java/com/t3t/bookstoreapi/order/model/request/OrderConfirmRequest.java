@@ -20,14 +20,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderConfirmRequest {
-    @NotNull
+    @NotNull(message = "주문 식별자가 누락되었습니다.")
     private Long orderId; // 주문 식별자
-    @NotNull
+    @NotNull(message = "결제 제공처가 누락되었습니다.")
     private PaymentProviderType paymentProviderType; // 결제 제공처
-    @NotBlank
+    @NotBlank(message = "결제 제공처의 결제 키가 누락되었습니다.")
     private String paymentKey; // 결제 제공처의 결제 키
-    @NotBlank
+    @NotBlank(message = "결제 제공처의 주문 식별자가 누락되었습니다.")
     private String paymentOrderId; // 결제 제공처의 주문 식별자
-    @NotBlank
+    @NotBlank(message = "결제 금액 정보가 누락되었습니다.")
     private BigDecimal amount; // 결제 금액
 }
