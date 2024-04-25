@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.order.model.request;
 
 import com.t3t.bookstoreapi.payment.constant.PaymentProviderType;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -33,6 +34,12 @@ public class OrderCreationRequest {
 
     @NotNull(message = "결제 제공자가 누락되었습니다.")
     private PaymentProviderType paymentProviderType; // 결제 제공자
+
+    @NotBlank(message = "결제 제공자 결제 식별자가 누락되었습니다.")
+    private String providerPaymentKey;
+
+    @NotBlank(message = "결제 제공자 주문 식별자가 누락되었습니다.")
+    private String providerOrderId;
 
     @NotNull(message = "결제 금액이 누락되었습니다.")
     private BigDecimal paymentAmount; // 결제 금액
@@ -86,7 +93,7 @@ public class OrderCreationRequest {
         private Long bookId; // 책 식별자
         @NotNull(message = "수량이 누락되었습니다.")
         private Long quantity; // 주문 수량
-        @NotNull(message = "포장 식별자가 누락되었습니다.")
+        @Nullable
         private Long packagingId; // 포장 식별자
     }
 }
