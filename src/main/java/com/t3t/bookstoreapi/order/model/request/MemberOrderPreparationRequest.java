@@ -29,7 +29,8 @@ public class MemberOrderPreparationRequest {
 
     /**
      * 결제 정보
-     */@NotNull(message = "결제 제공자가 누락되었습니다.")
+     */
+    @NotNull(message = "결제 제공자가 누락되었습니다.")
     private PaymentProviderType paymentProviderType; // 결제 제공자
 
     /**
