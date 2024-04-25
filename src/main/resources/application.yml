@@ -2,6 +2,14 @@ server:
     port: 8081
 
 spring:
+  data:
+    elasticsearch:
+      repositories:
+        enabled:
+          true
+  elasticsearch:
+    uris:
+      125.6.36.164:9200
   profiles:
     active: dev
 
