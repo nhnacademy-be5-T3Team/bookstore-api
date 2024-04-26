@@ -34,7 +34,7 @@ public class ObjectStorageAuthService {
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper;
     private final RedisTemplate<String, String> redisTemplate;
-    private final String OBJECT_STORAGE_REQUEST_TOKEN_ID = "ObjectStorageRequestTokenId_test";
+    private final String OBJECT_STORAGE_REQUEST_TOKEN_ID = "ObjectStorageRequestTokenId";
 
     /**
      * ObjectStorage로 토큰 생성 요청을 보내기 위한 TokenRequest를 생성
