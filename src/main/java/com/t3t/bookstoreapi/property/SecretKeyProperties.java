@@ -37,4 +37,6 @@ public class SecretKeyProperties {
     private String redisServerPortKeyId;
     @Value("${t3t.secretKeyManager.secrets.redisServerPassword.keyId}")
     private String redisServerPasswordKeyId;
+    @Value("${t3t.secretKeyManager.secrets.tossWidgetSecretKey.keyId}")
+    private String tossWidgetSecretKeyKeyId;
 }

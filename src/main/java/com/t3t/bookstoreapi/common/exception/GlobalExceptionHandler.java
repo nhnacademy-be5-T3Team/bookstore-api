@@ -10,6 +10,8 @@ import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
+import com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundException;
+import com.t3t.bookstoreapi.payment.exception.UnsupportedPaymentProviderTypeException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,11 +45,12 @@ public class GlobalExceptionHandler {
 
     /**
      * 장바구니가 존재하지 않는 경우에 대한 예외 처리 핸들러
+     *
      * @param shoppingCartNotFoundException 장바구니가 존재하지 않는 경우 발생하는 예외
-     * @see com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException
-     * @see com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundForIdException
      * @return 404 NOT_FOUND - 예외 메시지 반환
      * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException
+     * @see com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundForIdException
      */
     @ExceptionHandler(ShoppingCartNotFoundException.class)
     public ResponseEntity<BaseResponse<Void>> handleShoppingCartNotFoundException(ShoppingCartNotFoundException shoppingCartNotFoundException) {
@@ -57,6 +60,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 책이 존재하지 않는 경우에 대한 예외 처리 핸들러
+     *
      * @param bookNotFoundException 책이 존재하지 않는 경우 발생하는 예외
      * @return 404 NOT_FOUND - 예외 메시지 반환
      * @author woody35545(구건모)
@@ -69,7 +73,8 @@ public class GlobalExceptionHandler {
 
     /**
      * 카테고리가 존재하지 않는 경우에 대한 예외 처리 핸들러
-     * @param  categoryNotFoundException 카테고리가 존재하지 않는 경우 발생하는 예외
+     *
+     * @param categoryNotFoundException 카테고리가 존재하지 않는 경우 발생하는 예외
      * @return 404 NOT_FOUND - 예외 메시지 반환
      */
     @ExceptionHandler(CategoryNotFoundException.class)
@@ -80,6 +85,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 잘못된 인자가 전달된 경우에 대한 예외 처리 핸들러
+     *
      * @param illegalArgumentException 잘못된 인자가 전달된 경우 발생하는 예외
      * @return 400 BAD_REQUEST - 예외 메시지 반환
      * @author woody35545(구건모)
@@ -92,11 +98,12 @@ public class GlobalExceptionHandler {
 
     /**
      * 존재하지 않는 배송에 대한 조회 시도 시 발생하는 예외 처리 핸들러
-     * @see com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException
-     * @see com.t3t.bookstoreapi.order.exception.DeliveryNotFoundForIdException
+     *
      * @param deliveryNotFoundException 존재하지 않는 배송에 대한 조회 시도 시 발생하는 예외
      * @return 404 NOT_FOUND - 예외 메시지 반환
      * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException
+     * @see com.t3t.bookstoreapi.order.exception.DeliveryNotFoundForIdException
      */
     @ExceptionHandler(DeliveryNotFoundException.class)
     public ResponseEntity<BaseResponse<Void>> handleDeliveryNotFoundException(DeliveryNotFoundException deliveryNotFoundException) {
@@ -106,10 +113,11 @@ public class GlobalExceptionHandler {
 
     /**
      * 회원 계정이 이미 존재하는 경우에 대한 예외 처리 핸들러
+     *
      * @param accountAlreadyExistsException 회원 계정이 이미 존재하는 경우 발생하는 예외
-     * @see com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsException
      * @return 409 CONFLICT - 예외 메시지 반환
      * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsException
      */
     @ExceptionHandler(AccountAlreadyExistsException.class)
     public ResponseEntity<BaseResponse<Void>> handleAccountAlreadyExistsException(AccountAlreadyExistsException accountAlreadyExistsException) {
@@ -119,10 +127,11 @@ public class GlobalExceptionHandler {
 
     /**
      * 회원 등급이 존재하지 않는 경우에 대한 예외 처리 핸들러
+     *
      * @param memberGradeNotFoundForNameException 회원 등급이 존재하지 않는 경우 발생하는 예외
-     * @see com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException
      * @return 404 NOT_FOUND - 예외 메시지 반환
      * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException
      */
     @ExceptionHandler(MemberGradeNotFoundForNameException.class)
     public ResponseEntity<BaseResponse<Void>> handleMemberGradeNotFoundForNameException(MemberGradeNotFoundForNameException memberGradeNotFoundForNameException) {
@@ -130,6 +139,34 @@ public class GlobalExceptionHandler {
                 .body(new BaseResponse<Void>().message(memberGradeNotFoundForNameException.getMessage()));
     }
 
+    /**
+     * 결제 제공자가 존재하지 않는 경우에 대한 예외 처리 핸들러
+     *
+     * @param paymentProviderNotFoundException 결제 제공자가 존재하지 않는 경우 발생하는 예외
+     * @return 404 NOT_FOUND - 예외 메시지 반환
+     * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundException
+     */
+    @ExceptionHandler(PaymentProviderNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handlePaymentProviderNotFoundException(PaymentProviderNotFoundException paymentProviderNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(paymentProviderNotFoundException.getMessage()));
+    }
+
+    /**
+     * 지원하지 않는 결제 서비스 제공자 타입으로 결제를 시도할 때 발생하는 예외 처리 핸들러
+     *
+     * @param unsupportedPaymentProviderTypeException 지원하지 않는 결제 서비스 제공자 타입으로 결제를 시도할 때 발생하는 예외
+     * @return 400 BAD_REQUEST - 예외 메시지 반환
+     * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.payment.exception.UnsupportedPaymentProviderTypeException
+     */
+    @ExceptionHandler(UnsupportedPaymentProviderTypeException.class)
+    public ResponseEntity<BaseResponse<Void>> handleUnsupportedPaymentProviderTypeException(UnsupportedPaymentProviderTypeException unsupportedPaymentProviderTypeException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new BaseResponse<Void>().message(unsupportedPaymentProviderTypeException.getMessage()));
+    }
+    
     /**
      * 회원이 존재하지 않는 경우에 대한 예외 처리 핸들러
      * @param memberNotFoundException 회원이 존재하지 않는 경우 발생하는 예외
@@ -167,10 +204,11 @@ public class GlobalExceptionHandler {
 
     /**
      * validation 실패 시 발생하는 MethodArgumentNotValidException 예외 처리 핸들러
-     * @param  methodArgumentNotValidException validation 실패 시 발생하는 예외
+     *
+     * @param methodArgumentNotValidException validation 실패 시 발생하는 예외
      * @return 400 BAD_REQUEST - 만족하지 못한 validation 항목에 대한 메시지 반환
-     * @see org.springframework.web.bind.MethodArgumentNotValidException
      * @author woody35545(구건모)
+     * @see org.springframework.web.bind.MethodArgumentNotValidException
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {

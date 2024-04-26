@@ -2,6 +2,14 @@ server:
     port: 8081
 
 spring:
+  data:
+    elasticsearch:
+      repositories:
+        enabled:
+          true
+  elasticsearch:
+    uris:
+      125.6.36.164:9200
   profiles:
     active: dev
 
@@ -58,3 +66,5 @@ t3t:
         keyId: "0582f8b117604b7d86e9f3ff26931cde"
       redisServerPassword:
         keyId: "ec1eb8e0706e402cbec8487cbcb86564"
+      tossWidgetSecretKey:
+        keyId: "23083fa9a5dc4775946875f891b35632"
