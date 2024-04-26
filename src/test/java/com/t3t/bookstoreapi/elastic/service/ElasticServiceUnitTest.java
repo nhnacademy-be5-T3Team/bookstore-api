@@ -4,10 +4,12 @@ import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
 import com.t3t.bookstoreapi.elastic.model.response.ElasticResponse;
 import com.t3t.bookstoreapi.elastic.repository.ElasticRepository;
 import com.t3t.bookstoreapi.model.response.PageResponse;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -18,8 +20,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 public class ElasticServiceUnitTest {
@@ -31,6 +33,7 @@ public class ElasticServiceUnitTest {
     private ElasticService elasticService;
 
     @Test
+    @DisplayName("엘라스틱서치 검색 기능 테스트")
     public void testSearch() {
         // Given
         String query = "test";
