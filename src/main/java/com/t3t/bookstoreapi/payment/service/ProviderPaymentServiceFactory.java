@@ -18,7 +18,7 @@ import java.util.Map;
 public class ProviderPaymentServiceFactory {
 
     public final Map<String, ProviderPaymentService> providerPaymentServiceMap;
-    private static final String DEFAULT_PROVIDER_SERVICE_POSTFIX = "paymentService";
+    private static final String DEFAULT_PROVIDER_SERVICE_POSTFIX = "PaymentService";
 
     public ProviderPaymentService get(PaymentProviderType providerType) {
         String providerServiceBeanName = providerType.name().toLowerCase() + DEFAULT_PROVIDER_SERVICE_POSTFIX;
