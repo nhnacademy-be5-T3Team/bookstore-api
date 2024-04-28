@@ -26,7 +26,7 @@ public class PublisherController {
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "publisherId", required = false) String sortBy) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
 
         PageResponse<PublisherDto> publisherList = publisherService.getPublisherList(pageable);
 

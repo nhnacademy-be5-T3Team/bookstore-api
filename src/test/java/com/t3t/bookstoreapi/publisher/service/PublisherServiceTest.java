@@ -31,7 +31,7 @@ class PublisherServiceTest {
     @Test
     void getPublisherList() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("publisherId").descending());
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("publisherId").ascending());
 
         List<Publisher> testPublisherList = List.of(
                 Publisher.builder().publisherId(101L).publisherName("한빛미디어").publisherEmail("han@gmail.com").build(),
