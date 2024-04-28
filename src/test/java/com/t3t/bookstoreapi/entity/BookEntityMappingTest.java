@@ -77,7 +77,7 @@ class BookEntityMappingTest {
 
         tagRepository.save(tag);
 
-        Tag savedTag = tagRepository.findById(Math.toIntExact(tag.getTagId())).orElse(null);
+        Tag savedTag = tagRepository.findById(tag.getTagId()).orElse(null);
 
         assertNotNull(savedTag);
         assertEquals(tagName, savedTag.getTagName());
