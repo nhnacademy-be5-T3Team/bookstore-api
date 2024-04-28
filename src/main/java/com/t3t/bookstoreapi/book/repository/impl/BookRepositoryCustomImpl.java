@@ -1,23 +1,20 @@
 package com.t3t.bookstoreapi.book.repository.impl;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookId;
-import com.t3t.bookstoreapi.book.model.dto.TagDto;
+import com.t3t.bookstoreapi.tag.model.dto.TagDto;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.repository.BookRepositoryCustom;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBriefResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.model.entity.QBook.book;
