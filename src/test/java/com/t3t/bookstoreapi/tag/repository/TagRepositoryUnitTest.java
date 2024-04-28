@@ -20,7 +20,7 @@ public class TagRepositoryUnitTest {
     void testFindAll() {
         Tag tag = tagRepository.save(
                 Tag.builder()
-                        .tagId(1)
+                        .tagId(1L)
                         .tagName("tag")
                         .build()
         );

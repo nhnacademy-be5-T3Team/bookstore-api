@@ -6,6 +6,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class TagDto {
-    private Integer tagId;
+    private Long tagId;
     private String tagName;
 }

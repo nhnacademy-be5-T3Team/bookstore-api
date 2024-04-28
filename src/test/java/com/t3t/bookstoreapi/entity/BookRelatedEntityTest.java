@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.entity;
 
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.entity.*;
 import com.t3t.bookstoreapi.book.repository.*;
 import com.t3t.bookstoreapi.booklike.model.entity.BookLike;
@@ -100,7 +101,7 @@ class BookRelatedEntityTest {
                 .bookIsbn("9788966863307")
                 .bookPrice(new BigDecimal("19.99"))
                 .bookDiscount(new BigDecimal("0.1"))
-                .bookPackage(1)
+                .bookPackage(TableStatus.TRUE)
                 .bookPublished(LocalDate.of(1943, Month.APRIL, 6))
                 .bookStock(100)
                 .bookAverageScore(4.5f)
@@ -141,6 +142,7 @@ class BookRelatedEntityTest {
 
         Category category = categoryRepository.save(Category.builder()
                 .categoryName("categoryName")
+                .depth(1)
                 .build());
 
         BookCategory bookCategory = BookCategory.builder().book(testBook).category(category).build();
