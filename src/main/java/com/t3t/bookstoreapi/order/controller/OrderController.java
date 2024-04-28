@@ -39,7 +39,7 @@ public class OrderController {
      * @return 201 CREATED - 주문 생성 성공
      * @author woody35545(구건모)
      */
-    @PostMapping("/orders")
+    @PostMapping("/orders/member")
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse<MemberOrderPreparationResponse> createMemberOrder(@RequestBody MemberOrderPreparationRequest request) {
         return new BaseResponse<MemberOrderPreparationResponse>().data(orderServiceFacade.prepareOrder(request));
