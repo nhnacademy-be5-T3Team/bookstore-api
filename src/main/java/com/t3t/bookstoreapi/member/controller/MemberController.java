@@ -57,7 +57,7 @@ public class MemberController {
      * @author woody35545(구건모)
      * @see MemberAddressService#getMemberAddressListByMemberId(long)
      */
-    @GetMapping("/members/{memberId}/member-addresses")
+    @GetMapping("/members/{memberId}/addresses")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<List<MemberAddressDto>> getMemberAddressListByMemberId(
             @PathVariable("memberId") long memberId) {
