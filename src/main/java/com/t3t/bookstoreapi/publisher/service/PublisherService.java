@@ -1,11 +1,14 @@
 package com.t3t.bookstoreapi.publisher.service;
 
+import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.publisher.model.request.PublisherCreationRequest;
 import com.t3t.bookstoreapi.publisher.model.dto.PublisherDto;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +23,23 @@ public class PublisherService {
     private final PublisherRepository publisherRepository;
 
     @Transactional(readOnly = true)
-    public List<PublisherDto> getPublisherList() {
-        return publisherRepository.findAll().stream().map(PublisherDto::of).collect(Collectors.toList());
+    public PageResponse<PublisherDto> getPublisherList(Pageable pageable) {
+
+        Page<Publisher> publisherPage = publisherRepository.findAll(pageable);
+
+        List<PublisherDto> publisherDtoList = publisherPage.getContent()
+                .stream()
+                .map(PublisherDto::of)
+                .collect(Collectors.toList());
+
+        return PageResponse.<PublisherDto>builder()
+                .content(publisherDtoList)
+                .pageNo(publisherPage.getNumber())
+                .pageSize(publisherPage.getSize())
+                .totalElements(publisherPage.getTotalElements())
+                .totalPages(publisherPage.getTotalPages())
+                .last(publisherPage.isLast())
+                .build();
     }
 
     @Transactional(readOnly = true)

@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.publisher.service;
 
+import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.publisher.model.dto.PublisherDto;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
@@ -12,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,24 +31,27 @@ class PublisherServiceTest {
     @Test
     void getPublisherList() {
         // given
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("publisherId").descending());
+
         List<Publisher> testPublisherList = List.of(
                 Publisher.builder().publisherId(101L).publisherName("한빛미디어").publisherEmail("han@gmail.com").build(),
                 Publisher.builder().publisherId(102L).publisherName("비상").publisherEmail("sang@gmail.com").build(),
                 Publisher.builder().publisherId(103L).publisherName("북랩").publisherEmail("book@naver.com").build()
         );
+        Page<Publisher> testList = new PageImpl<>(testPublisherList);
 
-        Mockito.doReturn(testPublisherList).when(publisherRepository).findAll();
+        Mockito.doReturn(testList).when(publisherRepository).findAll(pageable);
 
         // when
-        List<PublisherDto> resultPublisherDtoList = publisherService.getPublisherList();
+        PageResponse<PublisherDto> resultPublisherDtoList = publisherService.getPublisherList(pageable);
 
         // then
-        Assertions.assertEquals(testPublisherList.size(), resultPublisherDtoList.size());
+        Assertions.assertEquals(testPublisherList.size(), resultPublisherDtoList.getContent().size());
 
         for(int i = 0; i < testPublisherList.size(); i++) {
-            Assertions.assertEquals(testPublisherList.get(i).getPublisherId(), resultPublisherDtoList.get(i).getPublisherId());
-            Assertions.assertEquals(testPublisherList.get(i).getPublisherName(), resultPublisherDtoList.get(i).getPublisherName());
-            Assertions.assertEquals(testPublisherList.get(i).getPublisherEmail(), resultPublisherDtoList.get(i).getPublisherEmail());
+            Assertions.assertEquals(testPublisherList.get(i).getPublisherId(), resultPublisherDtoList.getContent().get(i).getPublisherId());
+            Assertions.assertEquals(testPublisherList.get(i).getPublisherName(), resultPublisherDtoList.getContent().get(i).getPublisherName());
+            Assertions.assertEquals(testPublisherList.get(i).getPublisherEmail(), resultPublisherDtoList.getContent().get(i).getPublisherEmail());
         }
     }
 
