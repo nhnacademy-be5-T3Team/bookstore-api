@@ -21,7 +21,7 @@ public class PublisherController {
     private final PublisherService publisherService;
 
     @GetMapping("/publishers")
-    public ResponseEntity<BaseResponse<PageResponse<PublisherDto>>> getPulisherList(
+    public ResponseEntity<BaseResponse<PageResponse<PublisherDto>>> getPublisherList(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "publisherId", required = false) String sortBy) {
