@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.member.controller;
 
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
+import com.t3t.bookstoreapi.member.model.dto.MemberDto;
 import com.t3t.bookstoreapi.member.model.request.MemberRegistrationRequest;
 import com.t3t.bookstoreapi.member.model.response.MemberRegistrationResponse;
 import com.t3t.bookstoreapi.member.service.MemberAddressService;
@@ -19,6 +20,18 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MemberAddressService memberAddressService;
+
+    /**
+     * 회원 식별자로 특정 회원 정보를 조회하는 API
+     * @param memberId 조회하려는 회원의 식별자
+     * @author woody35545(구건모)
+     */
+    @GetMapping("/members/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<MemberDto> getMemberById(@PathVariable("memberId") long memberId) {
+        return new BaseResponse<MemberDto>()
+                .data(memberService.getMemberById(memberId));
+    }
 
     /**
      * 회원 생성(가입) API
@@ -41,8 +54,8 @@ public class MemberController {
      * 회원 식별자로 특정 회원이 등록한 모든 회원 주소 정보들을 조회하는 API
      *
      * @param memberId 조회하려는 회원의 식별자
-     * @see MemberAddressService#getMemberAddressListByMemberId(long)
      * @author woody35545(구건모)
+     * @see MemberAddressService#getMemberAddressListByMemberId(long)
      */
     @GetMapping("/members/{memberId}/member-addresses")
     @ResponseStatus(HttpStatus.OK)
