@@ -20,18 +20,18 @@ public class OrderController {
 
     /**
      * 주문 내에 속해있는 주문 상세 리스트 조회
+     *
      * @param orderId 조회하려는 주문 식별자
      * @author woody35545(구건모)
      */
-    @GetMapping("/orders/{orderId}/order-details")
+    @GetMapping("/orders/{orderId}/details")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<List<OrderDetailDto>> getOrderDetailDtoListByOrderId(@PathVariable("orderId") long orderId) {
-
         return new BaseResponse<List<OrderDetailDto>>().data(orderDetailService.getOrderDetailDtoListByOrderId(orderId));
     }
 
     /**
-     * 비원 주문 생성 API
+     * 비회원 주문 생성 API
      * 주문은 기본적으로 결제 대기 상태로 생성된다.
      * 결제 완료 후 주문 승인 요청을 통해 주문이 승인 처리된다.
      *
@@ -43,5 +43,20 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse<GuestOrderPreparationResponse> createMemberOrder(@RequestBody GuestOrderPreparationRequest request) {
         return new BaseResponse<GuestOrderPreparationResponse>().data(orderServiceFacade.prepareOrder(request));
+    }
+  
+    /**
+     * 회원 주문 생성 API
+     * 주문은 기본적으로 결제 대기 상태로 생성된다.
+     * 결제 완료 후 주문 승인 요청을 통해 주문이 승인 처리된다.
+     *
+     * @param request 주문 생성 요청 정보
+     * @return 201 CREATED - 주문 생성 성공
+     * @author woody35545(구건모)
+     */
+    @PostMapping("/orders/member")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BaseResponse<MemberOrderPreparationResponse> createMemberOrder(@RequestBody MemberOrderPreparationRequest request) {
+        return new BaseResponse<MemberOrderPreparationResponse>().data(orderServiceFacade.prepareOrder(request));
     }
 }
