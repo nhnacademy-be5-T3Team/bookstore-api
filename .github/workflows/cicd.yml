@@ -1,7 +1,7 @@
 name: CI/CD
 on:
   push:
-    branches: [ "master", "develop", "feature/cicd-#126" ]
+    branches: [ "master", "develop" ]
   pull_request:
     branches: [ "master", "develop" ]
 
