@@ -3,13 +3,19 @@ package com.t3t.bookstoreapi.elastic.model.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 
 import javax.persistence.Id;
 import java.math.BigDecimal;
-
+/**
+ * elasticsearh의 데이터에 대한 document
+ * elasticsearch의 데이터는 elastic 객체의 id를 가지고 있음
+ * @author parkjonggyeong18(박종경)
+ */
 @Getter
+@Setter
 @NoArgsConstructor
 @Document(indexName = "t3t_book")
 public class ElasticDocument {

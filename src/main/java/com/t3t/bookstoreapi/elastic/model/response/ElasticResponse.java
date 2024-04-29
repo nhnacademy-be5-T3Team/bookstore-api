@@ -1,9 +1,14 @@
 package com.t3t.bookstoreapi.elastic.model.response;
 
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * 검색된 도서의 점보를 담은 데이터 전송 객체
+ *  @author parkjonggyeong18(박종경)
+ */
 @Getter
 @Builder
 @Setter

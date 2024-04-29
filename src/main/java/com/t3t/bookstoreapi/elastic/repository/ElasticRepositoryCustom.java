@@ -7,8 +7,36 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
 public interface ElasticRepositoryCustom {
+    /**
+     *
+     * @param query text 검색어
+     * @param pageable 페이지 요청 정보
+     * @return 모든 검색유형으로 찾은 도서 목록
+     *  @author parkjonggyeong18(박종경)
+     */
     SearchHits<ElasticDocument> findByAll(String query, Pageable pageable);
+    /**
+     *
+     * @param query text 검색어
+     * @param pageable 페이지 요청 정보
+     * @return 도서 제목으로 찾은 도서 목록
+     *  @author parkjonggyeong18(박종경)
+     */
     SearchHits<ElasticDocument> findByBookName(String query, Pageable pageable);
+    /**
+     *
+     * @param query text 검색어
+     * @param pageable 페이지 요청 정보
+     * @return 출판사 명으로 찾은 도서 목록
+     *  @author parkjonggyeong18(박종경)
+     */
     SearchHits<ElasticDocument> findByPublisher(String query, Pageable pageable);
+    /**
+     *
+     * @param query text 검색어
+     * @param pageable 페이지 요청 정보
+     * @return 참여자 명으로 찾은 도서 목록
+     *  @author parkjonggyeong18(박종경)
+     */
     SearchHits<ElasticDocument> findByAuthorName(String query, Pageable pageable);
 }

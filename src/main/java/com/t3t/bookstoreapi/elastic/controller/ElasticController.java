@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ElasticController {
     private final ElasticService elasticService;
+
+    /**
+     * elasticsearch 기반 text 검색
+     *
+     * @param query      text 검색어
+     * @param searchType 검색 유형
+     * @param pageNo     페이지 번호 (기본값: 0)
+     * @param pageSize   페이지 크기 (기본값: 10)
+     * @param sortBy     정렬 기준 (기본값: "_socre")
+     * @return HTTP 상태 및 도서 목록 응답
+     * @author parkjonggyeong18(박종경)
+     */
     @GetMapping("/search")
     public ResponseEntity<BaseResponse<PageResponse<ElasticResponse>>> getSearchPage(
             @RequestParam(value = "query") String query,
@@ -29,7 +40,7 @@ public class ElasticController {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
 
-        PageResponse<ElasticResponse> searchList = elasticService.search(query,searchType, pageable);
+        PageResponse<ElasticResponse> searchList = elasticService.search(query, searchType, pageable);
         BaseResponse<PageResponse<ElasticResponse>> responseBody = new BaseResponse<>();
 
         if (query != null) {
@@ -38,10 +49,8 @@ public class ElasticController {
                     ResponseEntity.status(HttpStatus.OK).body(
                             responseBody.data(searchList)
                     );
-        }else{
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
-                    responseBody.message("잘못된 검색입니다.")
-            );
+        } else {
+                return ResponseEntity.badRequest().body(new BaseResponse<>());
         }
     }
 }
