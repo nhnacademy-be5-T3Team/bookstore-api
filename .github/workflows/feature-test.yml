@@ -1,8 +1,8 @@
-name: CI-CD
+name: feature branch test
 on:
   push:
     branches:
-      - 'releases/**'
+      - 'feature/**'
 jobs:
   build:
     runs-on: ubuntu-latest
