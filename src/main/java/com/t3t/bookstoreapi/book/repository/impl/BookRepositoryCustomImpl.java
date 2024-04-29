@@ -6,15 +6,18 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookId;
-import com.t3t.bookstoreapi.tag.model.dto.TagDto;
+import com.t3t.bookstoreapi.book.model.dto.TagDto;
+import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.repository.BookRepositoryCustom;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBriefResponse;
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.model.entity.QBook.book;
@@ -32,6 +35,23 @@ import static com.t3t.bookstoreapi.tag.model.entity.QTag.tag;
 public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param bookId 조회할 책의 식별자
+     * @return 조회된 책 엔티티
+     * @author woody35545(구건모)
+     */
+    @Override
+    public Optional<Book> getBookByIdUsingLock(Long bookId) {
+        return Optional.ofNullable(jpaQueryFactory
+                        .selectFrom(book)
+                        .where(book.bookId.eq(bookId))
+                        .join(book.publisher).fetchJoin()
+                        .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                        .fetchOne());
+    }
 
     /**
      * 주어진 책의 ID를 사용하여 책의 상세 정보를 검색
@@ -156,7 +176,6 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
      * @return ParticipantRoleRegistrationDtoByBookId 객체의 목록. 각 객체는 해당 도서 ID와 그에 연관된
      * 참여자 역할 등록 정보 목록을 가지고 있음
      * @author Yujin-nKim(김유진)
-     *
      */
     @Override
     public List<ParticipantRoleRegistrationDtoByBookId> getBookParticipantDtoListByIdList(List<Long> bookIdList) {
@@ -190,17 +209,17 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                 .entrySet()
                 .stream()
                 .map(entry -> ParticipantRoleRegistrationDtoByBookId.builder()
-                            .bookId(entry.getKey())
-                            .participantList(entry.getValue())
-                            .build())
+                        .bookId(entry.getKey())
+                        .participantList(entry.getValue())
+                        .build())
                 .collect(Collectors.toList());
     }
 
     /**
      * 최근에 출판된 최대 {@code maxCount}개의 도서 목록을 조회
      *
-     * @param date      기준 날짜. 해당 날짜를 기준으로 7일 이내에 출판된 도서를 검색
-     * @param maxCount  가져올 도서 목록의 최대 개수
+     * @param date     기준 날짜. 해당 날짜를 기준으로 7일 이내에 출판된 도서를 검색
+     * @param maxCount 가져올 도서 목록의 최대 개수
      * @return 최대 {@code maxCount}개의 도서 정보로 구성된 리스트
      * @author Yujin-nKim(김유진)
      */

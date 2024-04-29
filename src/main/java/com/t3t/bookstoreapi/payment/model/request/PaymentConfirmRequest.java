@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.payment.model.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
  * @author woody35545(구건모)
  */
 @Getter
+@Builder
 public class PaymentConfirmRequest {
     /**
      * 결제 제공처를 사용하는 결제의 경우 해당 결제 제공처에서 사용하는 결제 식별자를 사용한다.

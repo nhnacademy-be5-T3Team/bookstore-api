@@ -3,14 +3,22 @@ package com.t3t.bookstoreapi.book.repository;
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookId;
-import com.t3t.bookstoreapi.tag.model.dto.TagDto;
+import com.t3t.bookstoreapi.book.model.dto.TagDto;
+import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBriefResponse;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepositoryCustom {
+    /**
+     * 도서 식별자로 도서를 조회한다.<br>
+     * Pessimistic Lock 을 사용하는 도서 조회로, 동시성 문제를 방지해야할 때 사용한다.
+     * @author woody35545(구건모)
+     */
+    Optional<Book> getBookByIdUsingLock(Long bookId);
 
     /**
      * 도서 식별자로 도서 상세 조회

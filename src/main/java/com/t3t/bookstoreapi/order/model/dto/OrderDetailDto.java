@@ -20,20 +20,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OrderDetailDto {
     private Long id; // 주문 상세 식별자
-    private Long quantity; // 주문 수량
+    private Integer quantity; // 주문 수량
+    /**
+     * 주문 상세 항목 단건에 대한 최종 가격
+     * (= 책 가격 * 할인율 + 포장지 가격)
+     */
+    private BigDecimal price;
     private LocalDateTime createdAt; // 주문 상세 생성 일시
-    // order
+    /** order */
     private Long orderId; // 주문 상세 항목이 속한 주문 정보 식별자
-    // book
+    /** book */
     private Long bookId; // 주문한 책 식별자
     private String bookName; // 주문한 책 이름
     private String bookPublisherName; // 주문한 책 출판사 이름
-    private BigDecimal bookPrice; // 주문한 책 가격
-    private BigDecimal bookDiscount; // 주문한 책 할인 가격
-    // packaging
+//    private BigDecimal bookPrice; /* 추후 결제 시점에 책 가격을 저장하는 필드 생성 후 변경 예정 */
+//    private BigDecimal bookDiscount; /* 추후 결제 시점에 책 할인율을 저장하는 필드 생성 후 변경 예정 */
+
+    /** packaging */
+    private Long packagingId; // 주문 상세 항목에 사용된 포장지 식별자
     private String packagingName; // 주문 상세 항목에 사용된 포장지 이름
     private BigDecimal packagingPrice; // 주문 상세 항목에 사용된 포장지 가격
-    // orderStatus
+    /** orderStatus */
     private String orderStatusName; // 주문 상태 이름
 
     public static OrderDetailDto of(OrderDetail orderDetail) {
@@ -45,8 +52,8 @@ public class OrderDetailDto {
                 .bookId(orderDetail.getBook().getBookId())
                 .bookName(orderDetail.getBook().getBookName())
                 .bookPublisherName(orderDetail.getBook().getPublisher().getPublisherName())
-                .bookPrice(orderDetail.getBook().getBookPrice())
-                .bookDiscount(orderDetail.getBook().getBookDiscount())
+//                .bookPrice(orderDetail.getBook().getBookPrice())
+//                .bookDiscount(orderDetail.getBook().getBookDiscount())
                 .packagingName(orderDetail.getPackaging().getName())
                 .packagingPrice(orderDetail.getPackaging().getPrice())
                 .orderStatusName(orderDetail.getOrderStatus().getName())

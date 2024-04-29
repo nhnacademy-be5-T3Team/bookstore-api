@@ -7,11 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long>, BookRepositoryCustom {
     Page<Book> findByBookIdIn(List<Long> ids, Pageable pageable);
 
-    Book findByBookId(Long bookId);
+    Optional<Book> findByBookId(Long bookId);
 
     List<Book> findByBookPublishedBetween(LocalDate startDate, LocalDate endDate);
 

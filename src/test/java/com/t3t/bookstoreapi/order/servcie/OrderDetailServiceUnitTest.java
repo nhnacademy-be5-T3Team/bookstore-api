@@ -38,14 +38,14 @@ public class OrderDetailServiceUnitTest {
         long orderDetailId = 0L;
         OrderDetailDto testOrderDetailDto = OrderDetailDto.builder()
                 .id(0L)
-                .quantity(1L)
+                .quantity(1)
                 .createdAt(LocalDateTime.now())
                 .orderId(0L)
                 .bookId(0L)
                 .bookName("testBookName")
                 .bookPublisherName("testPublisherName")
-                .bookDiscount(new BigDecimal("0"))
-                .bookPrice(new BigDecimal("10000"))
+//                .bookDiscount(new BigDecimal("0"))
+//                .bookPrice(new BigDecimal("10000"))
                 .packagingName("testPackagingName")
                 .packagingPrice(new BigDecimal("1000"))
                 .orderStatusName("testOrderStatusName")
@@ -66,8 +66,8 @@ public class OrderDetailServiceUnitTest {
         assertEquals(testOrderDetailDto.getBookId(), resultOrderDetailDto.getBookId());
         assertEquals(testOrderDetailDto.getBookName(), resultOrderDetailDto.getBookName());
         assertEquals(testOrderDetailDto.getBookPublisherName(), resultOrderDetailDto.getBookPublisherName());
-        assertEquals(testOrderDetailDto.getBookPrice(), resultOrderDetailDto.getBookPrice());
-        assertEquals(testOrderDetailDto.getBookDiscount(), resultOrderDetailDto.getBookDiscount());
+//        assertEquals(testOrderDetailDto.getBookPrice(), resultOrderDetailDto.getBookPrice());
+//        assertEquals(testOrderDetailDto.getBookDiscount(), resultOrderDetailDto.getBookDiscount());
         assertEquals(testOrderDetailDto.getPackagingName(), resultOrderDetailDto.getPackagingName());
         assertEquals(testOrderDetailDto.getPackagingPrice(), resultOrderDetailDto.getPackagingPrice());
         assertEquals(testOrderDetailDto.getOrderStatusName(), resultOrderDetailDto.getOrderStatusName());
@@ -86,14 +86,14 @@ public class OrderDetailServiceUnitTest {
         long orderId = 0L;
         OrderDetailDto testOrderDetailDto = OrderDetailDto.builder()
                 .id(0L)
-                .quantity(1L)
+                .quantity(1)
                 .createdAt(LocalDateTime.now())
                 .orderId(0L)
                 .bookId(0L)
                 .bookName("testBookName")
                 .bookPublisherName("testPublisherName")
-                .bookDiscount(new BigDecimal("0"))
-                .bookPrice(new BigDecimal("10000"))
+//                .bookDiscount(new BigDecimal("0"))
+//                .bookPrice(new BigDecimal("10000"))
                 .packagingName("testPackagingName")
                 .packagingPrice(new BigDecimal("1000"))
                 .orderStatusName("testOrderStatusName")
@@ -115,8 +115,8 @@ public class OrderDetailServiceUnitTest {
         assertEquals(testOrderDetailDto.getBookId(), resultOrderDetailDtoList.get(0).getBookId());
         assertEquals(testOrderDetailDto.getBookName(), resultOrderDetailDtoList.get(0).getBookName());
         assertEquals(testOrderDetailDto.getBookPublisherName(), resultOrderDetailDtoList.get(0).getBookPublisherName());
-        assertEquals(testOrderDetailDto.getBookPrice(), resultOrderDetailDtoList.get(0).getBookPrice());
-        assertEquals(testOrderDetailDto.getBookDiscount(), resultOrderDetailDtoList.get(0).getBookDiscount());
+//        assertEquals(testOrderDetailDto.getBookPrice(), resultOrderDetailDtoList.get(0).getBookPrice());
+//        assertEquals(testOrderDetailDto.getBookDiscount(), resultOrderDetailDtoList.get(0).getBookDiscount());
         assertEquals(testOrderDetailDto.getPackagingName(), resultOrderDetailDtoList.get(0).getPackagingName());
         assertEquals(testOrderDetailDto.getPackagingPrice(), resultOrderDetailDtoList.get(0).getPackagingPrice());
         assertEquals(testOrderDetailDto.getOrderStatusName(), resultOrderDetailDtoList.get(0).getOrderStatusName());

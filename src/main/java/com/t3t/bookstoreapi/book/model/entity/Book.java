@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.order.exception.BookStockShortageException;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import lombok.*;
 
@@ -87,4 +88,31 @@ public class Book {
         this.bookLikeCount--;
     }
 
+    /**
+     * 재고 증가<br>
+     * 동시성 문제가 발생하지 않도록 Lock 이 적용된 상태에서 사용한다.
+     *
+     * @param quantity 증가할 수량
+     * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.book.repository.BookRepositoryCustom#getBookByIdUsingLock(Long)
+     */
+    public void increaseStock(int quantity) {
+        this.bookStock += quantity;
+    }
+
+    /**
+     * 재고 감소<br>
+     * 동시성 문제가 발생하지 않도록 Lock 이 적용된 상태에서 사용한다.
+     *
+     * @param quantity 감소할 수량
+     * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.book.repository.BookRepositoryCustom#getBookByIdUsingLock(Long)
+     */
+    public void decreaseStock(int quantity) {
+        if (this.bookStock < quantity) {
+            throw new BookStockShortageException("재고가 부족합니다.");
+        }
+
+        this.bookStock -= quantity;
+    }
 }
