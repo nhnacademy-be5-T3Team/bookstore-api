@@ -2,8 +2,8 @@ package com.t3t.bookstoreapi.order.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
-import com.t3t.bookstoreapi.order.model.request.MemberOrderPreparationRequest;
-import com.t3t.bookstoreapi.order.model.response.MemberOrderPreparationResponse;
+import com.t3t.bookstoreapi.order.model.request.GuestOrderPreparationRequest;
+import com.t3t.bookstoreapi.order.model.response.GuestOrderPreparationResponse;
 import com.t3t.bookstoreapi.order.service.OrderDetailService;
 import com.t3t.bookstoreapi.order.service.OrderServiceFacade;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +30,21 @@ public class OrderController {
         return new BaseResponse<List<OrderDetailDto>>().data(orderDetailService.getOrderDetailDtoListByOrderId(orderId));
     }
 
+    /**
+     * 비회원 주문 생성 API
+     * 주문은 기본적으로 결제 대기 상태로 생성된다.
+     * 결제 완료 후 주문 승인 요청을 통해 주문이 승인 처리된다.
+     *
+     * @param request 주문 생성 요청 정보
+     * @return 201 CREATED - 주문 생성 성공
+     * @author woody35545(구건모)
+     */
+    @PostMapping("/orders/guest")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BaseResponse<GuestOrderPreparationResponse> createMemberOrder(@RequestBody GuestOrderPreparationRequest request) {
+        return new BaseResponse<GuestOrderPreparationResponse>().data(orderServiceFacade.prepareOrder(request));
+    }
+  
     /**
      * 회원 주문 생성 API
      * 주문은 기본적으로 결제 대기 상태로 생성된다.
