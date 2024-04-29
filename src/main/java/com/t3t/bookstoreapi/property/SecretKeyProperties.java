@@ -23,6 +23,20 @@ public class SecretKeyProperties {
     private String databaseUsernameKeyId;
     @Value("${t3t.secretKeyManager.secrets.databaseServerPassword.keyId}")
     private String databasePasswordKeyId;
+    @Value("${t3t.secretKeyManager.secrets.objectStorageTenantId.keyId}")
+    private String objectStorageTenantIdKeyId;
+    @Value("${t3t.secretKeyManager.secrets.objectStorageUserName.keyId}")
+    private String objectStorageUserNameKeyId;
+    @Value("${t3t.secretKeyManager.secrets.objectStoragePassword.keyId}")
+    private String objectStoragePasswordKeyId;
+    @Value("${t3t.secretKeyManager.secrets.objectStorageAuthUrl.keyId}")
+    private String objectStorageAuthUrlKeyId;
+    @Value("${t3t.secretKeyManager.secrets.redisServerIpAddress.keyId}")
+    private String redisServerIpAddressKeyId;
+    @Value("${t3t.secretKeyManager.secrets.redisServerPort.keyId}")
+    private String redisServerPortKeyId;
+    @Value("${t3t.secretKeyManager.secrets.redisServerPassword.keyId}")
+    private String redisServerPasswordKeyId;
     @Value("${t3t.secretKeyManager.secrets.tossWidgetSecretKey.keyId}")
     private String tossWidgetSecretKeyKeyId;
 }
