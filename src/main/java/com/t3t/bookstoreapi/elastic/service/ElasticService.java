@@ -1,16 +1,12 @@
 package com.t3t.bookstoreapi.elastic.service;
 
-import co.elastic.clients.elasticsearch.core.search.Hit;
-import co.elastic.clients.elasticsearch.core.search.TotalHits;
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
 import com.t3t.bookstoreapi.elastic.model.response.ElasticResponse;
 import com.t3t.bookstoreapi.elastic.repository.ElasticRepository;
 import com.t3t.bookstoreapi.model.response.PageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +15,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +24,17 @@ import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscounte
 @RequiredArgsConstructor
 public class ElasticService {
     private final ElasticRepository elasticRepository;
+
+    /**
+     *검색어에 맞는 도서를 elasticsearch로 가져와 페이지네이션하여 반환
+     *해당 도서 정보를 엘라스틱 응답에 추가
+     *
+     * @param query text 검색어
+     * @param searchType 검색 유형
+     * @param pageable 페이지 요청 정보
+     * @return 페이지네이션된 엘라스틱 응답 객체 반환
+     * @author parkjonggyeong18(박종경)
+     */
     @Transactional(readOnly = true)
     public PageResponse<ElasticResponse> search(String query,String searchType, Pageable pageable) {
 
@@ -53,12 +59,21 @@ public class ElasticService {
                 .last(page.isLast())
                 .build();
     }
+
+    /**\
+     *검색된 도서 정보를 엘라스틱 응답에 추가
+     *
+     * @param document elasticsearch에서 검색된 데이터 목록
+     * @param score 검색어와 도서의 유사도
+     * @param searchBookCount elasticsearch를 통해 검색된 도서의 수
+     * @return 엘라스틱 응답객체 반환
+     * @author parkjonggyeong18(박종경)
+     */
     public ElasticResponse buildElasticSearchResultResponse(ElasticDocument document, float score, long searchBookCount) {
         BigDecimal discountedPrice = calculateDiscountedPrice(document.getPrice(), document.getDiscount());
 
         Instant instant = Instant.parse(document.getPublished());
         LocalDate localDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
-
         return ElasticResponse.builder()
                 .bookId(document.getBookId())
                 .name(document.getName())
@@ -76,6 +91,16 @@ public class ElasticService {
                 .count(searchBookCount)
                 .build();
     }
+
+    /**
+     * 도서검색 유형에 따른 검색 방법 선택
+     *
+     * @param query text 검색어
+     * @param searchType 검색 유형
+     * @param pageable 페이지 요청 정보
+     * @return elasticsearh를 통해 검색된 정보
+     * @author parkjonggyeong18(박종경)
+     */
     public  SearchHits<ElasticDocument> searchType(String query, String searchType, Pageable pageable) {
         switch (searchType) {
             case "book_name":
