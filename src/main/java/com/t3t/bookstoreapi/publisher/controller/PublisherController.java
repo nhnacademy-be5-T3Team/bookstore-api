@@ -1,17 +1,19 @@
 package com.t3t.bookstoreapi.publisher.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
+import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.publisher.model.request.PublisherCreationRequest;
 import com.t3t.bookstoreapi.publisher.model.dto.PublisherDto;
-import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.service.PublisherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,12 +21,18 @@ public class PublisherController {
     private final PublisherService publisherService;
 
     @GetMapping("/publishers")
-    public ResponseEntity<BaseResponse<List<PublisherDto>>> getPulisherList() {
-        List<PublisherDto> publisherList = publisherService.getPublisherList();
+    public ResponseEntity<BaseResponse<PageResponse<PublisherDto>>> getPublisherList(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "publisherId", required = false) String sortBy) {
 
-        return publisherList.isEmpty() ?
-                ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<List<PublisherDto>>().message("등록된 출판사가 없습니다.")) :
-                ResponseEntity.ok(new BaseResponse<List<PublisherDto>>().data(publisherList));
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+
+        PageResponse<PublisherDto> publisherList = publisherService.getPublisherList(pageable);
+
+        return publisherList.getContent().isEmpty() ?
+                ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<PageResponse<PublisherDto>>().message("등록된 출판사가 없습니다.")) :
+                ResponseEntity.ok(new BaseResponse<PageResponse<PublisherDto>>().data(publisherList));
     }
 
     @GetMapping("/publishers/{publisherId}")
