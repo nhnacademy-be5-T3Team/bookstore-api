@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.order.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
+import com.t3t.bookstoreapi.order.model.request.OrderConfirmRequest;
 import com.t3t.bookstoreapi.order.model.request.GuestOrderPreparationRequest;
 import com.t3t.bookstoreapi.order.model.response.GuestOrderPreparationResponse;
 import com.t3t.bookstoreapi.order.service.OrderDetailService;
@@ -30,6 +31,19 @@ public class OrderController {
         return new BaseResponse<List<OrderDetailDto>>().data(orderDetailService.getOrderDetailDtoListByOrderId(orderId));
     }
 
+    /**
+     * 주문 승인
+     *
+     * @param orderConfirmRequest 주문 승인 요청 정보
+     * @author woody35545(구건모)
+     */
+    @PostMapping("/orders/confirm")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<Void> confirmOrder(OrderConfirmRequest orderConfirmRequest) {
+        orderServiceFacade.confirmOrder(orderConfirmRequest);
+        return new BaseResponse<Void>().message("주문 승인이 완료되었습니다.");
+    }
+  
     /**
      * 비회원 주문 생성 API
      * 주문은 기본적으로 결제 대기 상태로 생성된다.
