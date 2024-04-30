@@ -29,12 +29,6 @@ public class GuestOrderService {
      * @autor woody35545(구건모)
      */
     public GuestOrderDto createGuestOrder(GuestOrderCreationRequest request) {
-        guestOrderRepository.save(GuestOrder.builder()
-                .id(UUID.randomUUID().toString().replace("-", ""))
-                .order(orderRepository.findById(request.getOrderId()).orElseThrow(
-                        () -> new OrderNotFoundForIdException(request.getOrderId())))
-                .password(bCryptPasswordEncoder.encode(request.getPassword()))
-                .build());
 
         return GuestOrderDto.of(guestOrderRepository.save(GuestOrder.builder()
                 .id(UUID.randomUUID().toString().replace("-", ""))
