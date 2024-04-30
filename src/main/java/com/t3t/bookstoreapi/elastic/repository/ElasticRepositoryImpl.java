@@ -63,6 +63,7 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
         // 키워드 검색 쿼리 실행
         return elasticPageable(keywordMatchQuery, pageable);
     }
+
     /**
      *
      * @param query text 검색어
@@ -83,6 +84,7 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
         // 키워드 검색 쿼리 실행
         return elasticPageable(keywordMatchQuery, pageable);
     }
+
     /**
      *
      * @param query text 검색어
@@ -103,6 +105,7 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
         // 키워드 검색 쿼리 실행
         return elasticPageable(keywordMatchQuery, pageable);
     }
+
     /**
      *
      * @param queryBuilder 키워드를 통해 검색된 도서 목록
