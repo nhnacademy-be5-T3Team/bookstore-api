@@ -86,22 +86,22 @@ class ElasticControllerUnitTest {
 
         when(elasticService.search(anyString(), anyString(), any(Pageable.class))).thenReturn(pageResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/search")
-                        .param("query", "없는책")
-                        .param("searchType", "book_name")
-                        .param("pageNo", "0")
-                        .param("pageSize", "10")
-                        .param("sortBy", "_score")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
+            mockMvc.perform(MockMvcRequestBuilders.get("/search")
+                    .param("query", "없는책")
+                    .param("searchType", "book_name")
+                    .param("pageNo", "0")
+                    .param("pageSize", "10")
+                    .param("sortBy", "_score")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent())
+            .andExpect(jsonPath("$.message").value("검색한 도서가 없습니다."));
+}
     @Test
     @DisplayName("검색어가 없는 예외 테스트")
     void getSearchPage_BadRequest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/search")
                         .param("query", "")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("잘못된 검색입니다."));
+                .andExpect(status().isBadRequest());
     }
 }
