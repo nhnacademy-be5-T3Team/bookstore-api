@@ -161,7 +161,7 @@ class MemberControllerUnitTest {
                 .thenReturn(testMemberAddressDtoList);
 
         // when
-        mockMvc.perform(get("/members/{memberId}/member-addresses", testMemberId)
+        mockMvc.perform(get("/members/{memberId}/addresses", testMemberId)
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -200,7 +200,7 @@ class MemberControllerUnitTest {
                 .thenThrow(new MemberNotFoundForIdException(testMemberId));
 
         // when
-        mockMvc.perform(get("/members/{memberId}/member-addresses", testMemberId)
+        mockMvc.perform(get("/members/{memberId}/addresses", testMemberId)
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().is(HttpStatus.NOT_FOUND.value()))
