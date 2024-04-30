@@ -11,15 +11,11 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.t3t.bookstoreapi.book.util.BookServiceUtils.calculateDiscountedPrice;
-
 @Service
 @RequiredArgsConstructor
 public class ElasticService {
@@ -70,8 +66,6 @@ public class ElasticService {
      * @author parkjonggyeong18(박종경)
      */
     public ElasticResponse buildElasticSearchResultResponse(ElasticDocument document, float score, long searchBookCount) {
-        BigDecimal discountedPrice = calculateDiscountedPrice(document.getPrice(), document.getDiscount());
-
         Instant instant = Instant.parse(document.getPublished());
         LocalDate localDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
         return ElasticResponse.builder()
@@ -79,7 +73,7 @@ public class ElasticService {
                 .name(document.getName())
                 .price(document.getPrice())
                 .discountRate(document.getDiscount())
-                .discountedPrice(discountedPrice)
+                .discountedPrice(document.getDiscountPrice())
                 .published(localDate)
                 .averageScore(document.getAverageScore())
                 .likeCount(document.getLikeCount())

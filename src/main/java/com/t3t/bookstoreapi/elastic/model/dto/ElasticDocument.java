@@ -29,6 +29,8 @@ public class ElasticDocument {
     private BigDecimal price;
     @Field(name = "book_discount")
     private BigDecimal discount;
+    @Field(name = "discounted_price")
+    private BigDecimal discountPrice;
     @Field(name = "book_published")
     private String published;
     @Field(name = "book_average_score")
