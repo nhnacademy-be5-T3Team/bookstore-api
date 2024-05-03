@@ -108,7 +108,7 @@ public class PaymentEntityTest {
         Order order = orderRepository.save(Order.builder()
                 .member(member)
                 .delivery(delivery)
-                .orderDatetime(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build());
 
         Payment payment = paymentRepository.save(Payment.builder()

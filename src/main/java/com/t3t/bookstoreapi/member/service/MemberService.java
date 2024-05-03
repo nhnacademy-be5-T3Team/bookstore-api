@@ -2,9 +2,12 @@ package com.t3t.bookstoreapi.member.service;
 
 import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsForIdException;
 import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException;
+import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
+import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
 import com.t3t.bookstoreapi.member.model.constant.MemberGradeType;
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
+import com.t3t.bookstoreapi.member.model.dto.MemberDto;
 import com.t3t.bookstoreapi.member.model.entity.BookstoreAccount;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.model.request.MemberRegistrationRequest;
@@ -21,12 +24,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberService{
+public class MemberService {
     private final MemberRepository memberRepository;
     private final BookstoreAccountRepository bookstoreAccountRepository;
     private final AccountRepository accountRepository;
     private final MemberGradeRepository memberGradeRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    /**
+     * 회원 식별자로 회원 정보 조회
+     * @param memberId 조회하려는 회원 식별자
+     * @return 조회된 회원 정보 DTO
+     * @author woody35545(구건모)
+     */
+    @Transactional(readOnly = true)
+    public MemberDto getMemberById(Long memberId) {
+        return MemberDto.of(memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundForIdException(memberId)));
+    }
+
     /**
      * 회원 가입
      *

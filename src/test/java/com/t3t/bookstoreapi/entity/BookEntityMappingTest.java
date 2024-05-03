@@ -88,11 +88,11 @@ class BookEntityMappingTest {
     void testCategoryEntityMapping() {
 
         Category rootCategory1 = categoryRepository.save(Category.builder()
-                .categoryName("rootCategory1").build());
+                .categoryName("rootCategory1").depth(1).build());
 
         Category childCategory1 = categoryRepository.save(Category.builder()
                 .categoryName("childCategory1")
-                .parentCategory(rootCategory1).build());
+                .parentCategory(rootCategory1).depth(2).parentCategory(rootCategory1).build());
 
         assertEquals("rootCategory1", rootCategory1.getCategoryName());
         assertEquals("childCategory1", childCategory1.getCategoryName());

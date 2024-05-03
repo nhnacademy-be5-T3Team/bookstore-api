@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.order.model.entity;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,7 +16,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -25,8 +25,9 @@ public class Order {
     @Comment("주문 식별자")
     private Long id;
 
+    @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     @Comment("주문한 회원")
     private Member member;
 
@@ -37,5 +38,5 @@ public class Order {
 
     @Column(name = "order_datetime" , nullable = false)
     @Comment("주문 일시")
-    private LocalDateTime orderDatetime;
+    private LocalDateTime createdAt;
 }

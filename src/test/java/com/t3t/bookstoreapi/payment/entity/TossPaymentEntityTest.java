@@ -115,7 +115,7 @@ public class TossPaymentEntityTest {
         Order order = orderRepository.save(Order.builder()
                 .member(member)
                 .delivery(delivery)
-                .orderDatetime(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build());
 
         TossPayment tossPayment = tossPaymentRepository.save(TossPayment.builder()

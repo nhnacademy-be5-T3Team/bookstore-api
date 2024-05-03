@@ -4,7 +4,7 @@ import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.PackagingDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
-import com.t3t.bookstoreapi.book.model.dto.TagDto;
+import com.t3t.bookstoreapi.tag.model.dto.TagDto;
 import lombok.*;
 
 import java.math.BigDecimal;

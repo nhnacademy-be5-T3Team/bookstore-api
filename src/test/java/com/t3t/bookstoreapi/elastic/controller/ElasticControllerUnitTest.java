@@ -73,20 +73,20 @@ class ElasticControllerUnitTest {
     }
 
 
-    @Test
-    @DisplayName("엘라스틱 서치 목록에 없는 도서 검색 테스트")
-    void getSearchPage_NoResults() throws Exception {
-        PageResponse<ElasticResponse> pageResponse = new PageResponse<>();
-        pageResponse.setContent(Collections.emptyList());
-        pageResponse.setPageNo(0);
-        pageResponse.setPageSize(10);
-        pageResponse.setTotalElements(0);
-        pageResponse.setTotalPages(0);
-        pageResponse.setLast(true);
+@Test
+@DisplayName("엘라스틱 서치 목록에 없는 도서 검색 테스트")
+void getSearchPage_NoResults() throws Exception {
+    PageResponse<ElasticResponse> pageResponse = new PageResponse<>();
+    pageResponse.setContent(Collections.emptyList());
+    pageResponse.setPageNo(0);
+    pageResponse.setPageSize(10);
+    pageResponse.setTotalElements(0);
+    pageResponse.setTotalPages(0);
+    pageResponse.setLast(true);
 
-        when(elasticService.search(anyString(), anyString(), any(Pageable.class))).thenReturn(pageResponse);
+    when(elasticService.search(anyString(), anyString(), any(Pageable.class))).thenReturn(pageResponse);
 
-            mockMvc.perform(MockMvcRequestBuilders.get("/search")
+    mockMvc.perform(MockMvcRequestBuilders.get("/search")
                     .param("query", "없는책")
                     .param("searchType", "book_name")
                     .param("pageNo", "0")

@@ -142,6 +142,7 @@ class BookRelatedEntityTest {
 
         Category category = categoryRepository.save(Category.builder()
                 .categoryName("categoryName")
+                .depth(1)
                 .build());
 
         BookCategory bookCategory = BookCategory.builder().book(testBook).category(category).build();
