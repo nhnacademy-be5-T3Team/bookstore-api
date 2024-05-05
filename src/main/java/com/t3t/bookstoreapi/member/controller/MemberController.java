@@ -81,7 +81,7 @@ public class MemberController {
     @PatchMapping("/members/{memberId}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<Void> modifyMemberPassword(@PathVariable("memberId") long memberId,
-                                                   @RequestBody MemberPasswordModifyRequest request) {
+                                                   @Valid @RequestBody MemberPasswordModifyRequest request) {
 
         memberService.modifyMemberPassword(memberId, request);
 
