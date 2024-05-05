@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.member.controller;
 
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
 import com.t3t.bookstoreapi.member.model.dto.MemberDto;
+import com.t3t.bookstoreapi.member.model.request.MemberPasswordModifyRequest;
 import com.t3t.bookstoreapi.member.model.request.MemberRegistrationRequest;
 import com.t3t.bookstoreapi.member.model.response.MemberInfoResponse;
 import com.t3t.bookstoreapi.member.model.response.MemberRegistrationResponse;
@@ -66,5 +67,24 @@ public class MemberController {
 
         return new BaseResponse<List<MemberAddressDto>>()
                 .data(memberAddressService.getMemberAddressListByMemberId(memberId));
+    }
+
+    /**
+     * 회원 비밀번호 변경 API
+     *
+     * @param memberId 회원 식별자
+     * @param request  변경할 비밀번호 요청 정보
+     * @return 200 OK - 비밀번호 변경 성공 메시지
+     * @author woody35545(구건모)
+     * @see MemberService#modifyMemberPassword(long, MemberPasswordModifyRequest)
+     */
+    @PatchMapping("/members/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<Void> modifyMemberPassword(@PathVariable("memberId") long memberId,
+                                                   @RequestBody MemberPasswordModifyRequest request) {
+
+        memberService.modifyMemberPassword(memberId, request);
+
+        return new BaseResponse<Void>().message("비밀번호가 변경되었습니다.");
     }
 }
