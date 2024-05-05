@@ -1,16 +1,19 @@
 package com.t3t.bookstoreapi.book.controller;
 
+import com.t3t.bookstoreapi.book.model.request.BookRegisterRequest;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.service.BookService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class BookController {
@@ -28,5 +31,15 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<BookDetailResponse>().data(bookService.getBookDetailsById(bookId))
         );
+    }
+
+    @PostMapping("/books")
+    public ResponseEntity<BaseResponse<Long>> createBook(@ModelAttribute @Valid BookRegisterRequest request) {
+        log.info(request.toString());
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Long>()
+                        .data(bookService.createBook(request))
+                        .message("도서 생성 요청이 정상적으로 처리되었습니다."));
     }
 }
