@@ -2,15 +2,14 @@ package com.t3t.bookstoreapi.member.service;
 
 import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsForIdException;
 import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException;
-import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
 import com.t3t.bookstoreapi.member.model.constant.MemberGradeType;
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
-import com.t3t.bookstoreapi.member.model.dto.MemberDto;
 import com.t3t.bookstoreapi.member.model.entity.BookstoreAccount;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.model.request.MemberRegistrationRequest;
+import com.t3t.bookstoreapi.member.model.response.MemberInfoResponse;
 import com.t3t.bookstoreapi.member.model.response.MemberRegistrationResponse;
 import com.t3t.bookstoreapi.member.repository.AccountRepository;
 import com.t3t.bookstoreapi.member.repository.BookstoreAccountRepository;
@@ -38,9 +37,9 @@ public class MemberService {
      * @author woody35545(구건모)
      */
     @Transactional(readOnly = true)
-    public MemberDto getMemberById(Long memberId) {
-        return MemberDto.of(memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundForIdException(memberId)));
+    public MemberInfoResponse getMemberInfoResponseById(Long memberId) {
+        return memberRepository.getMemberInfoResponseByMemberId(memberId)
+                .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
     }
 
     /**
