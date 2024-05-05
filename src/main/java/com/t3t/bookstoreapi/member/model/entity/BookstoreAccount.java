@@ -19,4 +19,8 @@ public class BookstoreAccount extends Account {
     public BookstoreAccount(String accountPassword) {
         AccountPassword = accountPassword;
     }
+
+    public void modifyPassword(String newPassword) {
+        this.AccountPassword = newPassword;
+    }
 }
