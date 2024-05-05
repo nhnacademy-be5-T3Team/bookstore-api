@@ -5,6 +5,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.t3t.bookstoreapi.member.model.response.MemberInfoResponse;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 import static com.t3t.bookstoreapi.member.model.entity.QAccount.account;
 import static com.t3t.bookstoreapi.member.model.entity.QMember.member;
 
@@ -21,24 +23,24 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
      * @see MemberInfoResponse
      */
     @Override
-    public MemberInfoResponse getMemberInfoResponseByMemberId(long memberId) {
-        return queryFactory.select(Projections.bean(
-                        MemberInfoResponse.class,
-                        member.id.as("memberId"),
-                        member.name.as("name"),
-                        member.phone.as("phone"),
-                        member.email.as("email"),
-                        member.birthDate.as("birthDate"),
-                        member.latestLogin.as("latestLogin"),
-                        member.point.as("point"),
-                        member.grade.gradeId.as("gradeId"),
-                        member.grade.name.as("gradeName"),
-                        member.status.as("status"),
-                        member.role.as("role"),
-                        account.id.as("accountId")))
-                .from(member)
-                .join(account).on(member.eq(account.member))
-                .where(member.id.eq(memberId))
-                .fetchOne();
+    public Optional<MemberInfoResponse> getMemberInfoResponseByMemberId(long memberId) {
+        return Optional.ofNullable(
+                queryFactory.select(Projections.bean(MemberInfoResponse.class,
+                                member.id.as("memberId"),
+                                member.name.as("name"),
+                                member.phone.as("phone"),
+                                member.email.as("email"),
+                                member.birthDate.as("birthDate"),
+                                member.latestLogin.as("latestLogin"),
+                                member.point.as("point"),
+                                member.grade.gradeId.as("gradeId"),
+                                member.grade.name.as("gradeName"),
+                                member.status.as("status"),
+                                member.role.as("role"),
+                                account.id.as("accountId")))
+                        .from(member)
+                        .join(account).on(member.eq(account.member))
+                        .where(member.id.eq(memberId))
+                        .fetchOne());
     }
 }
