@@ -1,6 +1,8 @@
 package com.t3t.bookstoreapi.common.exception;
 
+import com.t3t.bookstoreapi.book.exception.BookAlreadyExistsException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
+import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsException;
 import com.t3t.bookstoreapi.member.exception.MemberAddressCountLimitExceededException;
@@ -10,9 +12,14 @@ import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
+import com.t3t.bookstoreapi.participant.exception.ParticipantNotFoundException;
+import com.t3t.bookstoreapi.participant.exception.ParticipantRoleNotFoundException;
 import com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundException;
 import com.t3t.bookstoreapi.payment.exception.UnsupportedPaymentProviderTypeException;
+import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException;
+import com.t3t.bookstoreapi.tag.exception.TagNotFoundException;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -242,5 +249,47 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<Void>> handleMissingServletRequestParameterException(MissingServletRequestParameterException missingParamException) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new BaseResponse<Void>().message(missingParamException.getMessage()));
+    }
+
+    @ExceptionHandler(RedisConnectionFailureException.class)
+    public ResponseEntity<BaseResponse<Void>> handleRedisConnectionFailureException(RedisConnectionFailureException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ImageDataStorageException.class)
+    public ResponseEntity<BaseResponse<Void>> handleImageDataStorageException(ImageDataStorageException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(BookAlreadyExistsException.class)
+    public ResponseEntity<BaseResponse<Void>> handleBookAlreadyExistsException(BookAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(PublisherNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handlePublisherNotFoundException(PublisherNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(TagNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleTagNotFoundException(TagNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ParticipantNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleParticipantNotFoundException(ParticipantNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ParticipantRoleNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleParticipantRoleNotFoundException(ParticipantRoleNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
     }
 }
