@@ -188,14 +188,17 @@ class MemberRelatedEntityTest {
                 .address(address)
                 .addressDetail("test")
                 .addressNickname("test")
+                .isDefaultAddress(true)
                 .build());
 
         // when
-        Optional<MemberAddress> resultMemberAddress = memberAddressRepository.findById(memberAddress.getId());
+        Optional<MemberAddress> optMemberAddress = memberAddressRepository.findById(memberAddress.getId());
 
         // then
-        Assertions.assertTrue(resultMemberAddress.isPresent());
-        Assertions.assertEquals(memberAddress, resultMemberAddress.get());
+        Assertions.assertTrue(optMemberAddress.isPresent());
+        MemberAddress resultMemberAddress = optMemberAddress.get();
+
+        Assertions.assertEquals(memberAddress, resultMemberAddress);
 
     }
 }
