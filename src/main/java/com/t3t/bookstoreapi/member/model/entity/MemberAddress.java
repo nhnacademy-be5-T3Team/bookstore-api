@@ -35,4 +35,8 @@ public class MemberAddress {
     @Column(name = "member_address_detail", length = 100, nullable = false)
     @Comment("상세 주소")
     private String addressDetail;
+
+    @Column(name = "default_address", columnDefinition = "TINYINT(1)", nullable = false)
+    @Comment("기본 주소 여부")
+    private Boolean isDefaultAddress;
 }
