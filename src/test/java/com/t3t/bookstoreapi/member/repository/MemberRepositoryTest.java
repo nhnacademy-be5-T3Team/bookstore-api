@@ -24,8 +24,10 @@ import org.springframework.context.annotation.Import;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @DataJpaTest
@@ -83,9 +85,12 @@ class MemberRepositoryTest {
                 .build());
 
         // when
-        MemberInfoResponse memberInfoResponse = memberRepository.getMemberInfoResponseByMemberId(member.getId());
+        Optional<MemberInfoResponse> optMemberInfoResponse = memberRepository.getMemberInfoResponseByMemberId(member.getId());
 
         // then
+        assertTrue(optMemberInfoResponse.isPresent());
+
+        MemberInfoResponse memberInfoResponse = optMemberInfoResponse.get();
         log.info("memberInfoResponse => {}", memberInfoResponse);
 
         assertEquals(account.getId(), memberInfoResponse.getAccountId());
