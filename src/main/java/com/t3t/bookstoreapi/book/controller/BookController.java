@@ -1,11 +1,15 @@
 package com.t3t.bookstoreapi.book.controller;
 
+import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
+import com.t3t.bookstoreapi.book.model.dto.ParticipantMapDto;
 import com.t3t.bookstoreapi.book.model.request.BookRegisterRequest;
+import com.t3t.bookstoreapi.book.model.request.ModifyBookDetailRequest;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.model.response.BookListResponse;
 import com.t3t.bookstoreapi.book.service.BookService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.model.response.PageResponse;
+import com.t3t.bookstoreapi.tag.model.dto.TagDto;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -73,5 +79,68 @@ public class BookController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<PageResponse<BookListResponse>>().data(bookList));
+    }
+
+    /**
+     * 특정 도서의 상세 정보를 수정
+     * @param bookId 수정할 도서의 식별자
+     * @param request 수정할 도서의 상세 정보를 담은 요청 객체
+     * @return  200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
+    @PutMapping("/books/{bookId}/book-detail")
+    public ResponseEntity<BaseResponse<Void>> updateBookDetail(
+            @PathVariable Long bookId,
+            @RequestBody @Valid ModifyBookDetailRequest request) {
+
+        bookService.updateBookDetail(bookId, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("도서 상세 설명 수정 요청이 정상적으로 처리되었습니다."));
+    }
+
+    @PutMapping("/books/{bookId}/publisher")
+    public ResponseEntity<BaseResponse<Void>> updateBookPublisher(
+            @PathVariable Long bookId,
+            @RequestParam Long publisherId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("도서 출판사 수정 요청이 정상적으로 처리되었습니다."));
+    }
+
+    @PutMapping("/books/{bookId}/book-thumbnail")
+    public ResponseEntity<BaseResponse<Void>> updateBookThumbnail(
+            @PathVariable Long bookId,
+            @RequestPart MultipartFile image) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("도서 썸네일 수정 요청이 정상적으로 처리되었습니다."));
+    }
+
+    @PutMapping("/books/{bookId}/book-image")
+    public ResponseEntity<BaseResponse<Void>> updateBookImage(@PathVariable Long bookId,
+                                                              @RequestPart List<MultipartFile> imageList) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("도서 미리보기 이미지 수정 요청이 정상적으로 처리되었습니다."));
+    }
+
+    @PutMapping("/books/{bookId}/tag")
+    public ResponseEntity<BaseResponse<Void>> updateBookTag(@PathVariable Long bookId,
+                                                            @RequestParam @Valid List<TagDto> TagList) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("도서 태그 수정 요청이 정상적으로 처리되었습니다."));
+    }
+
+    @PutMapping("/books/{bookId}/category")
+    public ResponseEntity<BaseResponse<Void>> updateBookCategory(@PathVariable Long bookId,
+                                                                 @RequestParam @Valid List<CategoryDto> categoryList) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("도서 카테고리 수정 요청이 정상적으로 처리되었습니다."));
+    }
+
+    @PutMapping("/books/{bookId}/participant")
+    public ResponseEntity<BaseResponse<Void>> updateBookParticipant(@PathVariable Long bookId,
+                                                                    @RequestParam @Valid List<ParticipantMapDto> participantList) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("도서 참여자 수정 요청이 정상적으로 처리되었습니다."));
     }
 }

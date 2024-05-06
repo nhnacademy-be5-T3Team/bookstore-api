@@ -4,9 +4,11 @@ import javax.validation.constraints.NotNull;
 
 import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.book.model.request.ModifyBookDetailRequest;
 import com.t3t.bookstoreapi.order.exception.BookStockShortageException;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import lombok.*;
+import org.springframework.data.jpa.repository.Lock;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -114,5 +116,22 @@ public class Book {
         }
 
         this.bookStock -= quantity;
+    }
+
+    /**
+     * 요청에 따라 도서 정보를 수정
+     * @param request 수정할 도서의 상세 정보를 담은 요청 객체
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateBookDetails(ModifyBookDetailRequest request) {
+        this.bookName = request.getBookTitle();
+        this.bookIsbn = request.getBookIsbn();
+        this.bookPrice = request.getBookPrice();
+        this.bookDiscount = request.getBookDiscountRate();
+        this.bookPackage = TableStatus.ofCode(request.getPackagingAvailableStatus());
+        this.bookPublished = request.getBookPublished();
+        this.bookStock = request.getBookStock();
+        this.bookIndex = request.getBookIndex();
+        this.bookDesc = request.getBookDesc();
     }
 }

@@ -2,12 +2,14 @@ package com.t3t.bookstoreapi.book.service;
 
 import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.exception.BookAlreadyExistsException;
+import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
 import com.t3t.bookstoreapi.book.model.dto.PackagingDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantMapDto;
 import com.t3t.bookstoreapi.book.model.entity.*;
 import com.t3t.bookstoreapi.book.model.request.BookRegisterRequest;
+import com.t3t.bookstoreapi.book.model.request.ModifyBookDetailRequest;
 import com.t3t.bookstoreapi.book.model.response.*;
 import com.t3t.bookstoreapi.book.repository.*;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
@@ -33,10 +35,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.LockModeType;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -191,5 +195,18 @@ public class BookService {
                 .totalPages(bookPage.getTotalPages())
                 .last(bookPage.isLast())
                 .build();
+    }
+
+    /**
+     * 특정 도서의 상세 정보를 수정
+     * @param bookId  수정할 도서의 식별자
+     * @param request 수정할 도서의 상세 정보를 담은 요청 객체
+     * @throws BookNotFoundException 특정 도서를 찾을 수 없는 경우 발생
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateBookDetail(Long bookId, ModifyBookDetailRequest request) {
+        Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
+        book.updateBookDetails(request);
+        bookRepository.save(book);
     }
 }
