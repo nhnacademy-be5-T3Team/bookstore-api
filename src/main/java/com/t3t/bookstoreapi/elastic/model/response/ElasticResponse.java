@@ -22,11 +22,12 @@ public class ElasticResponse {
     private BigDecimal discountedPrice;
     private LocalDate published;
     private Float averageScore;
-    private Integer likeCount;
+    private BigDecimal likeCount;
     private String publisher;
     private String coverImageUrl;
     private String authorName;
     private String authorRole;
     private float score;
+    private BigDecimal categoryId;
     private long count; //검색한 책의 수
 }
