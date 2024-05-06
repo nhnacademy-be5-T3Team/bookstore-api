@@ -10,7 +10,7 @@ import lombok.*;
  */
 @Data
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberAddressDto {
     private Long id;
