@@ -13,6 +13,7 @@ import com.t3t.bookstoreapi.book.repository.*;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
+import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.order.model.entity.Packaging;
 import com.t3t.bookstoreapi.order.repository.PackagingRepository;
 import com.t3t.bookstoreapi.participant.exception.ParticipantNotFoundException;
@@ -30,6 +31,8 @@ import com.t3t.bookstoreapi.tag.repository.TagRepository;
 import com.t3t.bookstoreapi.upload.service.ObjectStorageUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -161,5 +164,32 @@ public class BookService {
         }
 
         return book.getBookId();
+    }
+
+    /**
+     * 페이지별 도서 목록 조회
+     *
+     * @param pageable 페이지 정보를 포함하는 Pageable 객체
+     * @return 도서 목록을 담은 PageResponse
+     * @author Yujin-nKim(김유진)
+     */
+    public PageResponse<BookListResponse> getAllBooks(Pageable pageable) {
+
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+
+        List<BookListResponse> bookListResponses = bookPage
+                .getContent()
+                .stream()
+                .map(BookListResponse::of)
+                .collect(Collectors.toList());
+
+        return PageResponse.<BookListResponse>builder()
+                .content(bookListResponses)
+                .pageNo(bookPage.getNumber())
+                .pageSize(bookPage.getSize())
+                .totalElements(bookPage.getTotalElements())
+                .totalPages(bookPage.getTotalPages())
+                .last(bookPage.isLast())
+                .build();
     }
 }
