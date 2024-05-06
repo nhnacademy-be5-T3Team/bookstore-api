@@ -248,7 +248,7 @@ public class BookService {
         String uploadFileName = generateUploadFileName(image);
         // Object Storage 새로운 이미지 업로드 요청
         fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, image);
-        bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).build());
+        bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
     }
 
     /**
@@ -272,7 +272,7 @@ public class BookService {
         for(MultipartFile file : imageList) {
             String uploadFileName = generateUploadFileName(file);
             fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, file);
-            bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadFileName).build());
+            bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
         }
     }
 
@@ -296,6 +296,7 @@ public class BookService {
             bookTagRepository.save(BookTag.builder()
                     .book(book)
                     .tag(tag)
+                    .isDeleted(TableStatus.ofCode(0))
                     .build());
         }
     }
@@ -320,6 +321,7 @@ public class BookService {
             bookCategoryRepository.save(BookCategory.builder()
                     .book(book)
                     .category(category)
+                    .isDeleted(TableStatus.ofCode(0))
                     .build());
         }
     }
@@ -347,7 +349,9 @@ public class BookService {
             registrationRepository.save(ParticipantRoleRegistration.builder()
                     .book(book)
                     .participant(participant)
-                    .participantRole(participantRole).build());
+                    .participantRole(participantRole)
+                    .isDeleted(TableStatus.ofCode(0))
+                    .build());
         }
     }
 
@@ -384,9 +388,9 @@ public class BookService {
         }
 
         List<ParticipantRoleRegistration> participantRoleRegistrationList = registrationRepository.findByBookBookId(bookId);
-        for(ParticipantRoleRegistration paticipant : participantRoleRegistrationList) {
-            paticipant.updateIsDeleted(TableStatus.TRUE);
-            registrationRepository.save(paticipant);
+        for(ParticipantRoleRegistration participant : participantRoleRegistrationList) {
+            participant.updateIsDeleted(TableStatus.TRUE);
+            registrationRepository.save(participant);
         }
 
         book.updateIsDeleted(TableStatus.TRUE);

@@ -163,7 +163,7 @@ public class BookController {
     @PutMapping("/books/{bookId}/tag")
     public ResponseEntity<BaseResponse<Void>> updateBookTag(
             @PathVariable Long bookId,
-            @RequestParam @Valid List<TagDto> tagList) {
+            @RequestBody @Valid List<TagDto> tagList) {
 
         bookService.updateBookTag(bookId, tagList);
 
@@ -181,7 +181,7 @@ public class BookController {
     @PutMapping("/books/{bookId}/category")
     public ResponseEntity<BaseResponse<Void>> updateBookCategory(
             @PathVariable Long bookId,
-            @RequestParam @Valid List<CategoryDto> categoryList) {
+            @RequestBody @Valid List<CategoryDto> categoryList) {
 
         bookService.updateBookCategory(bookId, categoryList);
 
@@ -199,7 +199,7 @@ public class BookController {
     @PutMapping("/books/{bookId}/participant")
     public ResponseEntity<BaseResponse<Void>> updateBookParticipant(
             @PathVariable Long bookId,
-            @RequestParam @Valid List<ParticipantMapDto> participantList) {
+            @RequestBody @Valid List<ParticipantMapDto> participantList) {
 
         bookService.updateBookParticipant(bookId, participantList);
 
