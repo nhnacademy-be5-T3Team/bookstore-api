@@ -67,7 +67,7 @@ public class MemberAddressService {
         Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new MemberNotFoundForIdException(request.getMemberId()));
 
-        if(memberAddressRepository.countByMemberId(member.getId()) >= MAX_MEMBER_ADDRESS_COUNT) {
+        if (memberAddressRepository.countByMemberId(member.getId()) >= MAX_MEMBER_ADDRESS_COUNT) {
             throw new MemberAddressCountLimitExceededException();
         }
 
@@ -82,6 +82,7 @@ public class MemberAddressService {
                 .member(member)
                 .addressNickname(request.getAddressNickname())
                 .addressDetail(request.getAddressDetail())
+                .isDefaultAddress(false)
                 .build());
 
         return MemberAddressDto.of(memberAddress);
