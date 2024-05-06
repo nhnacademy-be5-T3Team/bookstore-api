@@ -30,9 +30,7 @@ public class BookListResponse {
     private Float averageScore; // 평균 평점
     private Integer likeCount; // 좋아요 수
     private Integer stock; // 재고 수
-
     private BigDecimal discountedPrice; // 할인가
-    private boolean orderAvailableStatus; // 재고 여부 (주문 가능 여부)
     private TableStatus packagingAvailableStatus; // 포장 가능 여부
 
     public static BookListResponse of(Book book) {
@@ -47,7 +45,6 @@ public class BookListResponse {
                 .likeCount(book.getBookLikeCount())
                 .stock(book.getBookStock())
                 .discountedPrice(getDiscountedPrice(book.getBookDiscount(), book.getBookPrice()))
-                .orderAvailableStatus(getBookOrderAvailableStatus(book.getBookStock()))
                 .packagingAvailableStatus(book.getBookPackage())
                 .build();
     }
@@ -59,10 +56,5 @@ public class BookListResponse {
         BigDecimal discountAmount = price.multiply(discountPercentage);
 
         return price.subtract(discountAmount);
-    }
-
-    // 재고 값을 통해 주문 가능 여부를 설정하는 메서드
-    public static boolean getBookOrderAvailableStatus(Integer stock) {
-        return stock > 0;
     }
 }
