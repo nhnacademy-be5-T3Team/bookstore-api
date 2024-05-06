@@ -171,6 +171,13 @@ public class BookController {
                 new BaseResponse<Void>().message("도서 태그 수정 요청이 정상적으로 처리되었습니다."));
     }
 
+    /**
+     * 특정 도서의 카테고리를 수정
+     * @param bookId       수정할 도서의 식별자
+     * @param categoryList 수정할 카테고리 리스트
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
     @PutMapping("/books/{bookId}/category")
     public ResponseEntity<BaseResponse<Void>> updateBookCategory(
             @PathVariable Long bookId,
@@ -182,9 +189,20 @@ public class BookController {
                 new BaseResponse<Void>().message("도서 카테고리 수정 요청이 정상적으로 처리되었습니다."));
     }
 
+    /**
+     * 특정 도서의 참여자를 수정
+     * @param bookId          수정할 도서의 식별자
+     * @param participantList 수정할 참여자 매핑 리스트
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
     @PutMapping("/books/{bookId}/participant")
-    public ResponseEntity<BaseResponse<Void>> updateBookParticipant(@PathVariable Long bookId,
-                                                                    @RequestParam @Valid List<ParticipantMapDto> participantList) {
+    public ResponseEntity<BaseResponse<Void>> updateBookParticipant(
+            @PathVariable Long bookId,
+            @RequestParam @Valid List<ParticipantMapDto> participantList) {
+
+        bookService.updateBookParticipant(bookId, participantList);
+
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("도서 참여자 수정 요청이 정상적으로 처리되었습니다."));
     }

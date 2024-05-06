@@ -325,6 +325,33 @@ public class BookService {
     }
 
     /**
+     * 특정 도서의 참여자를 수정
+     * @param bookId             수정할 도서의 식별자
+     * @param participantMapList 수정할 참여자 매핑 리스트
+     * @throws BookNotFoundException              도서를 찾을 수 없는 경우 발생
+     * @throws ParticipantNotFoundException      참여자를 찾을 수 없는 경우 발생
+     * @throws ParticipantRoleNotFoundException  참여자 역할을 찾을 수 없는 경우 발생
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateBookParticipant(Long bookId, List<ParticipantMapDto> participantMapList) {
+        Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
+
+        List<ParticipantRoleRegistration> bookParticipantList = registrationRepository.findByBookBookId(bookId);
+
+        registrationRepository.deleteAll(bookParticipantList);
+
+        for(ParticipantMapDto dto : participantMapList) {
+            Participant participant = participantRepository.findById(dto.getParticipantId()).orElseThrow(ParticipantNotFoundException::new);
+            ParticipantRole participantRole = participantRoleRepository.findById(dto.getParticipantRoleId()).orElseThrow(ParticipantRoleNotFoundException::new);
+
+            registrationRepository.save(ParticipantRoleRegistration.builder()
+                    .book(book)
+                    .participant(participant)
+                    .participantRole(participantRole).build());
+        }
+    }
+
+    /**
      * 업로드할 파일의 이름을 생성
      *
      * @param file 업로드할 파일
