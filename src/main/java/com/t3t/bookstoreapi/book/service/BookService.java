@@ -28,6 +28,7 @@ import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
 import com.t3t.bookstoreapi.tag.exception.TagNotFoundException;
+import com.t3t.bookstoreapi.tag.model.dto.TagDto;
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import com.t3t.bookstoreapi.tag.repository.TagRepository;
 import com.t3t.bookstoreapi.upload.service.ObjectStorageUploadService;
@@ -271,6 +272,30 @@ public class BookService {
             String uploadFileName = generateUploadFileName(file);
             fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, file);
             bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadFileName).build());
+        }
+    }
+
+    /**
+     * 특정 도서의 태그를 수정
+     * @param bookId   수정할 도서의 식별자
+     * @param tagList  수정할 태그 리스트
+     * @throws BookNotFoundException 도서를 찾을 수 없는 경우 발생
+     * @throws TagNotFoundException  태그를 찾을 수 없는 경우 발생
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateBookTag(Long bookId, List<TagDto> tagList) {
+        Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
+
+        List<BookTag> bookTagList = bookTagRepository.findByBookBookId(bookId);
+
+        bookTagRepository.deleteAll(bookTagList);
+
+        for(TagDto newTag : tagList) {
+            Tag tag = tagRepository.findById(newTag.getId()).orElseThrow(TagNotFoundException::new);
+            bookTagRepository.save(BookTag.builder()
+                    .book(book)
+                    .tag(tag)
+                    .build());
         }
     }
 

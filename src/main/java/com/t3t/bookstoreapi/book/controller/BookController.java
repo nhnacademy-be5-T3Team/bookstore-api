@@ -153,9 +153,20 @@ public class BookController {
                 new BaseResponse<Void>().message("도서 미리보기 이미지 수정 요청이 정상적으로 처리되었습니다."));
     }
 
+    /**
+     * 특정 도서의 태그를 수정
+     * @param bookId   수정할 도서의 식별자
+     * @param tagList  수정할 태그 리스트
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
     @PutMapping("/books/{bookId}/tag")
-    public ResponseEntity<BaseResponse<Void>> updateBookTag(@PathVariable Long bookId,
-                                                            @RequestParam @Valid List<TagDto> TagList) {
+    public ResponseEntity<BaseResponse<Void>> updateBookTag(
+            @PathVariable Long bookId,
+            @RequestParam @Valid List<TagDto> tagList) {
+
+        bookService.updateBookTag(bookId, tagList);
+
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("도서 태그 수정 요청이 정상적으로 처리되었습니다."));
     }
