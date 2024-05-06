@@ -62,4 +62,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Comment("회원 역할")
     private MemberRole role;
+
+    public void withdraw() {
+        this.status = MemberStatus.WITHDRAWAL;
+    }
 }
