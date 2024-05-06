@@ -1,7 +1,6 @@
 package com.t3t.bookstoreapi.member.controller;
 
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
-import com.t3t.bookstoreapi.member.model.dto.MemberDto;
 import com.t3t.bookstoreapi.member.model.request.MemberPasswordModifyRequest;
 import com.t3t.bookstoreapi.member.model.request.MemberRegistrationRequest;
 import com.t3t.bookstoreapi.member.model.response.MemberInfoResponse;
@@ -86,5 +85,16 @@ public class MemberController {
         memberService.modifyMemberPassword(memberId, request);
 
         return new BaseResponse<Void>().message("비밀번호가 변경되었습니다.");
+    }
+
+    /**
+     * 회원 탈퇴 처리 API
+     *
+     */
+    @DeleteMapping("/members/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<Void> withdrawMember(@PathVariable("memberId") long memberId) {
+        memberService.withdrawMember(memberId);
+        return new BaseResponse<Void>().message("회원 탈퇴가 완료되었습니다.");
     }
 }

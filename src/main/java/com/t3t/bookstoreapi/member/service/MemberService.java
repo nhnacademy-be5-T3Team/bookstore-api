@@ -102,7 +102,7 @@ public class MemberService {
      * @param memberId 탈퇴하려는 회원 식별자
      * @throws MemberNotFoundForIdException 회원 식별자에 해당하는 회원이 존재하지 않을 경우 발생
      */
-    public void withdrawalMember(long memberId) {
+    public void withdrawMember(long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
@@ -111,7 +111,7 @@ public class MemberService {
                 .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
 
         account.delete();
-        
+
         member.withdraw();
     }
 }
