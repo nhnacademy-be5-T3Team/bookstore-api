@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface MemberAddressRepository extends JpaRepository<MemberAddress, Long>, MemberAddressRepositoryCustom {
     int countByMemberId(long memberId);
+    boolean existsByAddressId(long addressId);
     List<MemberAddress> findByMemberId(long memberId);
 }

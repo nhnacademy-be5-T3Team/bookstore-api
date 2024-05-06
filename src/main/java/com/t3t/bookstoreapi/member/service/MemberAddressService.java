@@ -108,4 +108,23 @@ public class MemberAddressService {
 
         memberAddress.asDefaultAddress();
     }
+
+    /**
+     * 회원 주소 삭제
+     *
+     * @param memberAddressId 삭제할 회원 주소 식별자
+     * @author woody35545(구건모)
+     */
+    public void deleteMemberAddress(long memberAddressId) {
+        MemberAddress memberAddress = memberAddressRepository.findById(memberAddressId)
+                .orElseThrow(() -> new MemberAddressNotFoundForIdException(memberAddressId));
+
+        long addressId = memberAddress.getAddress().getId();
+
+        memberAddressRepository.delete(memberAddress);
+
+        if (!memberAddressRepository.existsByAddressId(addressId)) {
+            addressRepository.delete(memberAddress.getAddress());
+        }
+    }
 }
