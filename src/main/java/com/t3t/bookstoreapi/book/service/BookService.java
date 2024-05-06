@@ -146,26 +146,21 @@ public class BookService {
         }
 
         try {
-        MultipartFile bookThumbnailImage = request.getThumbnailImage();
-        UUID uuidBookThumbnail = UUID.randomUUID();
-        String fileNameBookThumb = uuidBookThumbnail.toString();
-        String originalFilename = bookThumbnailImage.getOriginalFilename();
-        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            MultipartFile bookThumbnailImage = request.getThumbnailImage();
+            String uploadFileName = generateUploadFileName(bookThumbnailImage);
+            // Object Storage에 이미지 업로드
+            fileUploadService.uploadObject("t3team", "book_thumbnails", uploadFileName, bookThumbnailImage);
+            // book_thumbnail 테이블에 이미지 이름 저장
+            bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).build());
+            log.info("book_thumbnail table insert 완료");
 
-        fileUploadService.uploadObject("t3team", "book_thumbnails", fileNameBookThumb+fileExtension, bookThumbnailImage);
-
-        bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(fileNameBookThumb+fileExtension).build());
-
-        log.info("book_thumbnail table insert 완료");
-
-        List<MultipartFile> bookImageList = request.getBookImageList();
-        for(MultipartFile file : bookImageList) {
-            UUID uuidBookImage = UUID.randomUUID();
-            String fileNameBookImage = uuidBookImage.toString();
-            fileUploadService.uploadObject("t3team", "book_images", fileNameBookImage, file);
-            bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(fileNameBookImage).build());
-            log.info("book_image table insert 완료");
-        }
+            List<MultipartFile> bookImageList = request.getBookImageList();
+            for(MultipartFile file : bookImageList) {
+                String uploadBookImageName = generateUploadFileName(file);
+                fileUploadService.uploadObject("t3team", "book_images", uploadBookImageName, file);
+                bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadBookImageName).build());
+                log.info("book_image table insert 완료");
+            }
 
         } catch (Exception e) {
             log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
@@ -228,5 +223,19 @@ public class BookService {
         Publisher publisher = publisherRepository.findById(publisherId).orElseThrow(PublisherNotFoundException::new);
         book.updatePublisher(publisher);
         bookRepository.save(book);
+    }
+
+    /**
+     * 업로드할 파일의 이름을 생성
+     *
+     * @param file 업로드할 파일
+     * @return 생성된 파일 이름
+     * @author Yujin-nKim(김유진)
+     */
+    public String generateUploadFileName(MultipartFile file) {
+        UUID uuid = UUID.randomUUID(); // UUID 생성
+        String originalFilename = file.getOriginalFilename(); // 파일의 원본 이름 가져오기
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".")); // 파일 확장자 가져오기
+        return uuid.toString() + fileExtension; // 생성된 UUID와 확장자를 결합하여 파일 이름 반환
     }
 }

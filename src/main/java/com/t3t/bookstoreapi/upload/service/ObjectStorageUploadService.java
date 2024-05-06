@@ -40,8 +40,8 @@ public class ObjectStorageUploadService {
      * @return 생성된 업로드 URL
      * @author Yujin-nKim(김유진)
      */
-    private String getUrl(@NonNull String containerName, @NonNull String folderName, @NonNull String objectName, @NonNull String extension) {
-        return objectStorageProperties.getStorageUrl() + "/" + containerName + "/"  + folderName  + "/" + objectName + extension;
+    private String getUrl(@NonNull String containerName, @NonNull String folderName, @NonNull String objectName) {
+        return objectStorageProperties.getStorageUrl() + "/" + containerName + "/"  + folderName  + "/" + objectName;
     }
 
     /**
@@ -54,9 +54,7 @@ public class ObjectStorageUploadService {
      */
     public void uploadObject(String containerName, String folderName, String objectName, MultipartFile file) {
 
-        String originalFilename = file.getOriginalFilename();
-        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String url = this.getUrl(containerName, folderName, objectName, fileExtension);
+        String url = this.getUrl(containerName, folderName, objectName);
         String tokenId = authService.getToken();
 
         // MultipartFile로부터 InputStream을 얻음
