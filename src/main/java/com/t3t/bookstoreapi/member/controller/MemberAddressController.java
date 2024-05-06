@@ -41,4 +41,18 @@ public class MemberAddressController {
         return new BaseResponse<MemberAddressDto>()
                 .data(memberAddressService.createMemberAddress(request));
     }
+
+
+    /**
+     * 기본 주소 설정 및 변경 API
+     * @author woody35545(구건모)
+     */
+    @PatchMapping("/member-addresses/{memberAddressId}/default")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<Void> modifyDefaultAddress(@PathVariable("memberAddressId") long memberAddressId) {
+
+        memberAddressService.modifyDefaultAddress(memberAddressId);
+
+        return new BaseResponse<Void>().message("기본 주소가 변경되었습니다.");
+    }
 }
