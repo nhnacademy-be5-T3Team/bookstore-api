@@ -352,6 +352,48 @@ public class BookService {
     }
 
     /**
+     * 특정 도서를 삭제<br>
+     * 도서를 삭제하기 전에 도서에 관련된 정보를 먼저 논리 삭제
+     * @param bookId 삭제할 도서의 식별자
+     * @throws BookNotFoundException 도서를 찾을 수 없을 때 발생하는 예외
+     * @author Yujin-nKim(김유진)
+     */
+    public void deleteBook(Long bookId) {
+        Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
+
+        BookThumbnail bookThumbnail = bookThumbnailRepository.findByBookBookId(bookId);
+        bookThumbnail.updateIsDeleted(TableStatus.TRUE);
+        bookThumbnailRepository.save(bookThumbnail);
+
+        List<BookImage> bookImageList = bookImageRepository.findAllByBookBookId(bookId);
+        for(BookImage image : bookImageList) {
+            image.updateIsDeleted(TableStatus.TRUE);
+            bookImageRepository.save(image);
+        }
+
+        List<BookCategory> categoryList = bookCategoryRepository.findByBookBookId(bookId);
+        for(BookCategory category : categoryList) {
+            category.updateIsDeleted(TableStatus.TRUE);
+            bookCategoryRepository.save(category);
+        }
+
+        List<BookTag> tagList = bookTagRepository.findByBookBookId(bookId);
+        for(BookTag tag : tagList) {
+            tag.updateIsDeleted(TableStatus.TRUE);
+            bookTagRepository.save(tag);
+        }
+
+        List<ParticipantRoleRegistration> participantRoleRegistrationList = registrationRepository.findByBookBookId(bookId);
+        for(ParticipantRoleRegistration paticipant : participantRoleRegistrationList) {
+            paticipant.updateIsDeleted(TableStatus.TRUE);
+            registrationRepository.save(paticipant);
+        }
+
+        book.updateIsDeleted(TableStatus.TRUE);
+        bookRepository.save(book);
+    }
+
+    /**
      * 업로드할 파일의 이름을 생성
      *
      * @param file 업로드할 파일

@@ -206,4 +206,19 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("도서 참여자 수정 요청이 정상적으로 처리되었습니다."));
     }
+
+    /**
+     * 특정 도서를 삭제
+     * @param bookId 삭제할 도서의 식별자
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
+    @DeleteMapping("/books/{bookId}")
+    public ResponseEntity<BaseResponse<Void>> deleteBook(@PathVariable Long bookId) {
+
+        bookService.deleteBook(bookId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("도서 삭제 요청이 정상적으로 처리되었습니다."));
+    }
 }
