@@ -39,4 +39,21 @@ public class MemberAddress {
     @Column(name = "default_address", columnDefinition = "TINYINT(1)", nullable = false)
     @Comment("기본 주소 여부")
     private Boolean isDefaultAddress;
+
+    /**
+     * 기본 주소 설정을 한다.
+     * @author woody35545(구건모)
+     */
+    public void asDefaultAddress() {
+        this.isDefaultAddress = true;
+    }
+
+    /**
+     * 기본 주소 설정을 해제한다.
+     * @author woody35545(구건모)
+     */
+    public void asNonDefaultAddress() {
+        this.isDefaultAddress = false;
+    }
+
 }
