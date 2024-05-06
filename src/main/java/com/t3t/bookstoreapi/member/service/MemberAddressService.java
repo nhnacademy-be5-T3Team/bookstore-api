@@ -127,4 +127,15 @@ public class MemberAddressService {
             addressRepository.delete(memberAddress.getAddress());
         }
     }
+
+    /**
+     * 주소 별칭 변경
+     * author woody35545(구건모)
+     */
+    public void modifyAddressNickname(long memberAddressId, String addressNickname) {
+        MemberAddress memberAddress = memberAddressRepository.findById(memberAddressId)
+                .orElseThrow(() -> new MemberAddressNotFoundForIdException(memberAddressId));
+
+        memberAddress.modifyNickname(addressNickname);
+    }
 }
