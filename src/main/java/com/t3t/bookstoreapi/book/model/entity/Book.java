@@ -134,4 +134,13 @@ public class Book {
         this.bookIndex = request.getBookIndex();
         this.bookDesc = request.getBookDesc();
     }
+
+    /**
+     * 도서의 출판사를 수정
+     * @param publisher 수정할 출판사 객체
+     * @author Yujin-nKim(김유진)
+     */
+    public void updatePublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
 }

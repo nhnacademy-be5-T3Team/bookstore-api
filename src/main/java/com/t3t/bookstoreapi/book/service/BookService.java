@@ -149,8 +149,13 @@ public class BookService {
         MultipartFile bookThumbnailImage = request.getThumbnailImage();
         UUID uuidBookThumbnail = UUID.randomUUID();
         String fileNameBookThumb = uuidBookThumbnail.toString();
-        fileUploadService.uploadObject("t3team", "book_thumbnails", fileNameBookThumb, bookThumbnailImage);
-        bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(fileNameBookThumb).build());
+        String originalFilename = bookThumbnailImage.getOriginalFilename();
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+        fileUploadService.uploadObject("t3team", "book_thumbnails", fileNameBookThumb+fileExtension, bookThumbnailImage);
+
+        bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(fileNameBookThumb+fileExtension).build());
+
         log.info("book_thumbnail table insert 완료");
 
         List<MultipartFile> bookImageList = request.getBookImageList();
@@ -207,6 +212,21 @@ public class BookService {
     public void updateBookDetail(Long bookId, ModifyBookDetailRequest request) {
         Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
         book.updateBookDetails(request);
+        bookRepository.save(book);
+    }
+
+    /**
+     * 특정 도서의 출판사를 수정
+     * @param bookId      수정할 도서의 식별자
+     * @param publisherId 수정할 출판사의 식별자
+     * @throws BookNotFoundException      특정 도서를 찾을 수 없는 경우 발생
+     * @throws PublisherNotFoundException 특정 출판사를 찾을 수 없는 경우 발생
+     * @author Yujin-nKim(김유진)
+     */
+    public void updatePublisher(Long bookId, Long publisherId) {
+        Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
+        Publisher publisher = publisherRepository.findById(publisherId).orElseThrow(PublisherNotFoundException::new);
+        book.updatePublisher(publisher);
         bookRepository.save(book);
     }
 }

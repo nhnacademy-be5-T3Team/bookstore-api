@@ -99,10 +99,19 @@ public class BookController {
                 new BaseResponse<Void>().message("도서 상세 설명 수정 요청이 정상적으로 처리되었습니다."));
     }
 
+    /**
+     * 특정 도서의 출판사를 수정
+     * @param bookId       수정할 도서의 식별자
+     * @param publisherId  수정할 출판사의 식별자
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
     @PutMapping("/books/{bookId}/publisher")
     public ResponseEntity<BaseResponse<Void>> updateBookPublisher(
             @PathVariable Long bookId,
             @RequestParam Long publisherId) {
+
+        bookService.updatePublisher(bookId,publisherId);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("도서 출판사 수정 요청이 정상적으로 처리되었습니다."));
