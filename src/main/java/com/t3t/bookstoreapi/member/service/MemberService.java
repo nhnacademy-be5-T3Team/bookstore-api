@@ -6,6 +6,7 @@ import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
 import com.t3t.bookstoreapi.member.model.constant.MemberGradeType;
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
+import com.t3t.bookstoreapi.member.model.entity.Account;
 import com.t3t.bookstoreapi.member.model.entity.BookstoreAccount;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.model.request.MemberPasswordModifyRequest;
@@ -93,5 +94,24 @@ public class MemberService {
         }
 
         bookstoreAccount.modifyPassword(passwordEncoder.encode(request.getNewPassword()));
+    }
+
+    /**
+     * 회원 탈퇴
+     *
+     * @param memberId 탈퇴하려는 회원 식별자
+     * @throws MemberNotFoundForIdException 회원 식별자에 해당하는 회원이 존재하지 않을 경우 발생
+     */
+    public void withdrawalMember(long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
+
+        Account account = accountRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
+
+        account.delete();
+        
+        member.withdraw();
     }
 }
