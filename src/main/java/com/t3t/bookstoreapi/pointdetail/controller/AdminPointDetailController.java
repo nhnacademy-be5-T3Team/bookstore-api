@@ -81,7 +81,7 @@ public class AdminPointDetailController {
      */
     @PutMapping(value = "/pointDetails/admin/{pointDetailId}")
     public ResponseEntity<BaseResponse<PointDetailResponse>> updatePointDetail(@RequestHeader(name = "memberId") Long adminId,
-                                                                               @PathVariable("memberId") Long pointDetailId,
+                                                                               @PathVariable("pointDetailId") Long pointDetailId,
                                                                                @RequestParam BigDecimal pointDetailAmount) {
         PointDetailResponse pointDetailResponse = adminPointDetailService.updatePointDetail(pointDetailId, pointDetailAmount);
 

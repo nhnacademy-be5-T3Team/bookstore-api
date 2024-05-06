@@ -1,7 +1,9 @@
 package com.t3t.bookstoreapi.pointdetail.service;
 
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
+import com.t3t.bookstoreapi.member.exception.NotAdminException;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
+import com.t3t.bookstoreapi.member.repository.MemberRoleRepository;
 import com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException;
 import com.t3t.bookstoreapi.pointdetail.model.entity.PointDetail;
 import com.t3t.bookstoreapi.pointdetail.model.request.CreatePointDetailRequest;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminPointDetailService {
     private final MemberRepository memberRepository;
+    private final MemberRoleRepository memberRoleRepository;
     private final PointDetailRepository pointDetailRepository;
 
     /**
@@ -38,6 +41,8 @@ public class AdminPointDetailService {
     public List<PointDetailResponse> getPointDetailList(Long memberId) {
         if(!memberRepository.existsById(memberId))
             throw new MemberNotFoundException();
+        if(!memberRoleRepository.checkRoleAdmin(memberId))
+            throw new NotAdminException();
 
         return pointDetailRepository.findByMemberId(memberId).stream()
                 .map(PointDetailResponse::of)
@@ -57,6 +62,8 @@ public class AdminPointDetailService {
     public PointDetailResponse getPointDetailByPointDetailType(Long memberId, String pointDetailType) {
         if(!memberRepository.existsById(memberId))
             throw new MemberNotFoundException();
+        if(!memberRoleRepository.checkRoleAdmin(memberId))
+            throw new NotAdminException();
         if(pointDetailRepository.existsByMemberIdAndPointDetailType(memberId, pointDetailType))
             throw new PointDetailNotFoundException(pointDetailType);
 
