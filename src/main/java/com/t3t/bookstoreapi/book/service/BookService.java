@@ -226,6 +226,28 @@ public class BookService {
     }
 
     /**
+     * 특정 도서의 썸네일을 수정
+     * @param bookId 수정할 도서의 식별자
+     * @param image  수정할 썸네일 이미지
+     * @throws BookNotFoundException 도서를 찾을 수 없는 경우 발생
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateBookThumbnail(Long bookId, MultipartFile image) {
+        Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
+
+        BookThumbnail bookThumbnail = bookThumbnailRepository.findByBookBookId(bookId);
+        String fileName = bookThumbnail.getThumbnailImageUrl();
+        // Object Storage 기존 이미지 삭제 요청
+        fileUploadService.deleteObject("t3team", "book_thumbnails", fileName);
+        bookThumbnailRepository.delete(bookThumbnail);
+
+        String uploadFileName = generateUploadFileName(image);
+        // Object Storage 새로운 이미지 업로드 요청
+        fileUploadService.uploadObject("t3team", "book_thumbnails", uploadFileName, image);
+        bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).build());
+    }
+
+    /**
      * 업로드할 파일의 이름을 생성
      *
      * @param file 업로드할 파일
