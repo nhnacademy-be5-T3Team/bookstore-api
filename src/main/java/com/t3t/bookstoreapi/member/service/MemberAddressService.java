@@ -87,4 +87,25 @@ public class MemberAddressService {
 
         return MemberAddressDto.of(memberAddress);
     }
+
+
+    /**
+     * 기본 주소 설정 및 변경
+     *
+     * @param memberAddressId 기본 주소로 설정할 회원 주소 식별자
+     * @author woody35545(구건모)
+     */
+    public void modifyDefaultAddress(long memberAddressId) {
+        MemberAddress memberAddress = memberAddressRepository.findById(memberAddressId)
+                .orElseThrow(() -> new MemberAddressNotFoundForIdException(memberAddressId));
+
+        if (memberAddress.getIsDefaultAddress()) {
+            return;
+        }
+
+        memberAddressRepository.findByMemberId(memberAddress.getMember().getId()).stream()
+                .forEach(address -> address.asNonDefaultAddress());
+
+        memberAddress.asDefaultAddress();
+    }
 }
