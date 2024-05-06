@@ -46,4 +46,13 @@ public class ParticipantRoleRegistration {
     @Column(name = "is_deleted")
     @Convert(converter = TableStatusConverter.class)
     private TableStatus isDeleted;
+
+    /**
+     * 도서-참여자-참여자 역할의 삭제 여부를 업데이트
+     * @param isDeleted 삭제 여부를 나타내는 TableStatus
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateIsDeleted(TableStatus isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

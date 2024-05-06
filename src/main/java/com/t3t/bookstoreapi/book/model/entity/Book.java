@@ -148,4 +148,13 @@ public class Book {
     public void updatePublisher(Publisher publisher) {
         this.publisher = publisher;
     }
+
+    /**
+     * 도서의 삭제 여부를 업데이트
+     * @param isDeleted 삭제 여부를 나타내는 TableStatus
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateIsDeleted(TableStatus isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }
