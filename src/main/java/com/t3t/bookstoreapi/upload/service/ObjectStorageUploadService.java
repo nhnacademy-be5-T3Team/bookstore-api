@@ -82,4 +82,22 @@ public class ObjectStorageUploadService {
             throw new ImageDataStorageException(e);
         }
     }
+
+    public void deleteObject(String containerName, String folderName, String objectName) {
+        try {
+            String url = this.getUrl(containerName, folderName, objectName);
+            String tokenId = authService.getToken();
+
+            // 헤더 생성
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-Auth-Token", tokenId);
+            HttpEntity<String> requestHttpEntity = new HttpEntity<String>(null, headers);
+
+            // API 호출
+            this.restTemplate.exchange(url, HttpMethod.DELETE, requestHttpEntity, String.class);
+        } catch (Exception e) {
+            log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
+            throw new ImageDataStorageException(e);
+        }
+    }
 }
