@@ -172,8 +172,12 @@ public class BookController {
     }
 
     @PutMapping("/books/{bookId}/category")
-    public ResponseEntity<BaseResponse<Void>> updateBookCategory(@PathVariable Long bookId,
-                                                                 @RequestParam @Valid List<CategoryDto> categoryList) {
+    public ResponseEntity<BaseResponse<Void>> updateBookCategory(
+            @PathVariable Long bookId,
+            @RequestParam @Valid List<CategoryDto> categoryList) {
+
+        bookService.updateBookCategory(bookId, categoryList);
+
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("도서 카테고리 수정 요청이 정상적으로 처리되었습니다."));
     }

@@ -5,6 +5,7 @@ import com.t3t.bookstoreapi.book.exception.BookAlreadyExistsException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
+import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.PackagingDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantMapDto;
 import com.t3t.bookstoreapi.book.model.entity.*;
@@ -295,6 +296,30 @@ public class BookService {
             bookTagRepository.save(BookTag.builder()
                     .book(book)
                     .tag(tag)
+                    .build());
+        }
+    }
+
+    /**
+     * 특정 도서의 카테고리를 수정
+     * @param bookId   수정할 도서의 식별자
+     * @param categoryList  수정할 카테고리 리스트
+     * @throws BookNotFoundException 도서를 찾을 수 없는 경우 발생
+     * @throws CategoryNotFoundException  카테고리를 찾을 수 없는 경우 발생
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateBookCategory(Long bookId, List<CategoryDto> categoryList) {
+        Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
+
+        List<BookCategory> bookCategoryList = bookCategoryRepository.findByBookBookId(bookId);
+
+        bookCategoryRepository.deleteAll(bookCategoryList);
+
+        for(CategoryDto newCategory : categoryList) {
+            Category category = categoryRepository.findById(newCategory.getId()).orElseThrow(CategoryNotFoundException::new);
+            bookCategoryRepository.save(BookCategory.builder()
+                    .book(book)
+                    .category(category)
                     .build());
         }
     }
