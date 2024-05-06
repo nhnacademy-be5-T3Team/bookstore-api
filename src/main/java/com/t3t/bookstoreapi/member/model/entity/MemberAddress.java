@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,6 +43,7 @@ public class MemberAddress {
 
     /**
      * 기본 주소 설정을 한다.
+     *
      * @author woody35545(구건모)
      */
     public void asDefaultAddress() {
@@ -50,10 +52,18 @@ public class MemberAddress {
 
     /**
      * 기본 주소 설정을 해제한다.
+     *
      * @author woody35545(구건모)
      */
     public void asNonDefaultAddress() {
         this.isDefaultAddress = false;
     }
 
+    /**
+     * 주소 별칭을 변경한다.
+     * author woody35545(구건모)
+     */
+    public void modifyNickname(String addressNickname) {
+        this.addressNickname = addressNickname;
+    }
 }
