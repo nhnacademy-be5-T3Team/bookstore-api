@@ -135,9 +135,20 @@ public class BookController {
                 new BaseResponse<Void>().message("도서 썸네일 수정 요청이 정상적으로 처리되었습니다."));
     }
 
+    /**
+     * 특정 도서의 이미지를 수정
+     * @param bookId     수정할 도서의 식별자
+     * @param imageList  수정할 이미지 리스트
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
     @PutMapping("/books/{bookId}/book-image")
-    public ResponseEntity<BaseResponse<Void>> updateBookImage(@PathVariable Long bookId,
-                                                              @RequestPart List<MultipartFile> imageList) {
+    public ResponseEntity<BaseResponse<Void>> updateBookImage(
+            @PathVariable Long bookId,
+            @RequestPart List<MultipartFile> imageList) {
+
+        bookService.updateBookImage(bookId, imageList);
+
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("도서 미리보기 이미지 수정 요청이 정상적으로 처리되었습니다."));
     }

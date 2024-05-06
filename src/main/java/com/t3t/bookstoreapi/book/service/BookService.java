@@ -35,12 +35,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.LockModeType;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -63,6 +61,10 @@ public class BookService {
     private final BookThumbnailRepository bookThumbnailRepository;
     private final BookImageRepository bookImageRepository;
     private final ObjectStorageUploadService fileUploadService;
+
+    private static final String CONTAINER_NAME = "t3team";
+    private static final String BOOKTHUMBNAIL_FOLDER_NAME = "book_thumbnails";
+    private static final String BOOKIMAGE_FOLDER_NAME = "book_images";
 
     /**
      * 도서 식별자로 도서 상세 조회, 도서의 포장 여부를 확인하고 포장 가능한 도서인 경우
@@ -149,7 +151,7 @@ public class BookService {
             MultipartFile bookThumbnailImage = request.getThumbnailImage();
             String uploadFileName = generateUploadFileName(bookThumbnailImage);
             // Object Storage에 이미지 업로드
-            fileUploadService.uploadObject("t3team", "book_thumbnails", uploadFileName, bookThumbnailImage);
+            fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, bookThumbnailImage);
             // book_thumbnail 테이블에 이미지 이름 저장
             bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).build());
             log.info("book_thumbnail table insert 완료");
@@ -157,7 +159,7 @@ public class BookService {
             List<MultipartFile> bookImageList = request.getBookImageList();
             for(MultipartFile file : bookImageList) {
                 String uploadBookImageName = generateUploadFileName(file);
-                fileUploadService.uploadObject("t3team", "book_images", uploadBookImageName, file);
+                fileUploadService.uploadObject(CONTAINER_NAME, BOOKIMAGE_FOLDER_NAME, uploadBookImageName, file);
                 bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadBookImageName).build());
                 log.info("book_image table insert 완료");
             }
@@ -238,13 +240,38 @@ public class BookService {
         BookThumbnail bookThumbnail = bookThumbnailRepository.findByBookBookId(bookId);
         String fileName = bookThumbnail.getThumbnailImageUrl();
         // Object Storage 기존 이미지 삭제 요청
-        fileUploadService.deleteObject("t3team", "book_thumbnails", fileName);
+        fileUploadService.deleteObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, fileName);
         bookThumbnailRepository.delete(bookThumbnail);
 
         String uploadFileName = generateUploadFileName(image);
         // Object Storage 새로운 이미지 업로드 요청
-        fileUploadService.uploadObject("t3team", "book_thumbnails", uploadFileName, image);
+        fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, image);
         bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).build());
+    }
+
+    /**
+     * 특정 도서의 이미지를 수정
+     * @param bookId     수정할 도서의 식별자
+     * @param imageList  새로운 이미지 리스트
+     * @throws BookNotFoundException 도서를 찾을 수 없는 경우 발생
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateBookImage(Long bookId, List<MultipartFile> imageList) {
+        Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
+
+        List<BookImage> bookImageList = bookImageRepository.findAllByBookBookId(bookId);
+
+        for(BookImage image : bookImageList) {
+            String fileName = image.getBookImageUrl();
+            fileUploadService.deleteObject(CONTAINER_NAME, BOOKIMAGE_FOLDER_NAME, fileName);
+            bookImageRepository.delete(image);
+        }
+
+        for(MultipartFile file : imageList) {
+            String uploadFileName = generateUploadFileName(file);
+            fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, file);
+            bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadFileName).build());
+        }
     }
 
     /**
