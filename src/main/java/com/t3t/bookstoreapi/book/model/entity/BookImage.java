@@ -1,6 +1,9 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
 import javax.validation.constraints.NotNull;
+
+import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,5 +33,10 @@ public class BookImage {
     @NotNull
     @Column(name = "book_image_url")
     private String bookImageUrl;
+
+    @NotNull
+    @Column(name = "is_deleted")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus isDeleted;
 
 }

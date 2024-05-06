@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
+import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import lombok.*;
 
@@ -32,4 +34,9 @@ public class BookTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    @NotNull
+    @Column(name = "is_deleted")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus isDeleted;
 }

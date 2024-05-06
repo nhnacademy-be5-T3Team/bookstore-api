@@ -81,6 +81,11 @@ public class Book {
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
 
+    @NotNull
+    @Column(name = "is_deleted")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus isDeleted;
+
     // todo : 도서 좋아요 동시성 문제 관련해 수정해야함
     public void incrementLikes() {
         this.bookLikeCount++;

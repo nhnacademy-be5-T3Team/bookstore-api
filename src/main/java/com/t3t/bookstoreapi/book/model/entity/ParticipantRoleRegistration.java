@@ -1,6 +1,9 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
 import javax.validation.constraints.NotNull;
+
+import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.participant.model.entity.Participant;
 import com.t3t.bookstoreapi.participant.model.entity.ParticipantRole;
 import lombok.*;
@@ -38,4 +41,9 @@ public class ParticipantRoleRegistration {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+
+    @NotNull
+    @Column(name = "is_deleted")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus isDeleted;
 }

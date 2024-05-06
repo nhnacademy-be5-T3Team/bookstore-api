@@ -1,5 +1,7 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
+import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import lombok.*;
 
@@ -32,4 +34,9 @@ public class BookCategory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @NotNull
+    @Column(name = "is_deleted")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus isDeleted;
 }
