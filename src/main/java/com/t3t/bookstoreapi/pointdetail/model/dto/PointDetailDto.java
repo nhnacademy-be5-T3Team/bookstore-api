@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * 포인트 상세 정보를 전송하는 데 사용되는 Data Transfer Object(DTO)
  * 회원의 포인트 적립 및 사용 내역 전달
  *
- * @Author hydrationn(박수화)
+ * @author hydrationn(박수화)
  */
 @Data
 @Getter

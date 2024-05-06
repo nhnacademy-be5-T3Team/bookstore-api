@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 회원의 포인트 상세 내역을 관리하는 entity class
- * 포인트의 적립 및 사용에 대한 상세한 정보를 저장
+ * 회원의 포인트 상세 내역을 관리하는 Entity class
+ * 포인트의 적립 및 사용에 대한 상세한 정보 저장
  *
  * @Author hydrationn(박수화)
  */
