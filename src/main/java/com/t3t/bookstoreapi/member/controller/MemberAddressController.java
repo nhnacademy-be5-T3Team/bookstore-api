@@ -55,4 +55,15 @@ public class MemberAddressController {
 
         return new BaseResponse<Void>().message("기본 주소가 변경되었습니다.");
     }
+
+    /**
+     * 회원 주소 삭제 API
+     * @param memberAddressId 삭제할 회원 주소 식별자
+     * @author woody35545(구건모)
+     */
+    @DeleteMapping("/member-addresses/{memberAddressId}")
+    public BaseResponse<Void> deleteMemberAddress(@PathVariable("memberAddressId") long memberAddressId) {
+        memberAddressService.deleteMemberAddress(memberAddressId);
+        return new BaseResponse<Void>().message("주소가 삭제되었습니다.");
+    }
 }
