@@ -24,7 +24,7 @@ public class UserPointDetailService {
     private final PointDetailRepository pointDetailRepository;
 
     /**
-     * 모든 포인트 상세 정보를 조회 API
+     * 모든 포인트 상세 정보를 조회
      * @return 포인트 상세 정보 리스트를 {@link PointDetailResponse} 객체의 리스트로 반환
      *
      * @author hydrtionn(박수화)
@@ -37,7 +37,7 @@ public class UserPointDetailService {
     }
 
     /**
-     * 포인트 타입에 따른 상세 정보를 조회하는 API
+     * 포인트 타입에 따른 상세 정보를 조회
      * @param pointDetailType 조회할 포인트 타입
      * @return 조회된 포인트 상세 정보를 {@link PointDetailResponse} 객체로 반환
      * @throws PointDetailNotFoundException 포인트 상세 정보를 찾을 수 없는 경우 발생

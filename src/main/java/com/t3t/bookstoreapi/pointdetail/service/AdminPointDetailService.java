@@ -29,7 +29,7 @@ public class AdminPointDetailService {
     private final PointDetailRepository pointDetailRepository;
 
     /**
-     * 특정 회원의 모든 포인트 상세 정보 조회 API
+     * 특정 회원의 모든 포인트 상세 정보 조회
      * @param memberId 조회하고자 하는 회원의 ID
      * @return 해당 회원의 포인트 상세 정보 목록을 {@link PointDetailResponse}로 변환하여 반환
      * @throws MemberNotFoundException 회원 ID가 존재하지 않는 경우 예외 발생
@@ -56,7 +56,7 @@ public class AdminPointDetailService {
     }
 
     /**
-     * 특정 회원의 특정 포인트 상세 정보 조회 API
+     * 특정 회원의 특정 포인트 상세 정보 조회
      * @param memberId 조회하고자 하는 회원의 ID
      * @param pointDetailType 조회하고자 하는 포인트 타입
      * @return 해당 포인트 상세 정보를 {@link PointDetailResponse}로 변환하여 반환
@@ -85,7 +85,7 @@ public class AdminPointDetailService {
     }
 
     /**
-     * 새로운 포인트 상세 정보 생성 API
+     * 새로운 포인트 상세 정보 생성
      * @param request 포인트 상세 정보 생성을 위한 요청 데이터를 담은 {@link CreatePointDetailRequest} 객체
      * @return 생성된 포인트 상세 정보를 {@link PointDetailResponse} 객체로 반환
      *
@@ -115,7 +115,7 @@ public class AdminPointDetailService {
     }
 
     /**
-     * 특정 포인트 상세 정보의 포인트 양 수정 API
+     * 특정 포인트 상세 정보의 포인트 양 수정
      * @param pointDetailId 수정할 포인트 상세 정보의 ID
      * @param pointAmount 수정될 포인트 양
      * @return 수정된 포인트 상세 정보를 {@link PointDetailResponse} 객체로 반환
@@ -145,7 +145,7 @@ public class AdminPointDetailService {
     }
 
     /**
-     * 특정 포인트 상세 정보 삭제 API
+     * 특정 포인트 상세 정보 삭제
      * @param pointDetailId 삭제할 포인트 상세 정보의 ID
      * @throws PointDetailNotFoundException 포인트 상세 정보를 찾을 수 없는 경우 발생
      *
