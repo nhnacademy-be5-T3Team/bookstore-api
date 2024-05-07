@@ -6,10 +6,7 @@ import com.t3t.bookstoreapi.pointdetail.service.UserPointDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,9 +46,10 @@ public class UserPointDetailController {
      * @author hydrationn(박수화)
      */
     @GetMapping("/members/{memberId}/point-details")
-    public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailByPointDetailType(@RequestHeader(name = "memberId") @PathVariable("members") Long memberId,
-                                                                                                    String pointDetailType) {
+    public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailByPointDetailType(@RequestHeader(name = "memberId") @PathVariable("memberId") Long memberId,
+                                                                                                   @RequestParam  String pointDetailType) {
         List<PointDetailResponse> pointDetailResponse = userPointDetailService.getPointDetailByPointDetailType(pointDetailType);
+
         return ResponseEntity.ok(new BaseResponse<List<PointDetailResponse>>().data(pointDetailResponse));
     }
 

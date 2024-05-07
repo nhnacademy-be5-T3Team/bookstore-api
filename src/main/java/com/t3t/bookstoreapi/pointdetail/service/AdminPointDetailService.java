@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -165,7 +164,6 @@ public class AdminPointDetailService {
 
         return PointDetailResponse.of(pointDetailRepository.save(pointDetail));
     }
-
     /**
      * 특정 포인트 상세 정보 삭제
      * @param pointDetailId 삭제할 포인트 상세 정보의 ID
