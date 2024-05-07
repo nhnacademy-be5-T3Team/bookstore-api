@@ -36,7 +36,7 @@ public class ElasticDocument {
     @Field(name = "book_average_score")
     private Float averageScore;
     @Field(name = "book_like_count")
-    private Integer likeCount;
+    private BigDecimal likeCount;
     @Field(name = "publisher_name")
     private String publisher;
     @Field(name = "thumbnail_image_url")
@@ -45,4 +45,6 @@ public class ElasticDocument {
     private String authorName;
     @Field(name = "participant_role_name_kr")
     private String authorRole;
+    @Field(name = "category_id")
+    private BigDecimal categoryId;
 }

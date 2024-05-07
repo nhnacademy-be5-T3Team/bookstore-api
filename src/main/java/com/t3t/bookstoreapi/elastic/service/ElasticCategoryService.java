@@ -11,16 +11,15 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
-
-
 @Service
 @RequiredArgsConstructor
-public class ElasticService {
+public class ElasticCategoryService {
     private final ElasticRepository elasticRepository;
 
     /**
@@ -34,9 +33,9 @@ public class ElasticService {
      * @author parkjonggyeong18(박종경)
      */
     @Transactional(readOnly = true)
-    public PageResponse<ElasticResponse> search(String query,String searchType, Pageable pageable) {
+    public PageResponse<ElasticResponse> search(String query,String searchType,BigDecimal categoryId, Pageable pageable) {
 
-        SearchHits<ElasticDocument> searchHits = searchType(query, searchType, pageable);
+        SearchHits<ElasticDocument> searchHits = searchType(query, searchType, categoryId, pageable);
         long searchBookCount = searchHits.getTotalHits();
 
         List<ElasticResponse> lists = searchHits.getSearchHits().stream()
@@ -84,6 +83,7 @@ public class ElasticService {
                 .authorName(document.getAuthorName())
                 .authorRole(document.getAuthorRole())
                 .score(score)
+                .categoryId(document.getCategoryId())
                 .count(searchBookCount)
                 .build();
     }
@@ -97,16 +97,17 @@ public class ElasticService {
      * @return elasticsearh를 통해 검색된 정보
      * @author parkjonggyeong18(박종경)
      */
-    public  SearchHits<ElasticDocument> searchType(String query, String searchType, Pageable pageable) {
+    public  SearchHits<ElasticDocument> searchType(String query, String searchType, BigDecimal categoryId, Pageable pageable) {
         switch (searchType) {
             case "book_name":
-                return elasticRepository.findByBookName(query,pageable);
+                return elasticRepository.findByBookNameCategory(query,categoryId,pageable);
             case "publisher_name":
-                return elasticRepository.findByPublisher(query,pageable);
+                return elasticRepository.findByPublisherCategory(query,categoryId,pageable);
             case "participant_name":
-                return elasticRepository.findByAuthorName(query,pageable);
+                return elasticRepository.findByAuthorNameCategory(query,categoryId,pageable);
             default:
-                return elasticRepository.findByAll(query,pageable);
+                return elasticRepository.findByAllCategory(query,categoryId,pageable);
         }
+
     }
 }

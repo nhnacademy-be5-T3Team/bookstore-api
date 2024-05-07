@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-public class ElasticServiceUnitTest {
+public class ElasticCategoryServiceUnitTest {
 
     @Mock
     private ElasticRepository elasticRepository;
 
     @InjectMocks
-    private ElasticService elasticService;
+    private ElasticCategoryService elasticService;
 
     @Test
     @DisplayName("엘라스틱서치 검색 기능 테스트")
@@ -37,6 +37,7 @@ public class ElasticServiceUnitTest {
         // Given
         String query = "test";
         String searchType = "book_name";
+        BigDecimal categoryId = new BigDecimal("10");
         PageRequest pageable = PageRequest.of(0, 10);
 
         ElasticDocument document = new ElasticDocument();
@@ -48,6 +49,7 @@ public class ElasticServiceUnitTest {
         document.setAverageScore(4.0f); // float 타입으로 명시
         document.setLikeCount(new BigDecimal("100"));
         document.setPublisher("Test Publisher");
+        document.setCategoryId(new BigDecimal("10"));
         document.setCoverImageUrl("http://example.com/image.jpg");
         document.setAuthorName("Author Name");
         document.setAuthorRole("Author Role");
@@ -56,10 +58,10 @@ public class ElasticServiceUnitTest {
         searchHitList.add(new SearchHit<>(null, null, null, 1.0f, null, null, document));
         SearchHits<ElasticDocument> searchHits = new SearchHitsImpl<>(1, null, 1.0f, null, searchHitList, null, null);
 
-        when(elasticRepository.findByBookName(query, pageable)).thenReturn(searchHits);
+        when(elasticRepository.findByBookNameCategory(query,categoryId, pageable)).thenReturn(searchHits);
 
         // When
-        PageResponse<ElasticResponse> response = elasticService.search(query, searchType, pageable);
+        PageResponse<ElasticResponse> response = elasticService.search(query, searchType,categoryId, pageable);
 
         // Then
         assertEquals(1, response.getContent().size());

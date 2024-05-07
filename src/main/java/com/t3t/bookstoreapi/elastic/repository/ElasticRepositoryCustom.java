@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import java.math.BigDecimal;
+
 @NoRepositoryBean
 public interface ElasticRepositoryCustom {
     /**
@@ -39,4 +41,8 @@ public interface ElasticRepositoryCustom {
      *  @author parkjonggyeong18(박종경)
      */
     SearchHits<ElasticDocument> findByAuthorName(String query, Pageable pageable);
+    SearchHits<ElasticDocument> findByAllCategory(String query, BigDecimal categoryId, Pageable pageable);
+    SearchHits<ElasticDocument> findByBookNameCategory(String query,BigDecimal  categoryId, Pageable pageable);
+    SearchHits<ElasticDocument> findByPublisherCategory(String query,BigDecimal categoryId, Pageable pageable);
+    SearchHits<ElasticDocument> findByAuthorNameCategory(String query,BigDecimal categoryId, Pageable pageable);
 }

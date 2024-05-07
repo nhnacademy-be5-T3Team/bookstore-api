@@ -2,16 +2,15 @@ package com.t3t.bookstoreapi.elastic.repository;
 
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+
+import java.math.BigDecimal;
 
 
 @RequiredArgsConstructor
@@ -92,6 +91,103 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
         // 키워드 검색 쿼리 실행
         return elasticPageable(keywordMatchQuery, pageable);
     }
+    /**
+     * @param query    text 검색어
+     * @param categoryId  카테고리 검색을 위한 카테고리번호
+     * @param pageable 페이지 요청 정보
+     * @return 카테고리에 속한 모든 도서
+     * @author parkjonggyeong18(박종경)
+     */
+    @Override
+    public SearchHits<ElasticDocument> findByAllCategory(String query, BigDecimal categoryId, Pageable pageable) {
+        QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
+                .field("book_name", 100) //형태소 검색
+                .field("book_name.ngram", 90)//띄어쓰기, 숫자등 검색
+                .field("book_name.jaso", 95)//자음, 오타 검색
+
+                .field("publisher_name", 25)
+                .field("publisher_name.ngram", 15)
+                .field("publisher_name.jaso", 20)
+
+                .field("participant_name", 55)
+                .field("participant_name.ngram", 45)
+                .field("participant_name.jaso", 50);
+
+        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery("category_id", categoryId);
+
+        QueryBuilder finalQuery = QueryBuilders.boolQuery()
+                .must(keywordMatchQuery)
+                .filter(categoryFilterQuery);
+
+        return elasticPageable(finalQuery, pageable);
+    }
+    /**
+     * @param query    text 검색어
+     * @param categoryId  카테고리 검색을 위한 카테고리번호
+     * @param pageable 페이지 요청 정보
+     * @return 카테고리에서 책제목으로 검색한 도서
+     * @author parkjonggyeong18(박종경)
+     */
+    @Override
+    public SearchHits<ElasticDocument> findByBookNameCategory(String query, BigDecimal categoryId, Pageable pageable) {
+        QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
+                .field("book_name")
+                .field("book_name.ngram")
+                .field("book_name.jaso");
+
+        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery("category_id", categoryId);
+
+        QueryBuilder finalQuery = QueryBuilders.boolQuery()
+                .must(keywordMatchQuery)
+                .filter(categoryFilterQuery);
+
+        return elasticPageable(finalQuery, pageable);
+    }
+    /**
+     * @param query    text 검색어
+     * @param categoryId  카테고리 검색을 위한 카테고리번호
+     * @param pageable 페이지 요청 정보
+     * @return 카테고리에서 출판사명으로 검색한 도서
+     * @author parkjonggyeong18(박종경)
+     */
+    @Override
+    public SearchHits<ElasticDocument> findByPublisherCategory(String query,BigDecimal categoryId, Pageable pageable) {
+        QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
+                .field("publisher_name")
+                .field("publisher_name.ngram")
+                .field("publisher_name.jaso");
+
+        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery("category_id", categoryId);
+
+        QueryBuilder finalQuery = QueryBuilders.boolQuery()
+                .must(keywordMatchQuery)
+                .filter(categoryFilterQuery);
+
+        return elasticPageable(finalQuery, pageable);
+    }
+    /**
+     * @param query    text 검색어
+     * @param categoryId  카테고리 검색을 위한 카테고리번호
+     * @param pageable 페이지 요청 정보
+     * @return 카테고리에서 참여자명으로 검색한 도서
+     * @author parkjonggyeong18(박종경)
+     */
+    @Override
+    public SearchHits<ElasticDocument> findByAuthorNameCategory(String query,BigDecimal categoryId, Pageable pageable) {
+        QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
+                .field("participant_name")
+                .field("participant_name.ngram")
+                .field("participant_name.jaso");
+
+        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery("category_id", categoryId);
+
+        QueryBuilder finalQuery = QueryBuilders.boolQuery()
+                .must(keywordMatchQuery)
+                .filter(categoryFilterQuery);
+
+        return elasticPageable(finalQuery, pageable);
+    }
+
     /**
      * @param queryBuilder 키워드를 통해 검색된 도서 목록
      * @param pageable     페이지 요청 정보
