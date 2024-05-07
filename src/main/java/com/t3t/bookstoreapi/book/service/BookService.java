@@ -231,7 +231,6 @@ public class BookService {
         Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
         Publisher publisher = publisherRepository.findById(publisherId).orElseThrow(PublisherNotFoundException::new);
         book.updatePublisher(publisher);
-        bookRepository.save(book);
     }
 
     /**
@@ -246,14 +245,19 @@ public class BookService {
 
         BookThumbnail bookThumbnail = bookThumbnailRepository.findByBookBookId(bookId);
         String fileName = bookThumbnail.getThumbnailImageUrl();
-        // Object Storage 기존 이미지 삭제 요청
-        fileUploadService.deleteObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, fileName);
-        bookThumbnailRepository.delete(bookThumbnail);
+        try {
+            // Object Storage 기존 이미지 삭제 요청
+            fileUploadService.deleteObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, fileName);
+            bookThumbnailRepository.delete(bookThumbnail);
 
-        String uploadFileName = generateUploadFileName(image);
-        // Object Storage 새로운 이미지 업로드 요청
-        fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, image);
-        bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
+            String uploadFileName = generateUploadFileName(image);
+            // Object Storage 새로운 이미지 업로드 요청
+            fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, image);
+            bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
+        } catch (Exception e) {
+            log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
+            throw new ImageDataStorageException(e);
+        }
     }
 
     /**
@@ -267,17 +271,20 @@ public class BookService {
         Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
 
         List<BookImage> bookImageList = bookImageRepository.findAllByBookBookId(bookId);
-
-        for(BookImage image : bookImageList) {
-            String fileName = image.getBookImageUrl();
-            fileUploadService.deleteObject(CONTAINER_NAME, BOOKIMAGE_FOLDER_NAME, fileName);
-            bookImageRepository.delete(image);
-        }
-
-        for(MultipartFile file : imageList) {
-            String uploadFileName = generateUploadFileName(file);
-            fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, file);
-            bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
+        try {
+            for(BookImage image : bookImageList) {
+                String fileName = image.getBookImageUrl();
+                fileUploadService.deleteObject(CONTAINER_NAME, BOOKIMAGE_FOLDER_NAME, fileName);
+                bookImageRepository.delete(image);
+            }
+            for(MultipartFile file : imageList) {
+                String uploadFileName = generateUploadFileName(file);
+                fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, file);
+                bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
+            }
+        } catch (Exception e) {
+            log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
+            throw new ImageDataStorageException(e);
         }
     }
 
