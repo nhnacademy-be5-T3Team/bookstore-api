@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.common.exception;
 
+import com.t3t.bookstoreapi.book.exception.BookAlreadyDeletedException;
 import com.t3t.bookstoreapi.book.exception.BookAlreadyExistsException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
@@ -290,6 +291,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ParticipantRoleNotFoundException.class)
     public ResponseEntity<BaseResponse<Void>> handleParticipantRoleNotFoundException(ParticipantRoleNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(BookAlreadyDeletedException.class)
+    public ResponseEntity<BaseResponse<Void>> handleBookAlreadyDeletedException(BookAlreadyDeletedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new BaseResponse<Void>().message(ex.getMessage()));
     }
 }

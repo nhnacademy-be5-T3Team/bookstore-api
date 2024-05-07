@@ -32,6 +32,7 @@ public class BookListResponse {
     private Integer stock; // 재고 수
     private BigDecimal discountedPrice; // 할인가
     private TableStatus packagingAvailableStatus; // 포장 가능 여부
+    private TableStatus deletedStatus; // 삭제 여부
 
     public static BookListResponse of(Book book) {
         return BookListResponse.builder()
@@ -46,6 +47,7 @@ public class BookListResponse {
                 .stock(book.getBookStock())
                 .discountedPrice(getDiscountedPrice(book.getBookDiscount(), book.getBookPrice()))
                 .packagingAvailableStatus(book.getBookPackage())
+                .deletedStatus(book.getIsDeleted())
                 .build();
     }
 

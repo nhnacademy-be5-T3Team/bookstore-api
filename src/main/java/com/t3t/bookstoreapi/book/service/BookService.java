@@ -1,10 +1,7 @@
 package com.t3t.bookstoreapi.book.service;
 
 import com.t3t.bookstoreapi.book.enums.TableStatus;
-import com.t3t.bookstoreapi.book.exception.BookAlreadyExistsException;
-import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
-import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
-import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
+import com.t3t.bookstoreapi.book.exception.*;
 import com.t3t.bookstoreapi.book.model.dto.PackagingDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantMapDto;
 import com.t3t.bookstoreapi.book.model.entity.*;
@@ -374,36 +371,33 @@ public class BookService {
     public void deleteBook(Long bookId) {
         Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
 
+        if (book.getIsDeleted() == TableStatus.TRUE) {
+            throw new BookAlreadyDeletedException();
+        }
+
         BookThumbnail bookThumbnail = bookThumbnailRepository.findByBookBookId(bookId);
         bookThumbnail.updateIsDeleted(TableStatus.TRUE);
-        bookThumbnailRepository.save(bookThumbnail);
 
         List<BookImage> bookImageList = bookImageRepository.findAllByBookBookId(bookId);
         for(BookImage image : bookImageList) {
             image.updateIsDeleted(TableStatus.TRUE);
-            bookImageRepository.save(image);
         }
 
         List<BookCategory> categoryList = bookCategoryRepository.findByBookBookId(bookId);
         for(BookCategory category : categoryList) {
             category.updateIsDeleted(TableStatus.TRUE);
-            bookCategoryRepository.save(category);
         }
 
         List<BookTag> tagList = bookTagRepository.findByBookBookId(bookId);
         for(BookTag tag : tagList) {
             tag.updateIsDeleted(TableStatus.TRUE);
-            bookTagRepository.save(tag);
         }
 
         List<ParticipantRoleRegistration> participantRoleRegistrationList = registrationRepository.findByBookBookId(bookId);
         for(ParticipantRoleRegistration participant : participantRoleRegistrationList) {
             participant.updateIsDeleted(TableStatus.TRUE);
-            registrationRepository.save(participant);
         }
-
         book.updateIsDeleted(TableStatus.TRUE);
-        bookRepository.save(book);
     }
 
     /**
