@@ -2,10 +2,7 @@ package com.t3t.bookstoreapi.member.model.entity;
 
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "members")
 @Getter
+@Setter
 public class Member {
 
     @Id

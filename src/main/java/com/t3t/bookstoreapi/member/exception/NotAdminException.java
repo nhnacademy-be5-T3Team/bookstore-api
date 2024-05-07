@@ -6,4 +6,9 @@ public class NotAdminException extends RuntimeException {
     public NotAdminException() {
         super(DEFAULT_MESSAGE);
     }
+
+    public NotAdminException(String forTarget) {
+        super(String.format("%s (%s)", DEFAULT_MESSAGE, forTarget));
+    }
+
 }
