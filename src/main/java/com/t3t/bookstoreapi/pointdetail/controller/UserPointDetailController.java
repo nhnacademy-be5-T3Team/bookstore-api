@@ -49,10 +49,10 @@ public class UserPointDetailController {
      * @author hydrationn(박수화)
      */
     @GetMapping("/members/{memberId}/point-details")
-    public ResponseEntity<BaseResponse<PointDetailResponse>> getPointDetailByPointDetailType(@RequestHeader(name = "memberId") @PathVariable("members") Long memberId,
-                                                                                String pointDetailType) {
-        PointDetailResponse pointDetailResponse = userPointDetailService.getPointDetailByPointDetailType(pointDetailType);
-        return ResponseEntity.ok(new BaseResponse<PointDetailResponse>().data(pointDetailResponse));
+    public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailByPointDetailType(@RequestHeader(name = "memberId") @PathVariable("members") Long memberId,
+                                                                                                    String pointDetailType) {
+        List<PointDetailResponse> pointDetailResponse = userPointDetailService.getPointDetailByPointDetailType(pointDetailType);
+        return ResponseEntity.ok(new BaseResponse<List<PointDetailResponse>>().data(pointDetailResponse));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.pointdetail.service;
 
+import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException;
 import com.t3t.bookstoreapi.pointdetail.model.entity.PointDetail;
 import com.t3t.bookstoreapi.pointdetail.model.response.PointDetailResponse;
@@ -44,11 +45,16 @@ public class UserPointDetailService {
      * @author hydrationn(박수화)
      */
     @Transactional(readOnly = true)
-    public PointDetailResponse getPointDetailByPointDetailType(String pointDetailType) {
-        if(!pointDetailRepository.existsByPointDetailType(pointDetailType))
+    public List<PointDetailResponse> getPointDetailByPointDetailType(String pointDetailType) {
+        if(pointDetailRepository.existsByPointDetailType(pointDetailType))
             throw new PointDetailNotFoundException(pointDetailType);
-        Optional<PointDetail> pointDetail = pointDetailRepository.findByPointDetailType(pointDetailType);
 
-        return PointDetailResponse.of(pointDetail.get());
+        List<PointDetail> pointDetails = (List<PointDetail>) pointDetailRepository.findByPointDetailType(pointDetailType)
+                .orElseThrow(() -> new PointDetailNotFoundException(pointDetailType));
+
+        return pointDetails.stream()
+                .map(PointDetailResponse::of)
+                .collect(Collectors.toList());
+
     }
 }
