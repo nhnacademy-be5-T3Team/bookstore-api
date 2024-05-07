@@ -47,12 +47,12 @@ public class AdminPointDetailController {
      * @author hydrationn(박수화)
      */
     @GetMapping("/admin/point-details/{memberId}")
-    public ResponseEntity<BaseResponse<PointDetailResponse>> getPointDetailById(@RequestHeader(name = "memberId") Long adminId,
+    public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailById(@RequestHeader(name = "memberId") Long adminId,
                                                                                 @PathVariable("memberId") Long memberId,
                                                                                 String pointDetailType) {
-        PointDetailResponse pointDetailResponse = adminPointDetailService.getPointDetailByPointDetailType(adminId, memberId, pointDetailType);
+        List<PointDetailResponse> pointDetailResponse = adminPointDetailService.getPointDetailByPointDetailType(adminId, memberId, pointDetailType);
 
-        return ResponseEntity.ok(new BaseResponse<PointDetailResponse>().data(pointDetailResponse));
+        return ResponseEntity.ok(new BaseResponse<List<PointDetailResponse>>().data(pointDetailResponse));
     }
 
     /**

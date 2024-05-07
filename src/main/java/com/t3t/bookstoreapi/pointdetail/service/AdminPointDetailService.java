@@ -73,7 +73,7 @@ public class AdminPointDetailService {
      * @author hydrationn(박수화)
      */
     @Transactional(readOnly = true)
-    public PointDetailResponse getPointDetailByPointDetailType(Long adminId, Long memberId, String pointDetailType) {
+    public List<PointDetailResponse> getPointDetailByPointDetailType(Long adminId, Long memberId, String pointDetailType) {
         memberRepository.findById(adminId)
                 .map(member -> {
                     if (member.getRole() != MemberRole.ADMIN) {
@@ -89,10 +89,12 @@ public class AdminPointDetailService {
         if(pointDetailRepository.existsByMemberIdAndPointDetailType(memberId, pointDetailType))
             throw new PointDetailNotFoundException(pointDetailType);
 
-        PointDetail pointDetail = pointDetailRepository.findByMemberIdAndPointDetailType(memberId, pointDetailType)
+        List<PointDetail> pointDetails = (List<PointDetail>) pointDetailRepository.findByMemberIdAndPointDetailType(memberId, pointDetailType)
                 .orElseThrow(() -> new PointDetailNotFoundException(pointDetailType));
 
-        return PointDetailResponse.of(pointDetail);
+        return pointDetails.stream()
+                .map(PointDetailResponse::of)
+                .collect(Collectors.toList());
     }
 
     /**
