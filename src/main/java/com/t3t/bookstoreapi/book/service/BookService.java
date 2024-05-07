@@ -217,7 +217,6 @@ public class BookService {
     public void updateBookDetail(Long bookId, ModifyBookDetailRequest request) {
         Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
         book.updateBookDetails(request);
-        bookRepository.save(book);
     }
 
     /**
