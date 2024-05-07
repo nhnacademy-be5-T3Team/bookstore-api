@@ -5,12 +5,13 @@ import lombok.*;
 
 /**
  * 회원 주소 정보에 대한 DTO
+ *
  * @author woody35545(구건모)
  */
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberAddressDto {
     private Long id;
     private Long memberId;
@@ -18,6 +19,7 @@ public class MemberAddressDto {
     private String roadNameAddress;
     private String addressNickname;
     private String addressDetail;
+    private Boolean isDefaultAddress;
 
     public static MemberAddressDto of(MemberAddress memberAddress) {
         return MemberAddressDto.builder()
@@ -26,6 +28,7 @@ public class MemberAddressDto {
                 .addressNumber(memberAddress.getAddress().getAddressNumber())
                 .roadNameAddress(memberAddress.getAddress().getRoadNameAddress())
                 .addressNickname(memberAddress.getAddressNickname())
-                .addressDetail(memberAddress.getAddressDetail()).build();
+                .addressDetail(memberAddress.getAddressDetail())
+                .isDefaultAddress(memberAddress.getIsDefaultAddress()).build();
     }
 }

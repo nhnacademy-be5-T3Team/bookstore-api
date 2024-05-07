@@ -2,15 +2,16 @@ package com.t3t.bookstoreapi.member.service;
 
 import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsForIdException;
 import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException;
-import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
 import com.t3t.bookstoreapi.member.model.constant.MemberGradeType;
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
-import com.t3t.bookstoreapi.member.model.dto.MemberDto;
+import com.t3t.bookstoreapi.member.model.entity.Account;
 import com.t3t.bookstoreapi.member.model.entity.BookstoreAccount;
 import com.t3t.bookstoreapi.member.model.entity.Member;
+import com.t3t.bookstoreapi.member.model.request.MemberPasswordModifyRequest;
 import com.t3t.bookstoreapi.member.model.request.MemberRegistrationRequest;
+import com.t3t.bookstoreapi.member.model.response.MemberInfoResponse;
 import com.t3t.bookstoreapi.member.model.response.MemberRegistrationResponse;
 import com.t3t.bookstoreapi.member.repository.AccountRepository;
 import com.t3t.bookstoreapi.member.repository.BookstoreAccountRepository;
@@ -33,14 +34,15 @@ public class MemberService {
 
     /**
      * 회원 식별자로 회원 정보 조회
+     *
      * @param memberId 조회하려는 회원 식별자
      * @return 조회된 회원 정보 DTO
      * @author woody35545(구건모)
      */
     @Transactional(readOnly = true)
-    public MemberDto getMemberById(Long memberId) {
-        return MemberDto.of(memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundForIdException(memberId)));
+    public MemberInfoResponse getMemberInfoResponseById(Long memberId) {
+        return memberRepository.getMemberInfoResponseByMemberId(memberId)
+                .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
     }
 
     /**
@@ -75,5 +77,41 @@ public class MemberService {
                 .build());
 
         return MemberRegistrationResponse.of(bookstoreAccount.getId(), member);
+    }
+
+    /**
+     * 회원 비밀번호 변경<br>
+     * 기존 비밀번호를 검증하고 변경할 비밀번호를 받아 회원 계정의 비밀번호를 변경한다.
+     *
+     * @author woody35545(구건모)
+     */
+    public void modifyMemberPassword(long memberId, MemberPasswordModifyRequest request) {
+        BookstoreAccount bookstoreAccount = bookstoreAccountRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), bookstoreAccount.getAccountPassword())) {
+            throw new IllegalArgumentException("기존 비밀번호가 일치하지 않습니다.");
+        }
+
+        bookstoreAccount.modifyPassword(passwordEncoder.encode(request.getNewPassword()));
+    }
+
+    /**
+     * 회원 탈퇴
+     *
+     * @param memberId 탈퇴하려는 회원 식별자
+     * @throws MemberNotFoundForIdException 회원 식별자에 해당하는 회원이 존재하지 않을 경우 발생
+     */
+    public void withdrawMember(long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
+
+        Account account = accountRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
+
+        account.delete();
+
+        member.withdraw();
     }
 }
