@@ -14,8 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +54,11 @@ public class AdminPointDetailService {
         if(!memberRepository.existsById(memberId))
             throw new MemberNotFoundException();
 
-        return pointDetailRepository.findByMemberId(memberId).stream()
+        List<Optional<PointDetail>> optionalPointDetails = pointDetailRepository.findByMemberId(memberId);
+
+        return optionalPointDetails.stream()
+                .filter(Optional::isPresent)
+                .flatMap(optional -> optional.stream())
                 .map(PointDetailResponse::of)
                 .collect(Collectors.toList());
     }
@@ -82,7 +89,10 @@ public class AdminPointDetailService {
         if(pointDetailRepository.existsByMemberIdAndPointDetailType(memberId, pointDetailType))
             throw new PointDetailNotFoundException(pointDetailType);
 
-        return PointDetailResponse.of(pointDetailRepository.findByMemberIdAndPointDetailType(memberId, pointDetailType));
+        PointDetail pointDetail = pointDetailRepository.findByMemberIdAndPointDetailType(memberId, pointDetailType)
+                .orElseThrow(() -> new PointDetailNotFoundException(pointDetailType));
+
+        return PointDetailResponse.of(pointDetail);
     }
 
     /**
@@ -92,7 +102,7 @@ public class AdminPointDetailService {
      *
      * @author hydrationn(박수화)
      */
-    public PointDetailResponse createPointDetail(Long adminId, Long memberId, CreatePointDetailRequest request) {
+    public PointDetailResponse createPointDetail(Long adminId, Long memberId, @Valid CreatePointDetailRequest request) {
         memberRepository.findById(adminId)
                 .map(member -> {
                     if (member.getRole() != MemberRole.ADMIN) {
@@ -126,7 +136,7 @@ public class AdminPointDetailService {
     }
 
     /**
-     * member point의 양 수정
+     * 특정 포인트 상세 내역 수정
      * @param pointDetailId 수정할 포인트 상세 정보의 ID
      * @param pointAmount 수정될 포인트 양
      * @return 수정된 포인트 상세 정보를 {@link PointDetailResponse} 객체로 반환
@@ -144,7 +154,7 @@ public class AdminPointDetailService {
                 })
                 .orElseThrow(() -> new MemberNotFoundException());
 
-        Member member = memberRepository.findById(memberId)
+        memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException());
 
         PointDetail pointDetail = pointDetailRepository.findById(pointDetailId)
@@ -176,6 +186,7 @@ public class AdminPointDetailService {
 
         PointDetail pointDetail = pointDetailRepository.findById(pointDetailId)
                 .orElseThrow(PointDetailNotFoundException::new);
+
         pointDetailRepository.delete(pointDetail);
     }
 }

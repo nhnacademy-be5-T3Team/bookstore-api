@@ -1,7 +1,5 @@
 package com.t3t.bookstoreapi.pointdetail.service;
 
-import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
-import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException;
 import com.t3t.bookstoreapi.pointdetail.model.entity.PointDetail;
 import com.t3t.bookstoreapi.pointdetail.model.response.PointDetailResponse;
@@ -11,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -48,8 +47,8 @@ public class UserPointDetailService {
     public PointDetailResponse getPointDetailByPointDetailType(String pointDetailType) {
         if(!pointDetailRepository.existsByPointDetailType(pointDetailType))
             throw new PointDetailNotFoundException(pointDetailType);
-        PointDetail pointDetail = pointDetailRepository.findByPointDetailType(pointDetailType);
+        Optional<PointDetail> pointDetail = pointDetailRepository.findByPointDetailType(pointDetailType);
 
-        return PointDetailResponse.of(pointDetail);
+        return PointDetailResponse.of(pointDetail.get());
     }
 }
