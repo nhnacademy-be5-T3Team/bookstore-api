@@ -5,7 +5,6 @@ import com.t3t.bookstoreapi.book.exception.BookAlreadyExistsException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
-import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.PackagingDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantMapDto;
 import com.t3t.bookstoreapi.book.model.entity.*;
@@ -29,7 +28,6 @@ import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
 import com.t3t.bookstoreapi.tag.exception.TagNotFoundException;
-import com.t3t.bookstoreapi.tag.model.dto.TagDto;
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import com.t3t.bookstoreapi.tag.repository.TagRepository;
 import com.t3t.bookstoreapi.upload.service.ObjectStorageUploadService;
@@ -42,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -72,7 +71,6 @@ public class BookService {
      * 도서 식별자로 도서 상세 조회, 도서의 포장 여부를 확인하고 포장 가능한 도서인 경우
      * 포장지 리스트를 불러옴.
      * 존재하지 않는 도서인 경우 예외 발생
-     *
      * @param bookId 조회할 도서의 id
      * @return 도서의 상세 정보
      * @author Yujin-nKim(김유진)
@@ -102,78 +100,6 @@ public class BookService {
         return bookDetails;
     }
 
-    public Long createBook(BookRegisterRequest request) {
-
-        if(Boolean.TRUE.equals(bookRepository.existsByBookIsbn(request.getBookIsbn()))) {
-            throw new BookAlreadyExistsException();
-        }
-
-        Publisher publisher = publisherRepository.findById(request.getPublisherId()).orElseThrow(PublisherNotFoundException::new);
-
-        Book book = bookRepository.save(Book.builder()
-                .bookName(request.getBookTitle())
-                .bookIndex(request.getBookIndex())
-                .bookDesc(request.getBookDesc())
-                .bookIsbn(request.getBookIsbn())
-                .bookPrice(request.getBookPrice())
-                .bookDiscount(request.getBookDiscountRate())
-                .bookPackage(TableStatus.ofCode(request.getPackagingAvailableStatus()))
-                .bookPublished(request.getBookPublished())
-                .bookStock(request.getBookStock())
-                .bookLikeCount(0)
-                .bookAverageScore((float) 0)
-                .publisher(publisher)
-                .build());
-
-        log.info("books table insert 완료 | bookId = {}", book.getBookId());
-
-        List<Integer> categoryList = request.getCategoryList();
-        for(Integer id : categoryList) {
-            Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
-            bookCategoryRepository.save(BookCategory.builder().book(book).category(category).build());
-            log.info("book_categories table insert 완료 | categoryId = {}", id);
-        }
-
-        List<Long> tagList = request.getTagList();
-        for(Long id : tagList) {
-            Tag tag = tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
-            bookTagRepository.save(BookTag.builder().book(book).tag(tag).build());
-            log.info("book_tags table insert 완료 | tagId = {}", id);
-        }
-
-        List<ParticipantMapDto> participantMapList = request.getParticipantMapList();
-        for(ParticipantMapDto map : participantMapList) {
-            Participant participant = participantRepository.findById(map.getParticipantId()).orElseThrow(ParticipantNotFoundException::new);
-            ParticipantRole participantRole = participantRoleRepository.findById(map.getParticipantRoleId()).orElseThrow(ParticipantRoleNotFoundException::new);
-            registrationRepository.save(ParticipantRoleRegistration.builder().book(book).participant(participant).participantRole(participantRole).build());
-            log.info("registration table insert 완료 | participantId, participantRoleId = {},{}", map.getParticipantId(), map.getParticipantRoleId());
-        }
-
-        try {
-            MultipartFile bookThumbnailImage = request.getThumbnailImage();
-            String uploadFileName = generateUploadFileName(bookThumbnailImage);
-            // Object Storage에 이미지 업로드
-            fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, bookThumbnailImage);
-            // book_thumbnail 테이블에 이미지 이름 저장
-            bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).build());
-            log.info("book_thumbnail table insert 완료");
-
-            List<MultipartFile> bookImageList = request.getBookImageList();
-            for(MultipartFile file : bookImageList) {
-                String uploadBookImageName = generateUploadFileName(file);
-                fileUploadService.uploadObject(CONTAINER_NAME, BOOKIMAGE_FOLDER_NAME, uploadBookImageName, file);
-                bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadBookImageName).build());
-                log.info("book_image table insert 완료");
-            }
-
-        } catch (Exception e) {
-            log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
-            throw new ImageDataStorageException(e);
-        }
-
-        return book.getBookId();
-    }
-
     /**
      * 페이지별 도서 목록 조회
      *
@@ -199,6 +125,89 @@ public class BookService {
                 .totalPages(bookPage.getTotalPages())
                 .last(bookPage.isLast())
                 .build();
+    }
+
+    /**
+     * 도서 등록 요청
+     * @param request 도서를 등록하기 위한 요청 객체
+     * @return 등록된 도서의 ID
+     * @author Yujin-nKim(김유진)
+     */
+    public Long createBook(BookRegisterRequest request) {
+
+        // 삭제되지 않은 책 중에서 요청받은 도서의 isbn 값을 가지는 도서가 존재하는지 확인
+        if(Boolean.TRUE.equals(bookRepository.existsByBookIsbnAndIsDeleted(request.getBookIsbn(), TableStatus.FALSE))) {
+            throw new BookAlreadyExistsException();
+        }
+        Publisher publisher = publisherRepository.findById(request.getPublisherId()).orElseThrow(PublisherNotFoundException::new);
+
+        Book book = bookRepository.save(Book.builder()
+                .bookName(request.getBookTitle())
+                .bookIndex(request.getBookIndex())
+                .bookDesc(request.getBookDesc())
+                .bookIsbn(request.getBookIsbn())
+                .bookPrice(request.getBookPrice())
+                .bookDiscount(request.getBookDiscountRate())
+                .bookPackage(TableStatus.ofCode(request.getPackagingAvailableStatus()))
+                .bookPublished(request.getBookPublished())
+                .bookStock(request.getBookStock())
+                .bookLikeCount(0)
+                .bookAverageScore((float) 0)
+                .publisher(publisher)
+                .isDeleted(TableStatus.ofCode(0))
+                .build());
+        log.info("books table insert 완료 | bookId = {}", book.getBookId());
+
+        List<Integer> categoryList = request.getCategoryList();
+        if(Objects.nonNull(categoryList)) {
+            for(Integer id : categoryList) {
+                Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+                bookCategoryRepository.save(BookCategory.builder().book(book).category(category).isDeleted(TableStatus.ofCode(0)).build());
+                log.info("book_categories table insert 완료 | categoryId = {}", id);
+            }
+        }
+
+        List<Long> tagList = request.getTagList();
+        if(Objects.nonNull(tagList)) {
+            for(Long id : tagList) {
+                Tag tag = tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
+                bookTagRepository.save(BookTag.builder().book(book).tag(tag).isDeleted(TableStatus.ofCode(0)).build());
+                log.info("book_tags table insert 완료 | tagId = {}", id);
+            }
+        }
+
+        List<ParticipantMapDto> participantMapList = request.getParticipantMapList();
+        for(ParticipantMapDto map : participantMapList) {
+            Participant participant = participantRepository.findById(map.getParticipantId()).orElseThrow(ParticipantNotFoundException::new);
+            ParticipantRole participantRole = participantRoleRepository.findById(map.getParticipantRoleId()).orElseThrow(ParticipantRoleNotFoundException::new);
+            registrationRepository.save(ParticipantRoleRegistration.builder().book(book).participant(participant).participantRole(participantRole).isDeleted(TableStatus.ofCode(0)).build());
+            log.info("registration table insert 완료 | participantId, participantRoleId = {},{}", map.getParticipantId(), map.getParticipantRoleId());
+        }
+
+        try {
+            MultipartFile bookThumbnailImage = request.getThumbnailImage();
+            String uploadFileName = generateUploadFileName(bookThumbnailImage);
+            // Object Storage에 이미지 업로드
+            fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, bookThumbnailImage);
+            // book_thumbnail 테이블에 이미지 이름 저장
+            bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
+            log.info("book_thumbnail table insert 완료");
+
+            request.removeEmptyImages();
+            List<MultipartFile> bookImageList = request.getBookImageList();
+            if (!bookImageList.isEmpty()) {
+                for (MultipartFile file : bookImageList) {
+                    String uploadBookImageName = generateUploadFileName(file);
+                    fileUploadService.uploadObject(CONTAINER_NAME, BOOKIMAGE_FOLDER_NAME, uploadBookImageName, file);
+                    bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadBookImageName).isDeleted(TableStatus.ofCode(0)).build());
+                    log.info("book_image table insert 완료");
+                }
+            }
+        } catch (Exception e) {
+            log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
+            throw new ImageDataStorageException(e);
+        }
+        return book.getBookId();
     }
 
     /**
@@ -284,15 +293,15 @@ public class BookService {
      * @throws TagNotFoundException  태그를 찾을 수 없는 경우 발생
      * @author Yujin-nKim(김유진)
      */
-    public void updateBookTag(Long bookId, List<TagDto> tagList) {
+    public void updateBookTag(Long bookId, List<Long> tagList) {
         Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
 
         List<BookTag> bookTagList = bookTagRepository.findByBookBookId(bookId);
 
         bookTagRepository.deleteAll(bookTagList);
 
-        for(TagDto newTag : tagList) {
-            Tag tag = tagRepository.findById(newTag.getId()).orElseThrow(TagNotFoundException::new);
+        for(Long newTagId : tagList) {
+            Tag tag = tagRepository.findById(newTagId).orElseThrow(TagNotFoundException::new);
             bookTagRepository.save(BookTag.builder()
                     .book(book)
                     .tag(tag)
@@ -309,15 +318,15 @@ public class BookService {
      * @throws CategoryNotFoundException  카테고리를 찾을 수 없는 경우 발생
      * @author Yujin-nKim(김유진)
      */
-    public void updateBookCategory(Long bookId, List<CategoryDto> categoryList) {
+    public void updateBookCategory(Long bookId, List<Integer> categoryList) {
         Book book = bookRepository.findByBookId(bookId).orElseThrow(BookNotFoundException::new);
 
         List<BookCategory> bookCategoryList = bookCategoryRepository.findByBookBookId(bookId);
 
         bookCategoryRepository.deleteAll(bookCategoryList);
 
-        for(CategoryDto newCategory : categoryList) {
-            Category category = categoryRepository.findById(newCategory.getId()).orElseThrow(CategoryNotFoundException::new);
+        for(Integer newCategoryId : categoryList) {
+            Category category = categoryRepository.findById(newCategoryId).orElseThrow(CategoryNotFoundException::new);
             bookCategoryRepository.save(BookCategory.builder()
                     .book(book)
                     .category(category)

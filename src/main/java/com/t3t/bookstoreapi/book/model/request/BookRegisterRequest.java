@@ -4,7 +4,6 @@ import com.t3t.bookstoreapi.book.annotation.UniqueParticipantMap;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantMapDto;
 import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,11 +66,22 @@ public class BookRegisterRequest {
 
     private List<MultipartFile> bookImageList; // 도서 미리보기 이미지
 
-    @NotEmpty(message = "카테고리를 선택해주세요.")
     @Size(max = 10, message = "최대 10개의 카테고리를 선택할 수 있습니다.")
     private List<Integer> categoryList; // 카테고리 id 리스트
 
-    @NotEmpty(message = "태그를 선택해주세요.")
     @Size(max = 10, message = "최대 10개의 태그를 선택할 수 있습니다.")
     private List<Long> tagList; // 태그 id 리스트
+
+    /**
+     * 이미지 리스트에서 빈 파일을 제거
+     * @author Yujin-nKim(김유진)
+     */
+    public void removeEmptyImages() {
+        if (bookImageList != null && bookImageList.size() == 1) {
+            MultipartFile imageFile = bookImageList.get(0);
+            if (imageFile.getSize() == 0) {
+                bookImageList.clear();
+            }
+        }
+    }
 }

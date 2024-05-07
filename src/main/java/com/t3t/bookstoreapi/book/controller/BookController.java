@@ -1,6 +1,5 @@
 package com.t3t.bookstoreapi.book.controller;
 
-import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantMapDto;
 import com.t3t.bookstoreapi.book.model.request.BookRegisterRequest;
 import com.t3t.bookstoreapi.book.model.request.ModifyBookDetailRequest;
@@ -9,7 +8,6 @@ import com.t3t.bookstoreapi.book.model.response.BookListResponse;
 import com.t3t.bookstoreapi.book.service.BookService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.model.response.PageResponse;
-import com.t3t.bookstoreapi.tag.model.dto.TagDto;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +30,6 @@ public class BookController {
 
     /**
      * 도서 식별자로 도서 상세 조회
-     *
      * @param bookId 조회할 도서의 id
      * @return 200 OK, 도서의 상세 정보<br>
      * @author Yujin-nKim(김유진)
@@ -44,19 +41,8 @@ public class BookController {
         );
     }
 
-    @PostMapping("/books")
-    public ResponseEntity<BaseResponse<Long>> createBook(@ModelAttribute @Valid BookRegisterRequest request) {
-        log.info(request.toString());
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new BaseResponse<Long>()
-                        .data(bookService.createBook(request))
-                        .message("도서 생성 요청이 정상적으로 처리되었습니다."));
-    }
-
     /**
      * 도서 전체 목록 조회
-     *
      * @param pageNo     페이지 번호 (기본값: 0)
      * @param pageSize   페이지 크기 (기본값: 10)
      * @param sortBy     정렬 기준 (기본값: "bookId")
@@ -79,6 +65,23 @@ public class BookController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<PageResponse<BookListResponse>>().data(bookList));
+    }
+
+    /**
+     * 도서 등록 요청
+     * @param request 도서를 등록하기 위한 요청 객체
+     * @return 등록된 도서의 ID를 포함한 응답 객체
+     * @author Yujin-nKim(김유진)
+     */
+    @PostMapping("/books")
+    public ResponseEntity<BaseResponse<Long>> createBook(@ModelAttribute @Valid BookRegisterRequest request) {
+
+        log.info("도서 등록 요청 = {}",request.toString());
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Long>()
+                        .data(bookService.createBook(request))
+                        .message("도서 등록 요청이 정상적으로 처리되었습니다."));
     }
 
     /**
@@ -163,7 +166,7 @@ public class BookController {
     @PutMapping("/books/{bookId}/tag")
     public ResponseEntity<BaseResponse<Void>> updateBookTag(
             @PathVariable Long bookId,
-            @RequestBody @Valid List<TagDto> tagList) {
+            @RequestBody @Valid List<Long> tagList) {
 
         bookService.updateBookTag(bookId, tagList);
 
@@ -181,7 +184,7 @@ public class BookController {
     @PutMapping("/books/{bookId}/category")
     public ResponseEntity<BaseResponse<Void>> updateBookCategory(
             @PathVariable Long bookId,
-            @RequestBody @Valid List<CategoryDto> categoryList) {
+            @RequestBody @Valid List<Integer> categoryList) {
 
         bookService.updateBookCategory(bookId, categoryList);
 
