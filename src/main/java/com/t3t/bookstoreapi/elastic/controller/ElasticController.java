@@ -45,7 +45,6 @@ public class ElasticController {
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
             @RequestParam(value = "categoryId", required = false) BigDecimal categoryId,
             @RequestParam(value = "sortBy", defaultValue = "_score", required = false) String sortBy) {
-        System.out.print(categoryId);
         if (query == null) {
             return ResponseEntity.badRequest().body(new BaseResponse<>());
         }
