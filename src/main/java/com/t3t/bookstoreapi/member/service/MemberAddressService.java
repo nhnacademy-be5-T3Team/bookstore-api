@@ -67,7 +67,7 @@ public class MemberAddressService {
         Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new MemberNotFoundForIdException(request.getMemberId()));
 
-        if(memberAddressRepository.countByMemberId(member.getId()) >= MAX_MEMBER_ADDRESS_COUNT) {
+        if (memberAddressRepository.countByMemberId(member.getId()) >= MAX_MEMBER_ADDRESS_COUNT) {
             throw new MemberAddressCountLimitExceededException();
         }
 
@@ -82,8 +82,60 @@ public class MemberAddressService {
                 .member(member)
                 .addressNickname(request.getAddressNickname())
                 .addressDetail(request.getAddressDetail())
+                .isDefaultAddress(false)
                 .build());
 
         return MemberAddressDto.of(memberAddress);
+    }
+
+
+    /**
+     * 기본 주소 설정 및 변경
+     *
+     * @param memberAddressId 기본 주소로 설정할 회원 주소 식별자
+     * @author woody35545(구건모)
+     */
+    public void modifyDefaultAddress(long memberAddressId) {
+        MemberAddress memberAddress = memberAddressRepository.findById(memberAddressId)
+                .orElseThrow(() -> new MemberAddressNotFoundForIdException(memberAddressId));
+
+        if (memberAddress.getIsDefaultAddress()) {
+            return;
+        }
+
+        memberAddressRepository.findByMemberId(memberAddress.getMember().getId()).stream()
+                .forEach(address -> address.asNonDefaultAddress());
+
+        memberAddress.asDefaultAddress();
+    }
+
+    /**
+     * 회원 주소 삭제
+     *
+     * @param memberAddressId 삭제할 회원 주소 식별자
+     * @author woody35545(구건모)
+     */
+    public void deleteMemberAddress(long memberAddressId) {
+        MemberAddress memberAddress = memberAddressRepository.findById(memberAddressId)
+                .orElseThrow(() -> new MemberAddressNotFoundForIdException(memberAddressId));
+
+        long addressId = memberAddress.getAddress().getId();
+
+        memberAddressRepository.delete(memberAddress);
+
+        if (!memberAddressRepository.existsByAddressId(addressId)) {
+            addressRepository.delete(memberAddress.getAddress());
+        }
+    }
+
+    /**
+     * 주소 별칭 변경
+     * author woody35545(구건모)
+     */
+    public void modifyAddressNickname(long memberAddressId, String addressNickname) {
+        MemberAddress memberAddress = memberAddressRepository.findById(memberAddressId)
+                .orElseThrow(() -> new MemberAddressNotFoundForIdException(memberAddressId));
+
+        memberAddress.modifyNickname(addressNickname);
     }
 }

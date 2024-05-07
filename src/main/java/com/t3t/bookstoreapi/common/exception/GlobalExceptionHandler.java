@@ -5,11 +5,7 @@ import com.t3t.bookstoreapi.book.exception.BookAlreadyExistsException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
-import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsException;
-import com.t3t.bookstoreapi.member.exception.MemberAddressCountLimitExceededException;
-import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundException;
-import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException;
-import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
+import com.t3t.bookstoreapi.member.exception.*;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
@@ -33,6 +29,19 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * 회원 계정의 비밀번호 검증 시, 비밀번호가 일치하지 않을 때 발생하는 예외 처리 핸들러
+     *
+     * @param accountPasswordNotMatchException 비밀번호가 일치하지 않을 때 발생하는 예외
+     * @return 401 UNAUTHORIZED - 예외 메시지 반환
+     * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.member.exception.AccountPasswordNotMatchException
+     */
+    @ExceptionHandler(AccountPasswordNotMatchException.class)
+    public ResponseEntity<BaseResponse<Void>> handleAccountPasswordNotMatchException(AccountPasswordNotMatchException accountPasswordNotMatchException) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new BaseResponse<Void>().message(accountPasswordNotMatchException.getMessage()));
+    }
 
     /**
      * 주문 상태가 존재하지 않는 경우에 대한 예외 처리 핸들러
@@ -174,7 +183,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new BaseResponse<Void>().message(unsupportedPaymentProviderTypeException.getMessage()));
     }
-    
+
     /**
      * 회원이 존재하지 않는 경우에 대한 예외 처리 핸들러
      * @param memberNotFoundException 회원이 존재하지 않는 경우 발생하는 예외

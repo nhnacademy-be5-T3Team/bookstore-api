@@ -42,6 +42,7 @@ public class MemberAddressRepositoryCustomImpl implements MemberAddressRepositor
 
     /**
      * {@inheritDoc}
+     *
      * @author woody35545(구건모)
      */
     @Override
@@ -53,7 +54,8 @@ public class MemberAddressRepositoryCustomImpl implements MemberAddressRepositor
                         memberAddress.address.addressNumber,
                         memberAddress.address.roadNameAddress,
                         memberAddress.addressDetail,
-                        memberAddress.addressNickname))
+                        memberAddress.addressNickname,
+                        memberAddress.isDefaultAddress))
                 .from(memberAddress)
                 .where(memberAddress.member.id.eq(memberId))
                 .fetch();
