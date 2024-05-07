@@ -1,9 +1,6 @@
-package com.t3t.bookstoreapi.member.model.entity;
+package com.t3t.bookstoreapi.membergradepolicies.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
@@ -12,6 +9,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Entity
 @Table(name = "member_grade_policies")
 public class MemberGradePolicy {
