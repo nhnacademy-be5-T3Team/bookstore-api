@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.pointdetail.model.dto;
 
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.pointdetail.model.entity.PointDetail;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class PointDetailDto {
 
     @NotNull
     private Long pointDetailId;
+    private Member member;
     private String content;
     private String pointDetailType;
     private LocalDateTime pointDetailDate;
@@ -30,6 +32,7 @@ public class PointDetailDto {
     public static PointDetailDto of(PointDetail pointDetail) {
         return PointDetailDto.builder()
                 .pointDetailId(pointDetail.getPointDetailId())
+                .member(pointDetail.getMember())
                 .content(pointDetail.getContent())
                 .pointDetailType(pointDetail.getPointDetailType())
                 .pointDetailDate(pointDetail.getPointDetailDate())
