@@ -28,7 +28,7 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/admin/point-details/{memberId}")
+    @GetMapping("/admin/members/{memberId}/point-details")
     public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailList(@RequestHeader(name = "memberId") Long adminId,
                                                                                       @PathVariable("memberId") Long memberId){
         List<PointDetailResponse> pointDetailList = adminPointDetailService.getPointDetailList(adminId, memberId);
@@ -46,7 +46,7 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/admin/point-details/{memberId}")
+    @GetMapping("/admin/members/{memberId}/point-details")
     public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailById(@RequestHeader(name = "memberId") Long adminId,
                                                                                 @PathVariable("memberId") Long memberId,
                                                                                 String pointDetailType) {
@@ -63,7 +63,7 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @PostMapping("/admin/point-details/{memberId}")
+    @PostMapping("/admin/members/{memberId}/point-details")
     public ResponseEntity<BaseResponse<PointDetailResponse>> createPointDetail(@RequestHeader(name = "memberId") Long adminId,
                                                                                @PathVariable("memberId") Long memberId,
                                                                                @Valid @RequestBody CreatePointDetailRequest request) {
@@ -81,7 +81,7 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @PutMapping(value = "/admin/point-details/{memberId}/{pointDetailId}")
+    @PutMapping(value = "/admin/members/{memberId}/point-details/{pointDetailId}")
     public ResponseEntity<BaseResponse<PointDetailResponse>> updatePointDetail(@RequestHeader(name = "memberId") Long adminId,
                                                                                @PathVariable("memberId") Long memberId,
                                                                                @PathVariable("pointDetailId") Long pointDetailId,
@@ -99,7 +99,7 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @DeleteMapping("/admin/point-details/{memberId}/{pointDetailId}")
+    @DeleteMapping("/admin/members/{memberId}/point-details/{pointDetailId}")
     public ResponseEntity<BaseResponse<Void>> deletePointDetail(@RequestHeader(name = "memberId") Long adminId,
                                                                 @PathVariable("memberId") Long memberId,
                                                                 @PathVariable("pointDetailId") Long pointDetailId) {

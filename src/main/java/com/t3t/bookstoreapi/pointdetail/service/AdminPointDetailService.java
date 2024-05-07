@@ -131,7 +131,6 @@ public class AdminPointDetailService {
         else
             updatePoints += newPointDetail.getPointAmount().longValue();
 
-
         member.updatePoint(member.getPoint());
 
         return PointDetailResponse.of(pointDetailRepository.save(newPointDetail));
@@ -166,6 +165,7 @@ public class AdminPointDetailService {
 
         return PointDetailResponse.of(pointDetailRepository.save(pointDetail));
     }
+
     /**
      * 특정 포인트 상세 정보 삭제
      * @param pointDetailId 삭제할 포인트 상세 정보의 ID
