@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "point_details")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,4 +48,8 @@ public class PointDetail {
     @Column(name = "point_amount")
     @Comment("포인트 양")
     private BigDecimal pointAmount;
+
+    public void updatePointAmount(BigDecimal pointAmount) {
+        this.pointAmount = pointAmount;
+    }
 }

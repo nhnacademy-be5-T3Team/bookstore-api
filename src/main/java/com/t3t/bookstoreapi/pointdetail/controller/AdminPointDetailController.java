@@ -28,7 +28,7 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/pointDetails/admin/{memberId}")
+    @GetMapping("/admin/point-details/{memberId}")
     public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailList(@RequestHeader(name = "memberId") Long adminId,
                                                                                       @PathVariable("memberId") Long memberId){
         List<PointDetailResponse> pointDetailList = adminPointDetailService.getPointDetailList(adminId, memberId);
@@ -46,11 +46,12 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/pointDetails/admin/{memberId}")
+    @GetMapping("/admin/point-details/{memberId}")
     public ResponseEntity<BaseResponse<PointDetailResponse>> getPointDetailById(@RequestHeader(name = "memberId") Long adminId,
                                                                                 @PathVariable("memberId") Long memberId,
                                                                                 String pointDetailType) {
         PointDetailResponse pointDetailResponse = adminPointDetailService.getPointDetailByPointDetailType(adminId, memberId, pointDetailType);
+
         return ResponseEntity.ok(new BaseResponse<PointDetailResponse>().data(pointDetailResponse));
     }
 
@@ -62,7 +63,7 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @PostMapping("/pointDetails/admin/{memberId}")
+    @PostMapping("/admin/point-details/{memberId}")
     public ResponseEntity<BaseResponse<PointDetailResponse>> createPointDetail(@RequestHeader(name = "memberId") Long adminId,
                                                                                @PathVariable("memberId") Long memberId,
                                                                                @Valid @RequestBody CreatePointDetailRequest request) {
@@ -80,7 +81,7 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @PutMapping(value = "/pointDetails/admin/{memberId}/{pointDetailId}")
+    @PutMapping(value = "/admin/point-details/{memberId}/{pointDetailId}")
     public ResponseEntity<BaseResponse<PointDetailResponse>> updatePointDetail(@RequestHeader(name = "memberId") Long adminId,
                                                                                @PathVariable("memberId") Long memberId,
                                                                                @PathVariable("pointDetailId") Long pointDetailId,
@@ -98,11 +99,12 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @DeleteMapping("/pointDetails/admin/{memberId}/{pointDetailId}")
+    @DeleteMapping("/admin/point-details/{memberId}/{pointDetailId}")
     public ResponseEntity<BaseResponse<Void>> deletePointDetail(@RequestHeader(name = "memberId") Long adminId,
                                                                 @PathVariable("memberId") Long memberId,
                                                                 @PathVariable("pointDetailId") Long pointDetailId) {
         adminPointDetailService.deletePointDetail(adminId, memberId, pointDetailId);
+
         return ResponseEntity.ok(new BaseResponse<Void>());
     }
 }

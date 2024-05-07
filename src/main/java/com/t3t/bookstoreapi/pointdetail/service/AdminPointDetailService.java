@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.pointdetail.service;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.member.exception.NotAdminException;
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException;
 import com.t3t.bookstoreapi.pointdetail.model.entity.PointDetail;
@@ -101,8 +102,8 @@ public class AdminPointDetailService {
                 })
                 .orElseThrow(() -> new MemberNotFoundException());
 
-        if(!memberRepository.existsById(memberId))
-            throw new MemberNotFoundException();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException());
 
         PointDetail newPointDetail = PointDetail.builder()
                 .content(request.getContent())
@@ -111,11 +112,21 @@ public class AdminPointDetailService {
                 .pointAmount(request.getPointAmount())
                 .build();
 
+        Long updatePoints = member.getPoint();
+
+        if(newPointDetail.getPointDetailType().equals("사용"))
+            updatePoints -= newPointDetail.getPointAmount().longValue();
+        else
+            updatePoints += newPointDetail.getPointAmount().longValue();
+
+
+        member.updatePoint(member.getPoint());
+
         return PointDetailResponse.of(pointDetailRepository.save(newPointDetail));
     }
 
     /**
-     * 특정 포인트 상세 정보의 포인트 양 수정
+     * member point의 양 수정
      * @param pointDetailId 수정할 포인트 상세 정보의 ID
      * @param pointAmount 수정될 포인트 양
      * @return 수정된 포인트 상세 정보를 {@link PointDetailResponse} 객체로 반환
@@ -133,17 +144,16 @@ public class AdminPointDetailService {
                 })
                 .orElseThrow(() -> new MemberNotFoundException());
 
-        if(!memberRepository.existsById(memberId))
-            throw new MemberNotFoundException();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException());
 
         PointDetail pointDetail = pointDetailRepository.findById(pointDetailId)
                 .orElseThrow(PointDetailNotFoundException::new);
 
-        pointDetail.setPointAmount(pointAmount);
+        pointDetail.updatePointAmount(pointAmount);
 
         return PointDetailResponse.of(pointDetailRepository.save(pointDetail));
     }
-
     /**
      * 특정 포인트 상세 정보 삭제
      * @param pointDetailId 삭제할 포인트 상세 정보의 ID

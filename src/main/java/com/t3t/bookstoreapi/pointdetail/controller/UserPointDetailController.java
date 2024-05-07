@@ -31,7 +31,7 @@ public class UserPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/pointDetails/{members}")
+    @GetMapping("/members/{memberId}/point-details")
     public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailList(@RequestHeader(name = "memberId") @PathVariable("memberId") Long memberId){
         List<PointDetailResponse> pointDetailList = userPointDetailService.getPointDetailList();
 
@@ -48,7 +48,7 @@ public class UserPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/pointDetails/{members}")
+    @GetMapping("/members/{memberId}/point-details")
     public ResponseEntity<BaseResponse<PointDetailResponse>> getPointDetailByPointDetailType(@RequestHeader(name = "memberId") @PathVariable("members") Long memberId,
                                                                                 String pointDetailType) {
         PointDetailResponse pointDetailResponse = userPointDetailService.getPointDetailByPointDetailType(pointDetailType);

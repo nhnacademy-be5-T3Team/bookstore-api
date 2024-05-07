@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "members")
 @Getter
-@Setter
 public class Member {
 
     @Id
@@ -60,4 +59,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Comment("회원 역할")
     private MemberRole role;
+
+    public void updatePoint(Long updatePoints) {
+        this.point = updatePoints;
+    }
 }
