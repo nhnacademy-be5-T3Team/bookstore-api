@@ -31,6 +31,7 @@ public class ElasticController {
      * @param searchType 검색 유형
      * @param pageNo     페이지 번호 (기본값: 0)
      * @param pageSize   페이지 크기 (기본값: 10)
+     * @param categoryId  카테고리 검색을 위한 카테고리번호
      * @param sortBy     정렬 기준 (기본값: "_socre")
      * @return HTTP 상태 및 도서 목록 응답
      * @author parkjonggyeong18(박종경)
