@@ -1,5 +1,3 @@
-// File: src/main/java/com/example/project/util/Constants.java
-
 package com.t3t.bookstoreapi.elastic.util;
 
 public class Constants {
