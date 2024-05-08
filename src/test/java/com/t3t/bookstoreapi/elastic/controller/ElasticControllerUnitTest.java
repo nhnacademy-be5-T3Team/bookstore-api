@@ -124,10 +124,9 @@ class ElasticControllerUnitTest {
 
         when(elasticCategoryService.search(anyString(), anyString(), any(BigDecimal.class), any(Pageable.class))).thenReturn(pageResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/search")
+        mockMvc.perform(MockMvcRequestBuilders.get("/category/{categoryId}/search","123")
                         .param("query", "책")
                         .param("searchType", "book_name")
-                        .param("categoryId", "123")
                         .param("pageNo", "0")
                         .param("pageSize", "10")
                         .param("sortBy", "_score")
@@ -149,16 +148,23 @@ class ElasticControllerUnitTest {
 
         when(elasticCategoryService.search(anyString(), anyString(), any(BigDecimal.class), any(Pageable.class))).thenReturn(pageResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/search")
+        mockMvc.perform(MockMvcRequestBuilders.get("/category/{categoryId}/search","123")
                         .param("query", "없는책")
                         .param("searchType", "book_name")
-                        .param("categoryId", "123")
                         .param("pageNo", "0")
                         .param("pageSize", "10")
                         .param("sortBy", "_score")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.message").value("검색한 도서가 없습니다."));
+    }
+    @Test
+    @DisplayName("검색어가 없는 예외 테스트 - with categoryId")
+    void getSearchPage_BadRequest_WithCategoryId() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/category/{categoryId}/search","123")
+                        .param("query", "")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
 }
