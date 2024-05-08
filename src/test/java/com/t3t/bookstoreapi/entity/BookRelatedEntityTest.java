@@ -106,6 +106,7 @@ class BookRelatedEntityTest {
                 .bookStock(100)
                 .bookAverageScore(4.5f)
                 .bookLikeCount(500)
+                .isDeleted(TableStatus.FALSE)
                 .build());
 
     }
@@ -145,7 +146,7 @@ class BookRelatedEntityTest {
                 .depth(1)
                 .build());
 
-        BookCategory bookCategory = BookCategory.builder().book(testBook).category(category).build();
+        BookCategory bookCategory = BookCategory.builder().book(testBook).category(category).isDeleted(TableStatus.FALSE).build();
 
         bookCategoryRepository.save(bookCategory);
 
@@ -164,6 +165,7 @@ class BookRelatedEntityTest {
         BookImage bookImage = bookImageRepository.save(BookImage.builder()
                 .book(testBook)
                 .bookImageUrl(bookImageUrl)
+                .isDeleted(TableStatus.FALSE)
                 .build());
 
         bookImageRepository.save(bookImage);
@@ -180,7 +182,7 @@ class BookRelatedEntityTest {
 
         Tag tag = tagRepository.save(Tag.builder().tagName("TestTagName").build());
 
-        BookTag bookTag = BookTag.builder().book(testBook).tag(tag).build();
+        BookTag bookTag = BookTag.builder().book(testBook).tag(tag).isDeleted(TableStatus.FALSE).build();
 
         bookTagRepository.save(bookTag);
 
@@ -199,6 +201,7 @@ class BookRelatedEntityTest {
         BookThumbnail bookThumbnail = BookThumbnail.builder()
                 .book(testBook)
                 .thumbnailImageUrl(thumbnailImageUrl)
+                .isDeleted(TableStatus.FALSE)
                 .build();
 
         bookThumbnailRepository.save(bookThumbnail);
@@ -228,6 +231,7 @@ class BookRelatedEntityTest {
                 .book(testBook)
                 .participant(participant)
                 .participantRole(participantRole)
+                .isDeleted(TableStatus.FALSE)
                 .build();
 
         participantRoleRegis.save(participantRoleRegistration);

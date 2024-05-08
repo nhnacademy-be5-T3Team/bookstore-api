@@ -111,18 +111,21 @@ class BookCategoryCustomImplUnitTest {
                 .bookAverageScore(4.5f)
                 .bookLikeCount(500)
                 .publisher(publisher)
+                .isDeleted(TableStatus.FALSE)
                 .build());
 
         bookCategoryRepository.save(
                 BookCategory.builder()
                         .category(rootCategory)
                         .book(book1)
+                        .isDeleted(TableStatus.FALSE)
                         .build());
 
         bookThumbnailRepository.save(
                 BookThumbnail.builder()
                         .book(book1)
                         .thumbnailImageUrl("TestTumbnailImageURl-TestBookInRootCategory")
+                        .isDeleted(TableStatus.FALSE)
                         .build());
 
         // 1계층 카테고리에 해당하는 도서 세팅
@@ -142,8 +145,10 @@ class BookCategoryCustomImplUnitTest {
                                 .bookAverageScore(4.5f)
                                 .bookLikeCount(500)
                                 .publisher(publisher)
+                                .isDeleted(TableStatus.FALSE)
                                 .build())
                         )
+                        .isDeleted(TableStatus.FALSE)
                         .build());
 
         // 2계층 카테고리1에 해당하는 도서 세팅
@@ -163,8 +168,10 @@ class BookCategoryCustomImplUnitTest {
                                 .bookAverageScore(4.5f)
                                 .bookLikeCount(500)
                                 .publisher(publisher)
+                                .isDeleted(TableStatus.FALSE)
                                 .build())
                         )
+                        .isDeleted(TableStatus.FALSE)
                         .build());
 
         // 2계층 카테고리2에 해당하는 도서 세팅
@@ -184,8 +191,10 @@ class BookCategoryCustomImplUnitTest {
                                 .bookAverageScore(4.5f)
                                 .bookLikeCount(500)
                                 .publisher(publisher)
+                                .isDeleted(TableStatus.FALSE)
                                 .build())
                         )
+                        .isDeleted(TableStatus.FALSE)
                         .build());
 
 
