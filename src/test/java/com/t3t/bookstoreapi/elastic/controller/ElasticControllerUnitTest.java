@@ -160,4 +160,5 @@ class ElasticControllerUnitTest {
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.message").value("검색한 도서가 없습니다."));
     }
+
 }

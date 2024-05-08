@@ -1,7 +1,9 @@
 package com.t3t.bookstoreapi.elastic.repository;
 
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
+import com.t3t.bookstoreapi.elastic.util.Constants;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -26,17 +29,17 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
     public SearchHits<ElasticDocument> findByAll(String query, Pageable pageable) {
         // 키워드 검색 쿼리
         QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
-                .field("book_name", 100) //형태소 검색
-                .field("book_name.ngram", 90)//띄어쓰기, 숫자등 검색
-                .field("book_name.jaso", 95)//자음, 오타 검색
+                .field(Constants.BOOK_NAME, 100)
+                .field(Constants.BOOK_NAME_NGRAM, 90)
+                .field(Constants.BOOK_NAME_JASO, 95)
 
-                .field("publisher_name", 25)
-                .field("publisher_name.ngram", 15)
-                .field("publisher_name.jaso", 20)
+                .field(Constants.PUBLISHER_NAME, 25)
+                .field(Constants.PUBLISHER_NAME_NGRAM, 15)
+                .field(Constants.PUBLISHER_NAME_JASO, 20)
 
-                .field("participant_name", 55)
-                .field("participant_name.ngram", 45)
-                .field("participant_name.jaso", 50);
+                .field(Constants.PARTICIPANT_NAME, 55)
+                .field(Constants.PARTICIPANT_NAME_NGRAM, 45)
+                .field(Constants.PARTICIPANT_NAME_JASO, 50);
 
         // 키워드 검색 쿼리 실행
         return elasticPageable(keywordMatchQuery, pageable);
@@ -52,9 +55,9 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
 
         // 키워드 검색 쿼리
         QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
-                .field("book_name")
-                .field("book_name.ngram")
-                .field("book_name.jaso");
+                .field(Constants.BOOK_NAME, 100)
+                .field(Constants.BOOK_NAME_NGRAM, 50)
+                .field(Constants.BOOK_NAME_JASO, 75);
         // 키워드 검색 쿼리 실행
         return elasticPageable(keywordMatchQuery, pageable);
     }
@@ -69,9 +72,9 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
 
         // 키워드 검색 쿼리
         QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
-                .field("publisher_name")
-                .field("publisher_name.ngram")
-                .field("publisher_name.jaso");
+                .field(Constants.PUBLISHER_NAME, 100)
+                .field(Constants.PUBLISHER_NAME_NGRAM, 50)
+                .field(Constants.PUBLISHER_NAME_JASO, 75);
         // 키워드 검색 쿼리 실행
         return elasticPageable(keywordMatchQuery, pageable);
     }
@@ -85,9 +88,9 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
     public SearchHits<ElasticDocument> findByAuthorName(String query, Pageable pageable) {
         // 키워드 검색 쿼리
         QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
-                .field("participant_name")
-                .field("participant_name.ngram")
-                .field("participant_name.jaso");
+                .field(Constants.PARTICIPANT_NAME, 100)
+                .field(Constants.PARTICIPANT_NAME_NGRAM, 50)
+                .field(Constants.PARTICIPANT_NAME_JASO, 75);
         // 키워드 검색 쿼리 실행
         return elasticPageable(keywordMatchQuery, pageable);
     }
@@ -101,19 +104,19 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
     @Override
     public SearchHits<ElasticDocument> findByAllCategory(String query, BigDecimal categoryId, Pageable pageable) {
         QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
-                .field("book_name", 100) //형태소 검색
-                .field("book_name.ngram", 90)//띄어쓰기, 숫자등 검색
-                .field("book_name.jaso", 95)//자음, 오타 검색
+                .field(Constants.BOOK_NAME, 100)
+                .field(Constants.BOOK_NAME_NGRAM, 90)
+                .field(Constants.BOOK_NAME_JASO, 95)
 
-                .field("publisher_name", 25)
-                .field("publisher_name.ngram", 15)
-                .field("publisher_name.jaso", 20)
+                .field(Constants.PUBLISHER_NAME, 25)
+                .field(Constants.PUBLISHER_NAME_NGRAM, 15)
+                .field(Constants.PUBLISHER_NAME_JASO, 20)
 
-                .field("participant_name", 55)
-                .field("participant_name.ngram", 45)
-                .field("participant_name.jaso", 50);
+                .field(Constants.PARTICIPANT_NAME, 55)
+                .field(Constants.PARTICIPANT_NAME_NGRAM, 45)
+                .field(Constants.PARTICIPANT_NAME_JASO, 50);
 
-        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery("category_id", categoryId);
+        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery(Constants.CATEGORY_ID, categoryId);
 
         QueryBuilder finalQuery = QueryBuilders.boolQuery()
                 .must(keywordMatchQuery)
@@ -131,11 +134,11 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
     @Override
     public SearchHits<ElasticDocument> findByBookNameCategory(String query, BigDecimal categoryId, Pageable pageable) {
         QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
-                .field("book_name")
-                .field("book_name.ngram")
-                .field("book_name.jaso");
+                .field(Constants.BOOK_NAME, 100)
+                .field(Constants.BOOK_NAME_NGRAM, 50)
+                .field(Constants.BOOK_NAME_JASO, 75);
 
-        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery("category_id", categoryId);
+        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery(Constants.CATEGORY_ID, categoryId);
 
         QueryBuilder finalQuery = QueryBuilders.boolQuery()
                 .must(keywordMatchQuery)
@@ -153,11 +156,11 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
     @Override
     public SearchHits<ElasticDocument> findByPublisherCategory(String query,BigDecimal categoryId, Pageable pageable) {
         QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
-                .field("publisher_name")
-                .field("publisher_name.ngram")
-                .field("publisher_name.jaso");
+                .field(Constants.PUBLISHER_NAME, 100)
+                .field(Constants.PUBLISHER_NAME_NGRAM, 50)
+                .field(Constants.PUBLISHER_NAME_JASO, 75);
 
-        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery("category_id", categoryId);
+        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery(Constants.CATEGORY_ID, categoryId);
 
         QueryBuilder finalQuery = QueryBuilders.boolQuery()
                 .must(keywordMatchQuery)
@@ -175,11 +178,11 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
     @Override
     public SearchHits<ElasticDocument> findByAuthorNameCategory(String query,BigDecimal categoryId, Pageable pageable) {
         QueryBuilder keywordMatchQuery = QueryBuilders.multiMatchQuery(query)
-                .field("participant_name")
-                .field("participant_name.ngram")
-                .field("participant_name.jaso");
+                .field(Constants.PARTICIPANT_NAME, 100)
+                .field(Constants.PARTICIPANT_NAME_NGRAM, 50)
+                .field(Constants.PARTICIPANT_NAME_JASO, 75);
 
-        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery("category_id", categoryId);
+        QueryBuilder categoryFilterQuery = QueryBuilders.termQuery(Constants.CATEGORY_ID, categoryId);
 
         QueryBuilder finalQuery = QueryBuilders.boolQuery()
                 .must(keywordMatchQuery)
@@ -202,4 +205,6 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
 
         return elasticsearchOperations.search(nativeSearchQuery, ElasticDocument.class);
     }
+
+
 }
