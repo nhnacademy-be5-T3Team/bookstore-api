@@ -21,6 +21,7 @@ import com.t3t.bookstoreapi.participant.model.entity.Participant;
 import com.t3t.bookstoreapi.participant.model.entity.ParticipantRole;
 import com.t3t.bookstoreapi.participant.repository.ParticipantRepository;
 import com.t3t.bookstoreapi.participant.repository.ParticipantRoleRepository;
+import com.t3t.bookstoreapi.property.ObjectStorageProperties;
 import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
@@ -58,6 +59,7 @@ public class BookService {
     private final ParticipantRoleRegistrationRepository registrationRepository;
     private final BookThumbnailRepository bookThumbnailRepository;
     private final BookImageRepository bookImageRepository;
+    private final ObjectStorageProperties objectStorageProperties;
     private final ObjectStorageUploadService fileUploadService;
 
     private static final String CONTAINER_NAME = "t3team";
@@ -82,6 +84,7 @@ public class BookService {
             throw new BookNotFoundForIdException(bookId);
         }
 
+        bookDetails.setImageUrlPrefix(objectStorageProperties.getStorageUrl()+"/t3team/");
         bookDetails.setDiscountedPrice();
         bookDetails.setBookStock();
 

@@ -130,7 +130,7 @@ public class BookController {
     @PutMapping("/books/{bookId}/book-thumbnail")
     public ResponseEntity<BaseResponse<Void>> updateBookThumbnail(
             @PathVariable Long bookId,
-            @RequestPart MultipartFile image) {
+            @ModelAttribute MultipartFile image) {
 
         bookService.updateBookThumbnail(bookId, image);
 
@@ -148,7 +148,7 @@ public class BookController {
     @PutMapping("/books/{bookId}/book-image")
     public ResponseEntity<BaseResponse<Void>> updateBookImage(
             @PathVariable Long bookId,
-            @RequestPart List<MultipartFile> imageList) {
+            @ModelAttribute List<MultipartFile> imageList) {
 
         bookService.updateBookImage(bookId, imageList);
 

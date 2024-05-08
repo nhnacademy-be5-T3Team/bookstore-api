@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,5 +65,14 @@ public class BookDetailResponse {
     // 포장 정보 리스트를 설정하는 메서드
     public void setPackaingInfoList(List<PackagingDto> packagingDtos) {
         this.packagingInfoList = packagingDtos;
+    }
+
+    public void setImageUrlPrefix(String prefix) {
+        thumbnailImageUrl = prefix + "book_thumbnails/" + thumbnailImageUrl;
+         List<String> modifiedUrls = new ArrayList<>();
+        for (String url : bookImageUrlList) {
+            modifiedUrls.add(prefix + "book_images/" + url);
+        }
+        bookImageUrlList = modifiedUrls;
     }
 }
