@@ -3,6 +3,8 @@ package com.t3t.bookstoreapi.certcode.service;
 import com.nhn.dooray.client.DoorayHook;
 import com.nhn.dooray.client.DoorayHookSender;
 import com.t3t.bookstoreapi.certcode.entity.CertCode;
+import com.t3t.bookstoreapi.certcode.exception.CertCodeNotExistsException;
+import com.t3t.bookstoreapi.certcode.exception.CertCodeNotMatchesException;
 import com.t3t.bookstoreapi.certcode.repository.CertCodeRepository;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
@@ -22,6 +24,7 @@ public class CertCodeService {
 
     /**
      * 인증 코드 발급
+     *
      * @param memberId 인증 코드를 발급할 회원 식별자
      * @author wooody35545(구건모)
      */
@@ -43,5 +46,24 @@ public class CertCodeService {
                         .append(certCode.getCode())
                         .append(" 입니다.").toString())
                 .build());
+    }
+
+    /**
+     * 인증 코드 검증
+     *
+     * @param memberId 회원 식별자
+     * @param code     인증 코드
+     * @author wooody35545(구건모)
+     */
+    public void verifyMemberActivationCertCode(long memberId, String code) {
+
+        CertCode certCode = certCodeRepository.findById(memberId)
+                .orElseThrow(CertCodeNotExistsException::new);
+
+        if (!certCode.getCode().equals(code)) {
+            throw new CertCodeNotMatchesException();
+        }
+
+        certCodeRepository.delete(certCode);
     }
 }
