@@ -79,11 +79,6 @@ public class BookService {
 
         BookDetailResponse bookDetails = bookRepository.getBookDetailsById(bookId);
 
-        // 존재하지 않는 도서의 식별자로 조회시 예외 발생
-        if(bookDetails == null) {
-            throw new BookNotFoundForIdException(bookId);
-        }
-
         bookDetails.setImageUrlPrefix(objectStorageProperties.getStorageUrl()+"/t3team/");
         bookDetails.setDiscountedPrice();
         bookDetails.setBookStock();
