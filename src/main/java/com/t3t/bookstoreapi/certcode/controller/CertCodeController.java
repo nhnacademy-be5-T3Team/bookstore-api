@@ -23,4 +23,20 @@ public class CertCodeController {
         certCodeService.issueMemberActivationCertCode(memberId);
         return new BaseResponse<Void>().message("인증 코드가 발급되었습니다.");
     }
+
+
+    /**
+     * 휴면 회원 활성화 인증 코드 검증
+     *
+     * @param memberId 회원 식별자
+     * @param code    인증 코드
+     * @return
+     */
+    @PostMapping(value = "/members/{memberId}/codes", params = "type=verify")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<Void> verifyMemberActivationCertCode(@PathVariable("memberId") Long memberId,
+                                                             @RequestParam("value") String code) {
+        certCodeService.verifyMemberActivationCertCode(memberId, code);
+        return new BaseResponse<Void>().message("인증 코드가 확인되었습니다.");
+    }
 }
