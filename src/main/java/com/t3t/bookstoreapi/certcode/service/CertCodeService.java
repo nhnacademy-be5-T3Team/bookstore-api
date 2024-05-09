@@ -7,6 +7,8 @@ import com.t3t.bookstoreapi.certcode.exception.CertCodeNotExistsException;
 import com.t3t.bookstoreapi.certcode.exception.CertCodeNotMatchesException;
 import com.t3t.bookstoreapi.certcode.repository.CertCodeRepository;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
+import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -57,12 +59,17 @@ public class CertCodeService {
      */
     public void verifyMemberActivationCertCode(long memberId, String code) {
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
+
         CertCode certCode = certCodeRepository.findById(memberId)
                 .orElseThrow(CertCodeNotExistsException::new);
 
         if (!certCode.getCode().equals(code)) {
             throw new CertCodeNotMatchesException();
         }
+
+        member.activate();
 
         certCodeRepository.delete(certCode);
     }
