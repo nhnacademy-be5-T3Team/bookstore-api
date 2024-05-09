@@ -30,7 +30,7 @@ public class CertCodeService {
      */
     public void issueMemberActivationCertCode(long memberId) {
 
-        if (memberRepository.existsById(memberId)) {
+        if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundForIdException(memberId);
         }
 
