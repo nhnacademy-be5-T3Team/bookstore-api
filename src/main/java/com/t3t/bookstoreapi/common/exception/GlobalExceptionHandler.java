@@ -5,6 +5,8 @@ import com.t3t.bookstoreapi.book.exception.BookAlreadyExistsException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
+import com.t3t.bookstoreapi.certcode.exception.CertCodeNotExistsException;
+import com.t3t.bookstoreapi.certcode.exception.CertCodeNotMatchesException;
 import com.t3t.bookstoreapi.member.exception.*;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
@@ -29,6 +31,28 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+
+    /**
+     * 인증 코드가 일치하지 않을 때 발생하는 예외 처리 핸들러
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(CertCodeNotMatchesException.class)
+    public ResponseEntity<BaseResponse<Void>> handleCertCodeNotMatchesException(CertCodeNotMatchesException certCodeNotMatchesException) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new BaseResponse<Void>().message(certCodeNotMatchesException.getMessage()));
+    }
+
+    /**
+     * 인증 코드가 존재하지 않을 때 발생하는 예외 처리 핸들러
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(CertCodeNotExistsException.class)
+    public ResponseEntity<BaseResponse<Void>> handleCertCodeNotExistsException(CertCodeNotExistsException certCodeNotExistsException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(certCodeNotExistsException.getMessage()));
+    }
+
     /**
      * 회원 계정의 비밀번호 검증 시, 비밀번호가 일치하지 않을 때 발생하는 예외 처리 핸들러
      *

@@ -30,6 +30,9 @@ spring:
       matching-strategy: ant_path_matcher
 
 t3t:
+  message:
+    hookUrl: "https://hook.dooray.com/services/3204376758577275363/3740692380402107577/BVSloNkTRAqQg_rv1asoNQ"
+
   swagger:
     title: "t3t-swagger"
     description: "t3t api documentation"

@@ -15,4 +15,10 @@ public interface MemberRepositoryCustom {
      * @return 조회된 회원 정보
      */
     Optional<MemberInfoResponse> getMemberInfoResponseByMemberId(long memberId);
+
+    /**
+     * 마지막 로그인 시간을 기준으로 3 개월 이상 로그인하지 않은 회원의 활성 상태를 비활성화 상태로 변경
+     * @author woody35545(구건모)
+     */
+    void updateInactiveMemberStatus();
 }
