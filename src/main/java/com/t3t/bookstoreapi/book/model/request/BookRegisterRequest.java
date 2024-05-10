@@ -67,6 +67,7 @@ public class BookRegisterRequest {
     private List<MultipartFile> bookImageList; // 도서 미리보기 이미지
 
     @Size(max = 10, message = "최대 10개의 카테고리를 선택할 수 있습니다.")
+    @NotEmpty(message = "카테고리를 선택해주세요.")
     private List<Integer> categoryList; // 카테고리 id 리스트
 
     @Size(max = 10, message = "최대 10개의 태그를 선택할 수 있습니다.")
