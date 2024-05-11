@@ -30,7 +30,7 @@ public class BookServiceUtils {
     }
 
     /**
-     * 미리보기 이미지 URL 목록의 prefix를 설정합니다.
+     * 미리보기 이미지 URL 목록의 prefix를 설정
      * @param imageUrlList 원본 이미지 URL 목록
      * @return prefix가 추가된 수정된 이미지 URL 목록
      * @author Yujin-nKim(김유진)
