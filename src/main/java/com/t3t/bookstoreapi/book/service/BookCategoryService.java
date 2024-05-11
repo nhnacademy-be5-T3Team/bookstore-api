@@ -5,6 +5,7 @@ import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookI
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryRepository;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
@@ -78,6 +79,8 @@ public class BookCategoryService {
                             .orElse(Collections.emptyList());
                     // 책 상세 응답에 작가 목록을 설정
                     bookDetail.setParticipantList(participantList);
+                    // 썸네일 이미지 prefix 추가
+                    bookDetail.setThumbnailImageUrl(BookServiceUtils.setThumbnailImagePrefix(bookDetail.getThumbnailImageUrl()));
                     return bookDetail;
                 }).collect(Collectors.toList());
 
