@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class ReviewResponse {
+    private Long id; // 리뷰 id
     private String name; // 리뷰 작성자 이름
     private String comment; // 리뷰 내용
     private Integer reviewScore; // 평가 점수
@@ -32,6 +33,7 @@ public class ReviewResponse {
      */
     public static ReviewResponse of(Review review) {
         return ReviewResponse.builder()
+                .id(review.getReviewId())
                 .name(review.getMember().getName())
                 .comment(review.getReviewComment())
                 .reviewScore(review.getReviewScore())

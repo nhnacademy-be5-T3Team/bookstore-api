@@ -74,6 +74,36 @@ public class ReviewService {
     }
 
     /**
+     * 사용자 ID에 해당하는 리뷰 페이지 조회
+     * @param memberId 회원 ID
+     * @param pageable 페이지 정보
+     * @return 주어진 회원 ID에 대한 리뷰 페이지 응답
+     * @throws MemberNotFoundException 주어진 ID에 해당하는 사용자가 존재하지 않을 경우 발생
+     * @author Yujin-nKim(김유진)
+     */
+    @Transactional(readOnly = true)
+    public PageResponse<ReviewResponse> findReviewsByMemberId(Long memberId, Pageable pageable) {
+        if(!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
+
+        Page<Review> reviewsPage = reviewRepository.findReviewsByMemberId(memberId, pageable);
+
+        List<ReviewResponse> responses = reviewsPage.getContent().stream()
+                .map(ReviewResponse::of)
+                .collect(Collectors.toList());
+
+        return PageResponse.<ReviewResponse>builder()
+                .content(responses)
+                .pageNo(reviewsPage.getNumber())
+                .pageSize(reviewsPage.getSize())
+                .totalElements(reviewsPage.getTotalElements())
+                .totalPages(reviewsPage.getTotalPages())
+                .last(reviewsPage.isLast())
+                .build();
+    }
+
+    /**
      * 특정 회원과 특정 도서에 대한 리뷰가 이미 등록되어 있는지 확인
      * @param memberId 회원 ID
      * @param bookId   도서 ID

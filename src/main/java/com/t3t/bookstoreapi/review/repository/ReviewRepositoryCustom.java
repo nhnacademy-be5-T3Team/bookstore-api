@@ -13,4 +13,13 @@ public interface ReviewRepositoryCustom {
      * @author Yujin-nKim(김유진)
      */
     Page<Review> findReviewsByBookId(Long bookId, Pageable pageable);
+
+    /**
+     * 사용자 ID에 해당하는 리뷰를 페이지별로 조회
+     * @param memberId 사용자 ID
+     * @param pageable 페이징 정보
+     * @return 해당 사용자 ID에 대한 리뷰 페이지
+     * @author Yujin-nKim(김유진)
+     */
+    Page<Review> findReviewsByMemberId(Long memberId, Pageable pageable);
 }

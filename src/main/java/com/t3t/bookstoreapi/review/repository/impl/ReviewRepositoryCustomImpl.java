@@ -47,4 +47,30 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 
         return PageableExecutionUtils.getPage(reviewList, pageable, countQuery::fetchOne);
     }
+
+    /**
+     * 사용자 ID에 해당하는 리뷰를 페이지별로 조회
+     * @param memberId 사용자 ID
+     * @param pageable 페이징 정보
+     * @return 해당 사용자 ID에 대한 리뷰 페이지
+     * @author Yujin-nKim(김유진)
+     */
+    @Override
+    public Page<Review> findReviewsByMemberId(Long memberId, Pageable pageable) {
+        List<Review> reviewList = jpaQueryFactory.selectFrom(review)
+                .leftJoin(review.book, book).fetchJoin()
+                .leftJoin(review.member, member).fetchJoin()
+                .leftJoin(review.reviewImageList, reviewImage).fetchJoin()
+                .where(review.member.id.eq(memberId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = jpaQueryFactory
+                .select(review.count())
+                .from(review)
+                .where(review.member.id.eq(memberId));
+
+        return PageableExecutionUtils.getPage(reviewList, pageable, countQuery::fetchOne);
+    }
 }

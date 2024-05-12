@@ -51,13 +51,43 @@ public class ReviewController {
     }
 
     /**
+     * 사용자 ID에 해당하는 리뷰 페이지 조회
+     * @param memberId 회원 ID
+     * @param pageNo   페이지 번호
+     * @param pageSize 페이지 크기
+     * @param sortBy   정렬 기준
+     * @return 주어진 회원 ID에 대한 리뷰 페이지 응답
+     * @author Yujin-nKim(김유진)
+     */
+    @GetMapping("/reviews/members/{memberId}")
+    public ResponseEntity<BaseResponse<PageResponse<ReviewResponse>>> findReviewsByMemberId(
+            @PathVariable Long memberId,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "reviewCreatedAt", required = false) String sortBy) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+
+        PageResponse<ReviewResponse> reviewList = reviewService.findReviewsByMemberId(memberId, pageable);
+
+        // 리뷰가 없는 경우 | status code 204 (No Content)
+        if (reviewList.getContent().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<PageResponse<ReviewResponse>>().data(reviewList)
+        );
+    }
+
+    /**
      * 특정 회원과 특정 도서에 대한 리뷰가 이미 등록되어 있는지 확인
      * @param memberId 회원 ID
      * @param bookId   도서 ID
      * @return 특정 회원이 특정 도서에 대한 리뷰가 이미 등록되어 있는지 여부
      * @author Yujin-nKim(김유진)
      */
-    @GetMapping("/reviews/members/{memberId}")
+    @GetMapping("/reviews/members/{memberId}/exists")
     public ResponseEntity<BaseResponse<Boolean>> existsReview(@PathVariable Long memberId,
                                                               @RequestParam Long bookId) {
 
