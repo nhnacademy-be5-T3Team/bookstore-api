@@ -49,4 +49,23 @@ public class ReviewController {
                 new BaseResponse<PageResponse<ReviewResponse>>().data(reviewList)
         );
     }
+
+    /**
+     * 특정 회원과 특정 도서에 대한 리뷰가 이미 등록되어 있는지 확인
+     * @param memberId 회원 ID
+     * @param bookId   도서 ID
+     * @return 특정 회원이 특정 도서에 대한 리뷰가 이미 등록되어 있는지 여부
+     * @author Yujin-nKim(김유진)
+     */
+    @GetMapping("/reviews/members/{memberId}")
+    public ResponseEntity<BaseResponse<Boolean>> existsReview(@PathVariable Long memberId,
+                                                              @RequestParam Long bookId) {
+
+        boolean response = reviewService.existsReview(bookId, memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Boolean>()
+                        .data(response)
+                        .message(response ? "이미 등록된 리뷰가 존재합니다." : "리뷰가 존재하지 않습니다."));
+    }
 }
