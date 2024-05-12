@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.review.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.model.response.PageResponse;
+import com.t3t.bookstoreapi.review.model.request.ReviewRequest;
 import com.t3t.bookstoreapi.review.model.response.ReviewResponse;
 import com.t3t.bookstoreapi.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -67,5 +67,20 @@ public class ReviewController {
                 new BaseResponse<Boolean>()
                         .data(response)
                         .message(response ? "이미 등록된 리뷰가 존재합니다." : "리뷰가 존재하지 않습니다."));
+    }
+
+    /**
+     * 리뷰 생성 요청
+     * @param request 리뷰 생성 요청 객체
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
+    @PostMapping("/reviews")
+    public ResponseEntity<BaseResponse<Void>> createReview(@ModelAttribute @Valid ReviewRequest request) {
+
+        reviewService.createReview(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("리뷰 등록 요청이 정상적으로 처리되었습니다."));
     }
 }

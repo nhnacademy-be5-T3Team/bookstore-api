@@ -12,4 +12,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
      * @author Yujin-nKim(김유진)
      */
     boolean existsByBookBookIdAndAndMemberId(Long bookId, Long memberId);
+
+    /**
+     * 도서 ID에 해당하는 리뷰의 수를 조회
+     * @param bookId 도서 ID
+     * @return 도서에 대한 리뷰의 수
+     * @author Yujin-nKim(김유진)
+     */
+    Integer countByBookBookId(Long bookId);
 }

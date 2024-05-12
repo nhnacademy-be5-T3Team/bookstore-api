@@ -157,4 +157,20 @@ public class Book {
     public void updateIsDeleted(TableStatus isDeleted) {
         this.isDeleted = isDeleted;
     }
+
+    /**
+     * 도서의 평점을 업데이트
+     * @param userScore 사용자가 등록한 평점
+     * @param reviewCount 리뷰 총 개수
+     */
+    public void updateAverageScore(Integer userScore, Integer reviewCount) {
+        Float currentAverageScore = this.bookAverageScore;
+        Float newAverageScore;
+        if (reviewCount == 0) {
+            newAverageScore = (float) userScore;
+        } else {
+            newAverageScore = ((currentAverageScore * reviewCount) + userScore) / reviewCount;
+        }
+        this.bookAverageScore = newAverageScore;
+    }
 }
