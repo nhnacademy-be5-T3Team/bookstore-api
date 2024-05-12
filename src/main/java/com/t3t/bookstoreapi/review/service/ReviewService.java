@@ -8,9 +8,11 @@ import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.review.exception.ReviewAlreadyExistsException;
+import com.t3t.bookstoreapi.review.exception.ReviewNotFoundException;
 import com.t3t.bookstoreapi.review.model.entity.Review;
 import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.review.model.entity.ReviewImage;
+import com.t3t.bookstoreapi.review.model.request.ReviewCommentUpdateRequest;
 import com.t3t.bookstoreapi.review.model.request.ReviewRequest;
 import com.t3t.bookstoreapi.review.model.response.ReviewResponse;
 import com.t3t.bookstoreapi.review.repository.ReviewImageRepository;
@@ -167,5 +169,16 @@ public class ReviewService {
             log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
             throw new ImageDataStorageException(e);
         }
+    }
+
+    /**
+     * 리뷰 comment 수정 요청
+     * @param reviewId 수정할 review ID
+     * @param request 리뷰 수정 요청 객체
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateReviewDetail(Long reviewId, ReviewCommentUpdateRequest request) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+        review.updateReviewComment(request.getComment());
     }
 }

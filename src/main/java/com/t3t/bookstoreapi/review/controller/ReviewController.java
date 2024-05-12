@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.review.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.model.response.PageResponse;
+import com.t3t.bookstoreapi.review.model.request.ReviewCommentUpdateRequest;
 import com.t3t.bookstoreapi.review.model.request.ReviewRequest;
 import com.t3t.bookstoreapi.review.model.response.ReviewResponse;
 import com.t3t.bookstoreapi.review.service.ReviewService;
@@ -112,5 +113,22 @@ public class ReviewController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("리뷰 등록 요청이 정상적으로 처리되었습니다."));
+    }
+
+    /**
+     * 리뷰 comment 수정 요청
+     * @param reviewId 수정할 review ID
+     * @param request 리뷰 수정 요청 객체
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
+    @PutMapping("/reviews/{reviewId}/comment")
+    public ResponseEntity<BaseResponse<Void>> updateReviewDetail(@PathVariable Long reviewId,
+                                                                 @RequestBody ReviewCommentUpdateRequest request) {
+
+        reviewService.updateReviewDetail(reviewId, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("리뷰 업데이트 요청이 정상적으로 처리되었습니다."));
     }
 }
