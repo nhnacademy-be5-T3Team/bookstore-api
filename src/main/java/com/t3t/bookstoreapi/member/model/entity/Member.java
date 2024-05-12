@@ -60,6 +60,11 @@ public class Member {
     @Comment("회원 역할")
     private MemberRole role;
 
+    /**
+     * 회원 포인트 내역 생성 시 업데이트 처리
+     * @param updatePoints
+     * @author hydrationn(박수화)
+     */
     public void updatePoint(Long updatePoints) {
         this.point = updatePoints;
     }
