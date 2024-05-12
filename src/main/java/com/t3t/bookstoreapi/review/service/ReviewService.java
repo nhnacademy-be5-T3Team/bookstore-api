@@ -3,7 +3,6 @@ package com.t3t.bookstoreapi.review.service;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.review.model.entity.Review;
-import com.t3t.bookstoreapi.review.model.entity.ReviewImage;
 import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.review.model.response.ReviewResponse;
 import com.t3t.bookstoreapi.review.repository.ReviewRepository;
@@ -22,6 +21,14 @@ public class ReviewService {
     private final BookRepository bookRepository;
     private final ReviewRepository reviewRepository;
 
+    /**
+     * 책 ID에 해당하는 리뷰 페이지 조회
+     * @param bookId   리뷰를 검색할 책의 ID
+     * @param pageable 페이지 정보
+     * @return 주어진 책 ID에 대한 리뷰 페이지 응답
+     * @throws BookNotFoundException 주어진 ID에 해당하는 책이 존재하지 않을 경우 발생
+     * @author Yujin-nKim(김유진)
+     */
     @Transactional(readOnly = true)
     public PageResponse<ReviewResponse> findReviewsByBookId(Long bookId, Pageable pageable) {
 
@@ -29,10 +36,10 @@ public class ReviewService {
             throw new BookNotFoundException();
         }
 
-        Page<Review> reviewsPage = reviewRepository.findByBookBookId(bookId, pageable);
+        Page<Review> reviewsPage = reviewRepository.findReviewsByBookId(bookId, pageable);
 
         List<ReviewResponse> responses = reviewsPage.getContent().stream()
-                .map(this::buildReviewResponse)
+                .map(ReviewResponse::of)
                 .collect(Collectors.toList());
 
         return PageResponse.<ReviewResponse>builder()
@@ -42,21 +49,6 @@ public class ReviewService {
                 .totalElements(reviewsPage.getTotalElements())
                 .totalPages(reviewsPage.getTotalPages())
                 .last(reviewsPage.isLast())
-                .build();
-    }
-
-    public ReviewResponse buildReviewResponse(Review review) {
-        List<String> reviewImgUrlList = review.getReviewImageList().stream()
-                .map(ReviewImage::getReviewImageUrl)
-                .collect(Collectors.toList());
-
-        return ReviewResponse.builder()
-                .name(review.getMember().getName())
-                .comment(review.getReviewComment())
-                .reviewScore(review.getReviewScore())
-                .createdAt(review.getReviewCreatedAt())
-                .updatedAt(review.getReviewUpdatedAt())
-                .reviewImgUrlList(reviewImgUrlList)
                 .build();
     }
 }

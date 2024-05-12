@@ -20,8 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @GetMapping("/reviews/book/{bookId}")
-    public ResponseEntity<BaseResponse<PageResponse<ReviewResponse>>> getReviewsByBookId(
+    /**
+     * 책 ID에 해당하는 리뷰 페이지 조회
+     * @param bookId   리뷰를 검색할 책의 ID
+     * @param pageNo   페이지 번호
+     * @param pageSize 페이지 크기
+     * @param sortBy   정렬 기준
+     * @return 주어진 책 ID에 대한 리뷰 페이지 응답
+     * @author Yujin-nKim(김유진)
+     */
+    @GetMapping("/reviews/books/{bookId}")
+    public ResponseEntity<BaseResponse<PageResponse<ReviewResponse>>> findReviewsByBookId(
             @PathVariable Long bookId,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "6", required = false) int pageSize,
@@ -33,9 +42,7 @@ public class ReviewController {
 
         // 도서에 등록된 리뷰가 없는 경우 | status code 204 (No Content)
         if (reviewList.getContent().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
-                    new BaseResponse<PageResponse<ReviewResponse>>().message("도서에 등록된 리뷰가 없습니다.")
-            );
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
