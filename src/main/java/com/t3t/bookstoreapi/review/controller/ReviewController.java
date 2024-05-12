@@ -13,8 +13,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -148,5 +150,23 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("리뷰 업데이트 요청이 정상적으로 처리되었습니다."));
     }
+
+    /**
+     * 리뷰 이미지 추가 요청
+     * @param reviewId 수정할 review ID
+     * @param imageList 추가할 이미지
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
+    @PostMapping("/reviews/{reviewId}/image")
+    public ResponseEntity<BaseResponse<Void>> addReviewImage(@PathVariable Long reviewId,
+                                                             @ModelAttribute List<MultipartFile> imageList) {
+
+        reviewService.addReviewImage(reviewId, imageList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("리뷰 이미지 추가 요청이 정상적으로 처리되었습니다."));
+    }
+
 
 }

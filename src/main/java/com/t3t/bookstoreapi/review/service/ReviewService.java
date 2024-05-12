@@ -1,8 +1,11 @@
 package com.t3t.bookstoreapi.review.service;
 
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
+import com.t3t.bookstoreapi.book.model.entity.BookImage;
+import com.t3t.bookstoreapi.book.model.entity.BookThumbnail;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
@@ -194,5 +197,28 @@ public class ReviewService {
 
         Integer reviewCount = reviewRepository.countByBookBookId(book.getBookId());
         book.updateAverageScore(score, reviewCount);
+    }
+
+    /**
+     * 리뷰 이미지 추가 요청
+     * @param reviewId 수정할 review ID
+     * @param imageList 추가할 이미지
+     * @author Yujin-nKim(김유진)
+     */
+    public void addReviewImage(Long reviewId, List<MultipartFile> imageList) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+        try {
+            List<MultipartFile> bookImageList = BookServiceUtils.removeEmptyImages(imageList);
+            if (!bookImageList.isEmpty()) {
+                for (MultipartFile image : bookImageList) {
+                    String uploadReviewImageName = BookServiceUtils.generateUploadFileName(image);
+                    fileUploadService.uploadObject(CONTAINER_NAME, REVIEWIMAGE_FOLDER_NAME, uploadReviewImageName, image);
+                    reviewImageRepository.save(ReviewImage.builder().review(review).reviewImageUrl(uploadReviewImageName).build());
+                }
+            }
+        } catch (Exception e) {
+            log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
+            throw new ImageDataStorageException(e);
+        }
     }
 }
