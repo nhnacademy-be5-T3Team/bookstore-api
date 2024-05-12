@@ -168,5 +168,18 @@ public class ReviewController {
                 new BaseResponse<Void>().message("리뷰 이미지 추가 요청이 정상적으로 처리되었습니다."));
     }
 
+    /**
+     * 리뷰 이미지 삭제 요청
+     * @param reviewImageId 삭제할 이미지 id
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
+    @DeleteMapping("/reviews/image")
+    public ResponseEntity<BaseResponse<Void>> deleteReviewImage(@RequestParam Long reviewImageId) {
 
+        reviewService.deleteReviewImage(reviewImageId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("리뷰 이미지 삭제 요청이 정상적으로 처리되었습니다."));
+    }
 }

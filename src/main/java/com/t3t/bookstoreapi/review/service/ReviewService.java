@@ -11,6 +11,7 @@ import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.review.exception.ReviewAlreadyExistsException;
+import com.t3t.bookstoreapi.review.exception.ReviewImageNotFoundException;
 import com.t3t.bookstoreapi.review.exception.ReviewNotFoundException;
 import com.t3t.bookstoreapi.review.model.entity.Review;
 import com.t3t.bookstoreapi.model.response.PageResponse;
@@ -220,5 +221,15 @@ public class ReviewService {
             log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
             throw new ImageDataStorageException(e);
         }
+    }
+
+    /**
+     * 리뷰 이미지 삭제 요청
+     * @param reviewImageId 삭제할 이미지 id
+     * @author Yujin-nKim(김유진)
+     */
+    public void deleteReviewImage(Long reviewImageId) {
+        ReviewImage reviewImage = reviewImageRepository.findById(reviewImageId).orElseThrow(ReviewImageNotFoundException::new);
+        reviewImageRepository.delete(reviewImage);
     }
 }
