@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.entity;
 
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.category.model.entity.Category;
@@ -83,42 +84,19 @@ class BookEntityMappingTest {
     }
 
     @Test
-    @DisplayName("부모 Category entity 맵핑 테스트")
-    void testParentCategoryEntityMapping() {
+    @DisplayName("Category entity 맵핑 테스트")
+    void testCategoryEntityMapping() {
 
-        String categoryName = "TestCategoryName";
+        Category rootCategory1 = categoryRepository.save(Category.builder()
+                .categoryName("rootCategory1").depth(1).build());
 
-        Category category = Category.builder().categoryName(categoryName).build();
+        Category childCategory1 = categoryRepository.save(Category.builder()
+                .categoryName("childCategory1")
+                .parentCategory(rootCategory1).depth(2).parentCategory(rootCategory1).build());
 
-        categoryRepository.save(category);
-
-        Category savedCategory = categoryRepository.findById(category.getCategoryId()).orElse(null);
-
-        assertNotNull(savedCategory);
-        assertEquals(categoryName, savedCategory.getCategoryName());
-    }
-
-    @Test
-    @DisplayName("자식 Category entity 맵핑 테스트")
-    void testChildCategoryEntityMapping() {
-
-        String categoryName = "TestChildCategoryName";
-
-        Category parentCategory = Category.builder().categoryName("TestParentCategoryName").build();
-
-        categoryRepository.save(parentCategory);
-
-        Category childCategory = Category.builder()
-                .parentCategoryId(parentCategory.getParentCategoryId())
-                .categoryName(categoryName)
-                .build();
-
-        categoryRepository.save(childCategory);
-
-        Category savedCategory = categoryRepository.findById(childCategory.getCategoryId()).orElse(null);
-
-        assertNotNull(savedCategory);
-        assertEquals(categoryName, savedCategory.getCategoryName());
+        assertEquals("rootCategory1", rootCategory1.getCategoryName());
+        assertEquals("childCategory1", childCategory1.getCategoryName());
+        assertEquals(rootCategory1.getCategoryName(),childCategory1.getParentCategory().getCategoryName());
     }
 
     @Test
@@ -178,11 +156,12 @@ class BookEntityMappingTest {
                 .bookIsbn("9788966863307")
                 .bookPrice(new BigDecimal("19.99"))
                 .bookDiscount(new BigDecimal("0.1"))
-                .bookPackage(1)
+                .bookPackage(TableStatus.TRUE)
                 .bookPublished(LocalDate.of(1943, Month.APRIL, 6))
                 .bookStock(100)
                 .bookAverageScore(4.5f)
                 .bookLikeCount(500)
+                .isDeleted(TableStatus.FALSE)
                 .build();
 
         bookRepository.save(book);

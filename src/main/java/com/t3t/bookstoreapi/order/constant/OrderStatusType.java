@@ -6,7 +6,8 @@ package com.t3t.bookstoreapi.order.constant;
  * @author woody35545(구건모)
  */
 public enum OrderStatusType {
-    PENDING, // 대기
+    PENDING, // 결제 대기
+    CONFIRMED, // 결제 완료
     DELIVERING, // 배송중
     DELIVERED, // 완료
     REFUNDED, // 반품

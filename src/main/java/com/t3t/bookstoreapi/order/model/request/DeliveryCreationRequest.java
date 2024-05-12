@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -25,11 +26,11 @@ public class DeliveryCreationRequest {
     private BigDecimal price;
 
     // 배송 우편 주소
-    @NotNull(message = "우편 주소가 누락되었습니다.")
+    @Nullable
     private Integer addressNumber;
 
     // 배송 도로명 주소
-    @NotBlank(message = "도로명 주소가 누락되었습니다.")
+    @Nullable
     private String roadnameAddress;
 
     // 배송 상세 주소
@@ -49,11 +50,6 @@ public class DeliveryCreationRequest {
     @NotBlank(message = "수령인 전화번호가 누락되었습니다.")
     @Pattern(regexp = "^\\d{3}-\\d{4}-\\d{4}$", message = "올바른 전화번호 형식이 아닙니다. (예시: 010-1234-5678)")
     private String recipientPhoneNumber;
-
-    @AssertFalse(message = "우편 주소와 도로명 주소는 동시에 포함될 수 없습니다.")
-    private boolean isBothAddressPresent() {
-        return addressNumber != null && roadnameAddress != null;
-    }
 
     @AssertTrue(message = "우편 주소와 도로명 주소 중 하나는 반드시 입력되어야 합니다.")
     private boolean isEitherAddressNotNull() {

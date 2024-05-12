@@ -1,32 +1,45 @@
 package com.t3t.bookstoreapi.book.util;
 
-import com.t3t.bookstoreapi.book.model.entity.ParticipantRoleRegistration;
-import com.t3t.bookstoreapi.book.model.response.AuthorInfo;
+import com.t3t.bookstoreapi.property.ObjectStorageProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Component
 public class BookServiceUtils {
+    private static ObjectStorageProperties objectStorageProperties;
+    private static final String CONTAINER_PREFIX = "/t3team/";
+    private static final String THUMBNAIL_PREFIX = "book_thumbnails/";
+    private static final String BOOK_IMAGE_PREFIX = "book_images/";
 
-    private BookServiceUtils() {
-        throw new AssertionError("Utility class should not be instantiated");
+    @Autowired
+    private BookServiceUtils(ObjectStorageProperties objectStorageProperties) {
+        this.objectStorageProperties = objectStorageProperties;
     }
 
-    public static List<AuthorInfo> extractAuthorInfo(List<ParticipantRoleRegistration> authorList) {
-        return authorList.stream()
-                .map(participantRole -> AuthorInfo.builder()
-                        .role(participantRole.getParticipantRole().getParticipantRoleNameKr())
-                        .name(participantRole.getParticipant().getParticipantName())
-                        .build())
-                .collect(Collectors.toList());
+    /**
+     * 썸네일 이미지 URL의 prefix를 설정
+     * @param imageUrl 원본 이미지 URL
+     * @return prefix가 추가된 수정된 이미지 URL
+     * @author Yujin-nKim(김유진)
+     */
+    public static String setThumbnailImagePrefix(String imageUrl) {
+        return objectStorageProperties.getStorageUrl() + CONTAINER_PREFIX + THUMBNAIL_PREFIX + imageUrl;
     }
 
-
-    public static BigDecimal calculateDiscountedPrice(BigDecimal originalPrice, BigDecimal discountRate) {
-        BigDecimal discountPercentage = discountRate.divide(BigDecimal.valueOf(100));
-        BigDecimal discountAmount = originalPrice.multiply(discountPercentage);
-
-        return originalPrice.subtract(discountAmount);
+    /**
+     * 미리보기 이미지 URL 목록의 prefix를 설정
+     * @param imageUrlList 원본 이미지 URL 목록
+     * @return prefix가 추가된 수정된 이미지 URL 목록
+     * @author Yujin-nKim(김유진)
+     */
+    public static List<String> setBookImagePrefix(List<String> imageUrlList) {
+        List<String> modifiedUrls = new ArrayList<>();
+        for(String imageUrl : imageUrlList) {
+            modifiedUrls.add(objectStorageProperties.getStorageUrl() + CONTAINER_PREFIX + BOOK_IMAGE_PREFIX + imageUrl);
+        }
+        return modifiedUrls;
     }
 }

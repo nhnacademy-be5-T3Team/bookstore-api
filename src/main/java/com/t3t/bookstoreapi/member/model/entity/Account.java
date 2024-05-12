@@ -1,29 +1,44 @@
 package com.t3t.bookstoreapi.member.model.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 
+/**
+ * 회원 계정 엔티티 클래스
+ * @apiNote Account의 서브타입에 해당하는 엔티티로 `BookstoreAccount`, `OAuthAccount` 가 존재한다.
+ * @see BookstoreAccount
+ * @author woody35545(구건모)
+ */
 @SuperBuilder
 @Entity
-@Table(name = "accounts")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "accounts")
 public class Account {
-
     @Id
     @Column(name = "account_id")
+    @Comment("계정 식별자")
     private String id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @Comment("계정 소유 회원")
     private Member member;
 
-    public Account(String id, Member member) {
-        this.id = id;
-        this.member = member;
+    @Column(name = "deleted", columnDefinition = "TINYINT(1) DEFAULT 0", nullable = false)
+    @Comment("삭제 여부")
+    private boolean deleted;
+
+    /**
+     * 계정 삭제 (soft delete)
+     * @author woody35545
+     */
+    public void delete() {
+        this.deleted = true;
     }
 }

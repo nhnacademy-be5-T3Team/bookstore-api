@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.entity;
 
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.entity.*;
 import com.t3t.bookstoreapi.book.repository.*;
 import com.t3t.bookstoreapi.booklike.model.entity.BookLike;
@@ -100,11 +101,12 @@ class BookRelatedEntityTest {
                 .bookIsbn("9788966863307")
                 .bookPrice(new BigDecimal("19.99"))
                 .bookDiscount(new BigDecimal("0.1"))
-                .bookPackage(1)
+                .bookPackage(TableStatus.TRUE)
                 .bookPublished(LocalDate.of(1943, Month.APRIL, 6))
                 .bookStock(100)
                 .bookAverageScore(4.5f)
                 .bookLikeCount(500)
+                .isDeleted(TableStatus.FALSE)
                 .build());
 
     }
@@ -141,9 +143,10 @@ class BookRelatedEntityTest {
 
         Category category = categoryRepository.save(Category.builder()
                 .categoryName("categoryName")
+                .depth(1)
                 .build());
 
-        BookCategory bookCategory = BookCategory.builder().book(testBook).category(category).build();
+        BookCategory bookCategory = BookCategory.builder().book(testBook).category(category).isDeleted(TableStatus.FALSE).build();
 
         bookCategoryRepository.save(bookCategory);
 
@@ -162,6 +165,7 @@ class BookRelatedEntityTest {
         BookImage bookImage = bookImageRepository.save(BookImage.builder()
                 .book(testBook)
                 .bookImageUrl(bookImageUrl)
+                .isDeleted(TableStatus.FALSE)
                 .build());
 
         bookImageRepository.save(bookImage);
@@ -178,7 +182,7 @@ class BookRelatedEntityTest {
 
         Tag tag = tagRepository.save(Tag.builder().tagName("TestTagName").build());
 
-        BookTag bookTag = BookTag.builder().book(testBook).tag(tag).build();
+        BookTag bookTag = BookTag.builder().book(testBook).tag(tag).isDeleted(TableStatus.FALSE).build();
 
         bookTagRepository.save(bookTag);
 
@@ -197,6 +201,7 @@ class BookRelatedEntityTest {
         BookThumbnail bookThumbnail = BookThumbnail.builder()
                 .book(testBook)
                 .thumbnailImageUrl(thumbnailImageUrl)
+                .isDeleted(TableStatus.FALSE)
                 .build();
 
         bookThumbnailRepository.save(bookThumbnail);
@@ -226,6 +231,7 @@ class BookRelatedEntityTest {
                 .book(testBook)
                 .participant(participant)
                 .participantRole(participantRole)
+                .isDeleted(TableStatus.FALSE)
                 .build();
 
         participantRoleRegis.save(participantRoleRegistration);
