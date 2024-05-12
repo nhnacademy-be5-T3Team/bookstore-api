@@ -28,10 +28,10 @@ public class AdminPointDetailController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/admin/members/{memberId}/point-details")
+    @GetMapping("/admin/members/{memberId}/point-details/list")
     public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailList(@RequestHeader(name = "memberId") Long adminId,
                                                                                       @PathVariable("memberId") Long memberId){
-        List<PointDetailResponse> pointDetailList = adminPointDetailService.getPointDetailList(adminId, memberId);
+        List<PointDetailResponse> pointDetailList = adminPointDetailService.getPointDetailList(memberId);
 
         return pointDetailList.isEmpty() ?
                 ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<List<PointDetailResponse>>().message("등록된 포인트 내역이 없습니다.")) :
@@ -50,7 +50,7 @@ public class AdminPointDetailController {
     public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailById(@RequestHeader(name = "memberId") Long adminId,
                                                                                 @PathVariable("memberId") Long memberId,
                                                                                 String pointDetailType) {
-        List<PointDetailResponse> pointDetailResponse = adminPointDetailService.getPointDetailByPointDetailType(adminId, memberId, pointDetailType);
+        List<PointDetailResponse> pointDetailResponse = adminPointDetailService.getPointDetailByPointDetailType(memberId, pointDetailType);
 
         return ResponseEntity.ok(new BaseResponse<List<PointDetailResponse>>().data(pointDetailResponse));
     }
@@ -67,7 +67,7 @@ public class AdminPointDetailController {
     public ResponseEntity<BaseResponse<PointDetailResponse>> createPointDetail(@RequestHeader(name = "memberId") Long adminId,
                                                                                @PathVariable("memberId") Long memberId,
                                                                                @Valid @RequestBody CreatePointDetailRequest request) {
-        PointDetailResponse pointDetailResponse = adminPointDetailService.createPointDetail(adminId, memberId, request);
+        PointDetailResponse pointDetailResponse = adminPointDetailService.createPointDetail(memberId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<PointDetailResponse>().data(pointDetailResponse));
     }
@@ -86,7 +86,7 @@ public class AdminPointDetailController {
                                                                                @PathVariable("memberId") Long memberId,
                                                                                @PathVariable("pointDetailId") Long pointDetailId,
                                                                                @RequestParam BigDecimal pointDetailAmount) {
-        PointDetailResponse pointDetailResponse = adminPointDetailService.updatePointDetail(adminId, memberId, pointDetailId, pointDetailAmount);
+        PointDetailResponse pointDetailResponse = adminPointDetailService.updatePointDetail(memberId, pointDetailId, pointDetailAmount);
 
         return ResponseEntity.ok(new BaseResponse<PointDetailResponse>().data(pointDetailResponse));
     }
@@ -103,7 +103,7 @@ public class AdminPointDetailController {
     public ResponseEntity<BaseResponse<Void>> deletePointDetail(@RequestHeader(name = "memberId") Long adminId,
                                                                 @PathVariable("memberId") Long memberId,
                                                                 @PathVariable("pointDetailId") Long pointDetailId) {
-        adminPointDetailService.deletePointDetail(adminId, memberId, pointDetailId);
+        adminPointDetailService.deletePointDetail(memberId, pointDetailId);
 
         return ResponseEntity.ok(new BaseResponse<Void>());
     }

@@ -5,6 +5,7 @@ import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
+import com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -113,5 +114,11 @@ public class GlobalExceptionHandler {
                         .stream()
                         .map(error -> String.format("* %s  ", error.getDefaultMessage()))
                         .collect(Collectors.joining()))));
+    }
+
+    @ExceptionHandler(PointDetailNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> pointDetailNotFoundException(PointDetailNotFoundException pointDetailNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(pointDetailNotFoundException.getMessage()));
     }
 }

@@ -1,8 +1,6 @@
 package com.t3t.bookstoreapi.pointdetail.service;
 
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
-import com.t3t.bookstoreapi.member.exception.NotAdminException;
-import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
 import com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException;
@@ -40,15 +38,15 @@ public class AdminPointDetailService {
      * @author hydrationn(박수화)
      */
     @Transactional(readOnly = true)
-    public List<PointDetailResponse> getPointDetailList(Long adminId, Long memberId) {
-        memberRepository.findById(adminId)
+    public List<PointDetailResponse> getPointDetailList(Long memberId) {
+        /*memberRepository.findById(adminId)
                 .map(member -> {
                     if (member.getRole() != MemberRole.ADMIN) {
                         throw new NotAdminException();
                     }
                     return member;
                 })
-                .orElseThrow(() -> new MemberNotFoundException());
+                .orElseThrow(() -> new MemberNotFoundException());*/
 
         if(!memberRepository.existsById(memberId))
             throw new MemberNotFoundException();
@@ -72,15 +70,15 @@ public class AdminPointDetailService {
      * @author hydrationn(박수화)
      */
     @Transactional(readOnly = true)
-    public List<PointDetailResponse> getPointDetailByPointDetailType(Long adminId, Long memberId, String pointDetailType) {
-        memberRepository.findById(adminId)
+    public List<PointDetailResponse> getPointDetailByPointDetailType(Long memberId, String pointDetailType) {
+        /*memberRepository.findById(adminId)
                 .map(member -> {
                     if (member.getRole() != MemberRole.ADMIN) {
                         throw new NotAdminException();
                     }
                     return member;
                 })
-                .orElseThrow(() -> new MemberNotFoundException());
+                .orElseThrow(() -> new MemberNotFoundException());*/
 
         if(!memberRepository.existsById(memberId))
             throw new MemberNotFoundException();
@@ -103,15 +101,15 @@ public class AdminPointDetailService {
      *
      * @author hydrationn(박수화)
      */
-    public PointDetailResponse createPointDetail(Long adminId, Long memberId, @Valid CreatePointDetailRequest request) {
-        memberRepository.findById(adminId)
+    public PointDetailResponse createPointDetail(Long memberId, @Valid CreatePointDetailRequest request) {
+        /*memberRepository.findById(adminId)
                 .map(member -> {
                     if (member.getRole() != MemberRole.ADMIN) {
                         throw new NotAdminException();
                     }
                     return member;
                 })
-                .orElseThrow(() -> new MemberNotFoundException());
+                .orElseThrow(() -> new MemberNotFoundException());*/
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException());
@@ -144,15 +142,15 @@ public class AdminPointDetailService {
      *
      * @author hydrationn(박수화)
      */
-    public PointDetailResponse updatePointDetail(Long adminId, Long memberId, Long pointDetailId, BigDecimal pointAmount) {
-        memberRepository.findById(adminId)
+    public PointDetailResponse updatePointDetail(Long memberId, Long pointDetailId, BigDecimal pointAmount) {
+        /*memberRepository.findById(adminId)
                 .map(member -> {
                     if (member.getRole() != MemberRole.ADMIN) {
                         throw new NotAdminException();
                     }
                     return member;
                 })
-                .orElseThrow(() -> new MemberNotFoundException());
+                .orElseThrow(() -> new MemberNotFoundException());*/
 
         memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException());
@@ -164,6 +162,7 @@ public class AdminPointDetailService {
 
         return PointDetailResponse.of(pointDetailRepository.save(pointDetail));
     }
+
     /**
      * 특정 포인트 상세 정보 삭제
      * @param pointDetailId 삭제할 포인트 상세 정보의 ID
@@ -171,15 +170,15 @@ public class AdminPointDetailService {
      *
      * @author hydrationn(박수화)
      */
-    public void deletePointDetail(Long adminId, Long memberId, Long pointDetailId) {
-        memberRepository.findById(adminId)
+    public void deletePointDetail(Long memberId, Long pointDetailId) {
+        /*memberRepository.findById(adminId)
                 .map(member -> {
                     if (member.getRole() != MemberRole.ADMIN) {
                         throw new NotAdminException();
                     }
                     return member;
                 })
-                .orElseThrow(() -> new MemberNotFoundException());
+                .orElseThrow(() -> new MemberNotFoundException());*/
 
         if(!memberRepository.existsById(memberId))
             throw new MemberNotFoundException();
