@@ -12,6 +12,7 @@ public class BookImageUtils {
     private static ObjectStorageProperties objectStorageProperties;
     private static final String CONTAINER_PREFIX = "/t3team/";
     private static final String THUMBNAIL_PREFIX = "book_thumbnails/";
+    private static final String REVIEW_IMAGE_PREFIX = "review_images/";
     private static final String BOOK_IMAGE_PREFIX = "book_images/";
 
     @Autowired
@@ -39,6 +40,20 @@ public class BookImageUtils {
         List<String> modifiedUrls = new ArrayList<>();
         for(String imageUrl : imageUrlList) {
             modifiedUrls.add(objectStorageProperties.getStorageUrl() + CONTAINER_PREFIX + BOOK_IMAGE_PREFIX + imageUrl);
+        }
+        return modifiedUrls;
+    }
+
+    /**
+     * 리뷰 이미지 URL 목록의 prefix를 설정
+     * @param imageUrlList 원본 이미지 URL 목록
+     * @return prefix가 추가된 수정된 이미지 URL 목록
+     * @author Yujin-nKim(김유진)
+     */
+    public static List<String> setReviewImagePrefix(List<String> imageUrlList) {
+        List<String> modifiedUrls = new ArrayList<>();
+        for(String imageUrl : imageUrlList) {
+            modifiedUrls.add(objectStorageProperties.getStorageUrl() + CONTAINER_PREFIX + REVIEW_IMAGE_PREFIX + imageUrl);
         }
         return modifiedUrls;
     }

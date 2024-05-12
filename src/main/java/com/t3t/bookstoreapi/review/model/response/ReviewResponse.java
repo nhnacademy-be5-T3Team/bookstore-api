@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.review.model.response;
 
+import com.t3t.bookstoreapi.book.util.BookImageUtils;
 import com.t3t.bookstoreapi.review.model.entity.Review;
 import com.t3t.bookstoreapi.review.model.entity.ReviewImage;
 import lombok.Builder;
@@ -36,8 +37,8 @@ public class ReviewResponse {
                 .reviewScore(review.getReviewScore())
                 .createdAt(review.getReviewCreatedAt())
                 .updatedAt(review.getReviewUpdatedAt())
-                .reviewImgUrlList(review.getReviewImageList()
-                        .stream().map(ReviewImage::getReviewImageUrl).collect(Collectors.toList()))
+                .reviewImgUrlList(BookImageUtils.setReviewImagePrefix(review.getReviewImageList()
+                        .stream().map(ReviewImage::getReviewImageUrl).collect(Collectors.toList())))
                 .build();
     }
 }
