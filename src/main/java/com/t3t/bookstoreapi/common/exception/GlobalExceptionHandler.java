@@ -116,6 +116,13 @@ public class GlobalExceptionHandler {
                         .collect(Collectors.joining()))));
     }
 
+    /**
+     * 존재하지 않는 배송에 대한 조회 시도 시 발생하는 예외 처리 핸들러
+     * @see com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException
+     * @param pointDetailNotFoundException 존재하지 않는 포인트 내역에 대한 조회 시도 시 발생하는 예외
+     * @return 404 NOT_FOUND - 예외 메시지 반환
+     * @author hydrationn(박수화)
+     */
     @ExceptionHandler(PointDetailNotFoundException.class)
     public ResponseEntity<BaseResponse<Void>> pointDetailNotFoundException(PointDetailNotFoundException pointDetailNotFoundException) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
