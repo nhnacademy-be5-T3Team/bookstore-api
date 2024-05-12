@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class BookServiceUtils {
+public class BookImageUtils {
     private static ObjectStorageProperties objectStorageProperties;
     private static final String CONTAINER_PREFIX = "/t3team/";
     private static final String THUMBNAIL_PREFIX = "book_thumbnails/";
     private static final String BOOK_IMAGE_PREFIX = "book_images/";
 
     @Autowired
-    private BookServiceUtils(ObjectStorageProperties objectStorageProperties) {
+    private BookImageUtils(ObjectStorageProperties objectStorageProperties) {
         this.objectStorageProperties = objectStorageProperties;
     }
 

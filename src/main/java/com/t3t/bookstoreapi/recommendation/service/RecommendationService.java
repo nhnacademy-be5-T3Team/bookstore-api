@@ -1,7 +1,7 @@
 package com.t3t.bookstoreapi.recommendation.service;
 
 import com.t3t.bookstoreapi.book.repository.BookRepository;
-import com.t3t.bookstoreapi.book.util.BookServiceUtils;
+import com.t3t.bookstoreapi.book.util.BookImageUtils;
 import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBriefResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class RecommendationService {
             return bookRepository.getRecentlyPublishedBooks(date, maxCount)
                     .stream()
                     .map(response -> {
-                        response.setThumbnailImageUrl(BookServiceUtils.setThumbnailImagePrefix(response.getThumbnailImageUrl()));
+                        response.setThumbnailImageUrl(BookImageUtils.setThumbnailImagePrefix(response.getThumbnailImageUrl()));
                         return response;})
                     .collect(Collectors.toList());
         }
@@ -50,7 +50,7 @@ public class RecommendationService {
         return bookRepository.getBooksByMostLikedAndHighAverageScore(maxCount)
                 .stream()
                 .map(response -> {
-                    response.setThumbnailImageUrl(BookServiceUtils.setThumbnailImagePrefix(response.getThumbnailImageUrl()));
+                    response.setThumbnailImageUrl(BookImageUtils.setThumbnailImagePrefix(response.getThumbnailImageUrl()));
                     return response;})
                 .collect(Collectors.toList());
     }
@@ -67,7 +67,7 @@ public class RecommendationService {
         return orderDetailRepository.getSalesCountPerBook(maxCount)
                 .stream()
                 .map(response -> {
-                    response.setThumbnailImageUrl(BookServiceUtils.setThumbnailImagePrefix(response.getThumbnailImageUrl()));
+                    response.setThumbnailImageUrl(BookImageUtils.setThumbnailImagePrefix(response.getThumbnailImageUrl()));
                     return response;})
                 .collect(Collectors.toList());
     }

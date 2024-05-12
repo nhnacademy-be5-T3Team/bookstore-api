@@ -9,7 +9,7 @@ import com.t3t.bookstoreapi.book.model.request.BookRegisterRequest;
 import com.t3t.bookstoreapi.book.model.request.ModifyBookDetailRequest;
 import com.t3t.bookstoreapi.book.model.response.*;
 import com.t3t.bookstoreapi.book.repository.*;
-import com.t3t.bookstoreapi.book.util.BookServiceUtils;
+import com.t3t.bookstoreapi.book.util.BookImageUtils;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.category.model.entity.Category;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
@@ -81,8 +81,8 @@ public class BookService {
         BookDetailResponse bookDetails = bookRepository.getBookDetailsById(bookId);
 
         // 이미지 prefix 추가
-        bookDetails.setThumbnailImageUrl(BookServiceUtils.setThumbnailImagePrefix(bookDetails.getThumbnailImageUrl()));
-        bookDetails.setBookImageUrlList(BookServiceUtils.setBookImagePrefix(bookDetails.getBookImageUrlList()));
+        bookDetails.setThumbnailImageUrl(BookImageUtils.setThumbnailImagePrefix(bookDetails.getThumbnailImageUrl()));
+        bookDetails.setBookImageUrlList(BookImageUtils.setBookImagePrefix(bookDetails.getBookImageUrlList()));
         bookDetails.setDiscountedPrice();
         bookDetails.setBookStock();
 
