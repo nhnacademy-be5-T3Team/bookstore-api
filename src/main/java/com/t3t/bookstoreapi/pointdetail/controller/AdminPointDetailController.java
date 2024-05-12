@@ -23,14 +23,13 @@ public class AdminPointDetailController {
 
     /**
      * 특정 회원의 모든 포인트 상세 내역 조회 API
-     * @param adminId 관리자 ID. 요청 헤더에서 memberId로 받는다.
+     * @param memberId 조회할 회원 ID
      * @return 포인트 상세 내역 목록을 담은 BaseResponse 객체
      *
      * @author hydrationn(박수화)
      */
     @GetMapping("/admin/members/{memberId}/point-details/list")
-    public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailList(@RequestHeader(name = "memberId") Long adminId,
-                                                                                      @PathVariable("memberId") Long memberId){
+    public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailList(@PathVariable("memberId") Long memberId){
         List<PointDetailResponse> pointDetailList = adminPointDetailService.getPointDetailList(memberId);
 
         return pointDetailList.isEmpty() ?
@@ -40,15 +39,14 @@ public class AdminPointDetailController {
 
     /**
      * 특정 회원의 타입에 따른 포인트 상세 내역 조회 API
-     * @param adminId 관리자 ID. 요청 헤더에서 memberId로 받는다.
+     * @param memberId 조회할 회원 ID
      * @param pointDetailType 조회할 포인트 상세 타입
      * @return 포인트 상세 내역을 담은 BaseResponse 객체
      *
      * @author hydrationn(박수화)
      */
     @GetMapping("/admin/members/{memberId}/point-details")
-    public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailById(@RequestHeader(name = "memberId") Long adminId,
-                                                                                @PathVariable("memberId") Long memberId,
+    public ResponseEntity<BaseResponse<List<PointDetailResponse>>> getPointDetailById(@PathVariable("memberId") Long memberId,
                                                                                 String pointDetailType) {
         List<PointDetailResponse> pointDetailResponse = adminPointDetailService.getPointDetailByPointDetailType(memberId, pointDetailType);
 
@@ -57,15 +55,14 @@ public class AdminPointDetailController {
 
     /**
      * 새로운 포인트 상세 내역 생성 API
-     * @param adminId 관리자 ID. 요청 헤더에서 memberId로 받는다.
+     * @param memberId 조회할 회원 ID
      * @param request 포인트 상세 내역 생성 요청 데이터
      * @return 생성된 포인트 상세 내역을 담은 BaseResponse 객체
      *
      * @author hydrationn(박수화)
      */
     @PostMapping("/admin/members/{memberId}/point-details")
-    public ResponseEntity<BaseResponse<PointDetailResponse>> createPointDetail(@RequestHeader(name = "memberId") Long adminId,
-                                                                               @PathVariable("memberId") Long memberId,
+    public ResponseEntity<BaseResponse<PointDetailResponse>> createPointDetail(@PathVariable("memberId") Long memberId,
                                                                                @Valid @RequestBody CreatePointDetailRequest request) {
         PointDetailResponse pointDetailResponse = adminPointDetailService.createPointDetail(memberId, request);
 
@@ -74,7 +71,7 @@ public class AdminPointDetailController {
 
     /**
      * 특정 포인트 상세 내역 수정 API
-     * @param adminId 관리자 ID. 요청 헤더에서 memberId로 받는다.
+     * @param memberId 조회할 회원 ID
      * @param pointDetailId 수정할 포인트 상세 ID
      * @param pointDetailAmount 수정될 포인트의 양
      * @return 수정된 포인트 상세 내역을 담은 BaseResponse 객체
@@ -82,8 +79,7 @@ public class AdminPointDetailController {
      * @author hydrationn(박수화)
      */
     @PutMapping(value = "/admin/members/{memberId}/point-details/{pointDetailId}")
-    public ResponseEntity<BaseResponse<PointDetailResponse>> updatePointDetail(@RequestHeader(name = "memberId") Long adminId,
-                                                                               @PathVariable("memberId") Long memberId,
+    public ResponseEntity<BaseResponse<PointDetailResponse>> updatePointDetail(@PathVariable("memberId") Long memberId,
                                                                                @PathVariable("pointDetailId") Long pointDetailId,
                                                                                @RequestParam BigDecimal pointDetailAmount) {
         PointDetailResponse pointDetailResponse = adminPointDetailService.updatePointDetail(memberId, pointDetailId, pointDetailAmount);
@@ -93,15 +89,14 @@ public class AdminPointDetailController {
 
     /**
      * 특정 포인트 상세 내역 삭제 API
-     * @param adminId 관리자 ID. 요청 헤더에서 memberId로 받는다.
+     * @param memberId 조회할 회원 ID
      * @param pointDetailId 삭제할 포인트 상세 ID
      * @return 삭제가 성공적으로 수행되면 상태 코드 200(OK)과 함께 빈 {@link BaseResponse} 객체 반환
      *
      * @author hydrationn(박수화)
      */
     @DeleteMapping("/admin/members/{memberId}/point-details/{pointDetailId}")
-    public ResponseEntity<BaseResponse<Void>> deletePointDetail(@RequestHeader(name = "memberId") Long adminId,
-                                                                @PathVariable("memberId") Long memberId,
+    public ResponseEntity<BaseResponse<Void>> deletePointDetail(@PathVariable("memberId") Long memberId,
                                                                 @PathVariable("pointDetailId") Long pointDetailId) {
         adminPointDetailService.deletePointDetail(memberId, pointDetailId);
 

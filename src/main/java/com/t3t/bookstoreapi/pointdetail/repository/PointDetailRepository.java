@@ -10,6 +10,5 @@ public interface PointDetailRepository extends JpaRepository<PointDetail, Long> 
     List<Optional<PointDetail>> findByMemberId(Long memberId);
     boolean existsByMemberIdAndPointDetailType(Long memberId, String pointDetailType);
     Optional<PointDetail> findByMemberIdAndPointDetailType(Long memberId, String pointDetailType);
-    List<Optional<PointDetail>> findByPointDetailType(String pointDetailType);
     List<PointDetail> findAll();
 }
