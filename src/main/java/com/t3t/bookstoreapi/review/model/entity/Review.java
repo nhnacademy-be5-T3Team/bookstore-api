@@ -23,12 +23,12 @@ public class Review {
     private Long reviewId;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -46,7 +46,7 @@ public class Review {
     @Column(name = "review_updated_at")
     private LocalDateTime reviewUpdatedAt;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY)
     List<ReviewImage> reviewImageList = new ArrayList<>();
 
 }
