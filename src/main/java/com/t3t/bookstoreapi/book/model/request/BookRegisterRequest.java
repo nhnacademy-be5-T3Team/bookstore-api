@@ -72,17 +72,4 @@ public class BookRegisterRequest {
 
     @Size(max = 10, message = "최대 10개의 태그를 선택할 수 있습니다.")
     private List<Long> tagList; // 태그 id 리스트
-
-    /**
-     * 이미지 리스트에서 빈 파일을 제거
-     * @author Yujin-nKim(김유진)
-     */
-    public void removeEmptyImages() {
-        if (bookImageList != null && bookImageList.size() == 1) {
-            MultipartFile imageFile = bookImageList.get(0);
-            if (imageFile.getSize() == 0) {
-                bookImageList.clear();
-            }
-        }
-    }
 }
