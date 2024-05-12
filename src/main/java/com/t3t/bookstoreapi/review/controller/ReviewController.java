@@ -131,4 +131,22 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("리뷰 업데이트 요청이 정상적으로 처리되었습니다."));
     }
+
+    /**
+     * 리뷰 score 수정 요청
+     * @param reviewId 수정할 review ID
+     * @param score 수정할 점수
+     * @return 200 OK, 성공 메세지
+     * @author Yujin-nKim(김유진)
+     */
+    @PutMapping("/reviews/{reviewId}/score")
+    public ResponseEntity<BaseResponse<Void>> updateReviewScore(@PathVariable Long reviewId,
+                                                                @RequestParam Integer score) {
+
+        reviewService.updateReviewScore(reviewId, score);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("리뷰 업데이트 요청이 정상적으로 처리되었습니다."));
+    }
+
 }

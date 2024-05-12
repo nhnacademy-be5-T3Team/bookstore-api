@@ -181,4 +181,18 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
         review.updateReviewComment(request.getComment());
     }
+
+    /**
+     * 리뷰 score 수정 요청
+     * @param reviewId 수정할 review ID
+     * @param score 수정할 점수
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateReviewScore(Long reviewId, Integer score) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+        Book book = bookRepository.findByBookId(review.getBook().getBookId()).orElseThrow(BookNotFoundException::new);
+
+        Integer reviewCount = reviewRepository.countByBookBookId(book.getBookId());
+        book.updateAverageScore(score, reviewCount);
+    }
 }
