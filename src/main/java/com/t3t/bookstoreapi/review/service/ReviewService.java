@@ -225,11 +225,11 @@ public class ReviewService {
 
     /**
      * 리뷰 이미지 삭제 요청
-     * @param reviewImageId 삭제할 이미지 id
+     * @param reviewImageName 삭제할 이미지 name
      * @author Yujin-nKim(김유진)
      */
-    public void deleteReviewImage(Long reviewImageId) {
-        ReviewImage reviewImage = reviewImageRepository.findById(reviewImageId).orElseThrow(ReviewImageNotFoundException::new);
+    public void deleteReviewImage(String reviewImageName) {
+        ReviewImage reviewImage = reviewImageRepository.findByReviewImageUrl(reviewImageName).orElseThrow(ReviewImageNotFoundException::new);
         reviewImageRepository.delete(reviewImage);
     }
 }
