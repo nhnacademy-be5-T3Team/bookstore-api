@@ -1,24 +1,34 @@
 package com.t3t.bookstoreapi.elastic.repository;
 
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
+import com.t3t.bookstoreapi.elastic.model.response.ElasticResponse;
 import com.t3t.bookstoreapi.elastic.util.Constants;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 
 @RequiredArgsConstructor
 public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
     private final ElasticsearchOperations elasticsearchOperations;
+    private final RestHighLevelClient client;
     /**
      * @param query    text 검색어
      * @param pageable 페이지 요청 정보
@@ -190,7 +200,6 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
 
         return elasticPageable(finalQuery, pageable);
     }
-
     /**
      * @param queryBuilder 키워드를 통해 검색된 도서 목록
      * @param pageable     페이지 요청 정보
@@ -204,6 +213,17 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
                 .build();
 
         return elasticsearchOperations.search(nativeSearchQuery, ElasticDocument.class);
+    }
+
+    /**
+     * @param prefix 키워드를 통해 검색된 도서 목록
+     * @return elasticsearch의 도서 목록
+     */
+    public BoolQueryBuilder autocomplete(String prefix){
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        boolQuery.should(QueryBuilders.matchQuery(Constants.BOOK_NAME_PREFIX, prefix).boost(2.0f));
+        boolQuery.should(QueryBuilders.matchQuery(Constants.BOOK_NAME_JASO, prefix));
+        return boolQuery;
     }
 
 

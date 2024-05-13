@@ -1,11 +1,14 @@
 package com.t3t.bookstoreapi.elastic.repository;
 
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 @NoRepositoryBean
 public interface ElasticRepositoryCustom {
@@ -45,4 +48,5 @@ public interface ElasticRepositoryCustom {
     SearchHits<ElasticDocument> findByBookNameCategory(String query,BigDecimal  categoryId, Pageable pageable);
     SearchHits<ElasticDocument> findByPublisherCategory(String query,BigDecimal categoryId, Pageable pageable);
     SearchHits<ElasticDocument> findByAuthorNameCategory(String query,BigDecimal categoryId, Pageable pageable);
+    BoolQueryBuilder autocomplete(String prefix);
 }
