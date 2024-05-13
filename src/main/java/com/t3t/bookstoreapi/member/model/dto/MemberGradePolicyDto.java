@@ -1,6 +1,6 @@
-package com.t3t.bookstoreapi.membergradepolicies.model.dto;
+package com.t3t.bookstoreapi.member.model.dto;
 
-import com.t3t.bookstoreapi.membergradepolicies.model.entity.MemberGradePolicy;
+import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +9,10 @@ import lombok.Getter;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+/**
+ * 회원 등급 정책 생성 정보를 전송하는 데 사용되는 Data Transfer Object(DTO)
+ * @author hydrationn(박수화)
+ */
 @Data
 @Getter
 @Builder
