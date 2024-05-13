@@ -26,7 +26,7 @@ public class MemberGradePolicyController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/policy")
+    @GetMapping("/policies")
     public ResponseEntity<BaseResponse<List<MemberGradePolicyDto>>> getMemberGradePolicyList() {
         List<MemberGradePolicyDto> memberGradePolicyDtoList = memberGradePolicyService.getMemberGradePolicyList();
         return ResponseEntity.ok(new BaseResponse<List<MemberGradePolicyDto>>().data(memberGradePolicyDtoList));
