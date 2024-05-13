@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.member.model.entity;
 
+import com.t3t.bookstoreapi.membergradepolicies.model.entity.MemberGradePolicy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
