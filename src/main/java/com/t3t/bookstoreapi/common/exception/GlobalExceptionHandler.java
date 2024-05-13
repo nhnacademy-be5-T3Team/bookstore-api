@@ -15,6 +15,7 @@ import com.t3t.bookstoreapi.participant.exception.ParticipantNotFoundException;
 import com.t3t.bookstoreapi.participant.exception.ParticipantRoleNotFoundException;
 import com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundException;
 import com.t3t.bookstoreapi.payment.exception.UnsupportedPaymentProviderTypeException;
+import com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException;
 import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException;
 import com.t3t.bookstoreapi.tag.exception.TagNotFoundException;
