@@ -12,5 +12,7 @@ public class Constants {
     public static final String PARTICIPANT_NAME_JASO = "participant_name.jaso";
     public static final String CATEGORY_ID = "category_id";
 
+    public static final String BOOK_NAME_PREFIX = "book_name.book_name2";
+
 
 }
