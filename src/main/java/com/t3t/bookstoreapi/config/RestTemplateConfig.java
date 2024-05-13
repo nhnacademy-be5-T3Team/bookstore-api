@@ -21,16 +21,16 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestTemplateConfig {
-    /**
-     * RestTemplate 빈
-     * @author woody35545(구건모)
-     */
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.setReadTimeout(Duration.ofSeconds(3L))
-                .setConnectTimeout(Duration.ofSeconds(3L))
-                .build();
-    }
+//    /**
+//     * RestTemplate 빈
+//     * @author woody35545(구건모)
+//     */
+//    @Bean
+//    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+//        return builder.setReadTimeout(Duration.ofSeconds(3L))
+//                .setConnectTimeout(Duration.ofSeconds(3L))
+//                .build();
+//    }
 
     /**
      * Secret Key Manager 인증서를 사용하여 요청을 보내기 위한 RestTemplate 빈 등록
