@@ -27,7 +27,14 @@ import java.util.stream.Collectors;
 public class AutocompleteService {
     private final RestHighLevelClient client;
     private final ElasticRepository elasticRepository;
-
+    /**
+     *검색어에 맞는 도서를 elasticsearch로 가져와 반환
+     *해당 도서 정보를 엘라스틱에 응답
+     *
+     * @param prefix text 검색어
+     * @return 페이지네이션된 엘라스틱 응답 객체 반환
+     * @author parkjonggyeong18(박종경)
+     */
     public BaseResponse<List<String>> autocomplete(String prefix) throws IOException {
         SearchRequest searchRequest = new SearchRequest("t3t_book");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();

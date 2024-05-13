@@ -214,6 +214,11 @@ public class ElasticRepositoryImpl implements ElasticRepositoryCustom {
 
         return elasticsearchOperations.search(nativeSearchQuery, ElasticDocument.class);
     }
+
+    /**
+     * @param prefix 키워드를 통해 검색된 도서 목록
+     * @return elasticsearch의 도서 목록
+     */
     public BoolQueryBuilder autocomplete(String prefix){
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery.should(QueryBuilders.matchQuery(Constants.BOOK_NAME_PREFIX, prefix).boost(2.0f));

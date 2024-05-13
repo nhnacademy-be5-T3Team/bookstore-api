@@ -14,8 +14,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class AutocompleteController {
-
     private final AutocompleteService autocompleteService;
+    /**
+     * elasticsearch 기반 실시간 자동완성
+     *
+     * @param prefix      text 검색어
+     * @return HTTP 상태 및 도서 목록 응답
+     * @author parkjonggyeong18(박종경)
+     */
     @GetMapping("/autocomplete")
     public ResponseEntity<BaseResponse<List<String>>> autocomplete(@RequestParam String prefix) throws IOException {
         BaseResponse<List<String>> autocomplete = autocompleteService.autocomplete(prefix);
