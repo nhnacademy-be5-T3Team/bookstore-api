@@ -191,12 +191,12 @@ class MemberServiceUnitTest {
 
         BookstoreAccount bookstoreAccount = BookstoreAccount.builder()
                 .id("test")
-                .AccountPassword("encodedPassword")
+                .password("encodedPassword")
                 .member(Member.builder().id(memberId).build())
                 .build();
 
         Mockito.when(bookstoreAccountRepository.findByMemberId(memberId)).thenReturn(Optional.of(bookstoreAccount));
-        Mockito.when(passwordEncoder.matches(request.getCurrentPassword(), bookstoreAccount.getAccountPassword())).thenReturn(true);
+        Mockito.when(passwordEncoder.matches(request.getCurrentPassword(), bookstoreAccount.getPassword())).thenReturn(true);
         Mockito.when(passwordEncoder.encode(request.getNewPassword())).thenReturn("encodedNewPassword");
 
         // when & then

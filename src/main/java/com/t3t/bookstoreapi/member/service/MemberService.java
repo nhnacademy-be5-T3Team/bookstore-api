@@ -72,7 +72,7 @@ public class MemberService {
 
         BookstoreAccount bookstoreAccount = bookstoreAccountRepository.save(BookstoreAccount.builder()
                 .id(request.getAccountId())
-                .AccountPassword(passwordEncoder.encode(request.getPassword()))
+                .password(passwordEncoder.encode(request.getPassword()))
                 .member(member)
                 .build());
 
@@ -89,7 +89,7 @@ public class MemberService {
         BookstoreAccount bookstoreAccount = bookstoreAccountRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new MemberNotFoundForIdException(memberId));
 
-        if (!passwordEncoder.matches(request.getCurrentPassword(), bookstoreAccount.getAccountPassword())) {
+        if (!passwordEncoder.matches(request.getCurrentPassword(), bookstoreAccount.getPassword())) {
             throw new IllegalArgumentException("기존 비밀번호가 일치하지 않습니다.");
         }
 
