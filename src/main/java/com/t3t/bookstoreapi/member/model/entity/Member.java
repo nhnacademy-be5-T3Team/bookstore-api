@@ -60,7 +60,7 @@ public class Member {
     @Comment("회원 역할")
     private MemberRole role;
 
-     * 회원 탈퇴 처리
+     /**회원 탈퇴 처리
      * @author wooody35545(구건모)
      */
     public void withdraw() {
