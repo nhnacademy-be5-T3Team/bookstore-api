@@ -7,10 +7,7 @@ import com.t3t.bookstoreapi.config.RestTemplateConfig;
 import com.t3t.bookstoreapi.keymanager.service.SecretKeyManagerService;
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
-import com.t3t.bookstoreapi.member.model.entity.Account;
-import com.t3t.bookstoreapi.member.model.entity.Member;
-import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
-import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
+import com.t3t.bookstoreapi.member.model.entity.*;
 import com.t3t.bookstoreapi.member.model.response.MemberInfoResponse;
 import com.t3t.bookstoreapi.property.SecretKeyManagerProperties;
 import com.t3t.bookstoreapi.property.SecretKeyProperties;
@@ -48,6 +45,9 @@ class MemberRepositoryTest {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private BookstoreAccountRepository bookstoreAccountRepository;
+
     /**
      * 회원 식별자로 회원 정보 조회하는 Custom Repository(QueryDSL) 메서드 테스트
      *
@@ -79,7 +79,9 @@ class MemberRepositoryTest {
                 .role(MemberRole.USER)
                 .build());
 
-        Account account = accountRepository.save(Account.builder()
+        BookstoreAccount account = bookstoreAccountRepository.save(BookstoreAccount
+                .builder()
+                .password("as")
                 .member(member)
                 .id("test")
                 .build());
