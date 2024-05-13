@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.time.Duration;
+
 import com.t3t.bookstoreapi.property.SecretKeyManagerProperties;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClients;
@@ -20,9 +21,20 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestTemplateConfig {
+    /**
+     * RestTemplate 빈
+     * @author woody35545(구건모)
+     */
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return builder.setReadTimeout(Duration.ofSeconds(3L))
+                .setConnectTimeout(Duration.ofSeconds(3L))
+                .build();
+    }
 
     /**
      * Secret Key Manager 인증서를 사용하여 요청을 보내기 위한 RestTemplate 빈 등록
+     *
      * @author woody35545(구건모)
      */
     @Bean

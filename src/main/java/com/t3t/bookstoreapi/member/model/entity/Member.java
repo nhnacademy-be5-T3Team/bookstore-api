@@ -60,6 +60,22 @@ public class Member {
     @Comment("회원 역할")
     private MemberRole role;
 
+     * 회원 탈퇴 처리
+     * @author wooody35545(구건모)
+     */
+    public void withdraw() {
+        this.status = MemberStatus.WITHDRAWAL;
+    }
+
+    /**
+     * 회원 활성화
+     * @author wooody35545(구건모)
+     */
+    public void activate(){
+        this.status = MemberStatus.ACTIVE;
+
+    }
+  
     /**
      * 회원 포인트 내역 생성 시 업데이트 처리
      * @param updatePoints

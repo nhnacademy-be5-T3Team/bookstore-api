@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.order.servcie;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundForIdException;
 import com.t3t.bookstoreapi.order.model.dto.DeliveryDto;
 import com.t3t.bookstoreapi.order.model.entity.Delivery;
+import com.t3t.bookstoreapi.order.model.request.DeliveryCreationRequest;
 import com.t3t.bookstoreapi.order.repository.DeliveryRepository;
 import com.t3t.bookstoreapi.order.service.DeliveryService;
 import org.junit.jupiter.api.Assertions;
@@ -118,36 +119,40 @@ public class DeliveryServiceUnitTest {
     @DisplayName("배송 생성")
     void createDeliveryTest() {
         // given
-        BigDecimal testPrice = BigDecimal.valueOf(10000);
-        int testAddressNumber = 12345;
-        String testRoadnameAddress = "testRoadnameAddress";
-        String testDetailAddress = "testDetailAddress";
-        String testRecipientName = "testRecipientName";
-        String testRecipientPhoneNumber = "testRecipientPhoneNumber";
-        LocalDate testDeliveryDate = LocalDate.now();
+
+
+        DeliveryCreationRequest testRequest = DeliveryCreationRequest.builder()
+                .price(BigDecimal.valueOf(3000))
+                .addressNumber(12345)
+                .roadnameAddress("testRoadnameAddress")
+                .detailAddress("testDetailAddress")
+                .recipientName("testRecipientName")
+                .recipientPhoneNumber("010-1234-5678")
+                .deliveryDate(LocalDate.now())
+                .build();
 
         Delivery testDelivery = Delivery.builder()
-                .price(testPrice)
-                .addressNumber(testAddressNumber)
-                .roadnameAddress(testRoadnameAddress)
-                .detailAddress(testDetailAddress)
-                .recipientName(testRecipientName)
-                .recipientPhoneNumber(testRecipientPhoneNumber)
-                .deliveryDate(testDeliveryDate)
+                .price(testRequest.getPrice())
+                .addressNumber(testRequest.getAddressNumber())
+                .roadnameAddress(testRequest.getRoadnameAddress())
+                .detailAddress(testRequest.getDetailAddress())
+                .recipientName(testRequest.getRecipientName())
+                .recipientPhoneNumber(testRequest.getRecipientPhoneNumber())
+                .deliveryDate(testRequest.getDeliveryDate())
                 .build();
 
         Mockito.when(deliveryRepository.save(Mockito.any(Delivery.class))).thenReturn(testDelivery);
 
         // when
-        DeliveryDto resultDeliveryDto = deliveryService.createDelivery(testPrice, testAddressNumber, testRoadnameAddress, testDetailAddress, testDeliveryDate, testRecipientName, testRecipientPhoneNumber);
+        DeliveryDto resultDeliveryDto = deliveryService.createDelivery(testRequest);
 
         // then
-        Assertions.assertEquals(testPrice, resultDeliveryDto.getPrice());
-        Assertions.assertEquals(testAddressNumber, resultDeliveryDto.getAddressNumber());
-        Assertions.assertEquals(testRoadnameAddress, resultDeliveryDto.getRoadnameAddress());
-        Assertions.assertEquals(testDetailAddress, resultDeliveryDto.getDetailAddress());
-        Assertions.assertEquals(testDeliveryDate, resultDeliveryDto.getDeliveryDate());
-        Assertions.assertEquals(testRecipientName, resultDeliveryDto.getRecipientName());
-        Assertions.assertEquals(testRecipientPhoneNumber, resultDeliveryDto.getRecipientPhoneNumber());
+        Assertions.assertEquals(testRequest.getPrice(), resultDeliveryDto.getPrice());
+        Assertions.assertEquals(testRequest.getAddressNumber(), resultDeliveryDto.getAddressNumber());
+        Assertions.assertEquals(testRequest.getRoadnameAddress(), resultDeliveryDto.getRoadnameAddress());
+        Assertions.assertEquals(testRequest.getDetailAddress(), resultDeliveryDto.getDetailAddress());
+        Assertions.assertEquals(testRequest.getDeliveryDate(), resultDeliveryDto.getDeliveryDate());
+        Assertions.assertEquals(testRequest.getRecipientName(), resultDeliveryDto.getRecipientName());
+        Assertions.assertEquals(testRequest.getRecipientPhoneNumber(), resultDeliveryDto.getRecipientPhoneNumber());
     }
 }

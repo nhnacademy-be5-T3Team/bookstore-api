@@ -1,11 +1,18 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
+import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.tag.model.entity.Tag;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+/**
+ * 도서 태그(book_tags) 엔티티
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -27,4 +34,18 @@ public class BookTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    @NotNull
+    @Column(name = "is_deleted")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus isDeleted;
+
+    /**
+     * 도서-태그 삭제 여부를 업데이트
+     * @param isDeleted 삭제 여부를 나타내는 TableStatus
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateIsDeleted(TableStatus isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

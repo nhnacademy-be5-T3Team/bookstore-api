@@ -1,10 +1,18 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
 import javax.validation.constraints.NotNull;
+
+import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * 도서 이미지(book_images) 엔티티
+ *
+ * @author Yujin-nKim(김유진)
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -26,4 +34,17 @@ public class BookImage {
     @Column(name = "book_image_url")
     private String bookImageUrl;
 
+    @NotNull
+    @Column(name = "is_deleted")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus isDeleted;
+
+    /**
+     * 도서-이미지 삭제 여부를 업데이트
+     * @param isDeleted 삭제 여부를 나타내는 TableStatus
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateIsDeleted(TableStatus isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

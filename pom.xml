@@ -26,6 +26,14 @@
 		<spring-cloud.version>2021.0.8</spring-cloud.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>release</id>
+			<name>edu-springboot</name>
+			<url>https://github.com/edu-springboot/edu-springboot-maven-repo/raw/master/releases</url>
+		</repository>
+	</repositories>
+
 	<dependencyManagement>
 	<dependencies>
 		<dependency>
@@ -39,6 +47,10 @@
 	</dependencyManagement>
 
 	<dependencies>
+    <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -113,6 +125,11 @@
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.nhn.dooray.messenger</groupId>
+			<artifactId>dooray-hook-sender</artifactId>
+			<version>1.2.0-RELEASE</version>
 		</dependency>
 	</dependencies>
 
