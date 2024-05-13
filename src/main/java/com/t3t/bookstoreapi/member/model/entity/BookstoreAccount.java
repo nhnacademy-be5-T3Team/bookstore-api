@@ -14,13 +14,9 @@ import javax.persistence.*;
 @Getter
 public class BookstoreAccount extends Account {
     @Column(name = "account_password")
-    private String AccountPassword;
-
-    public BookstoreAccount(String accountPassword) {
-        AccountPassword = accountPassword;
-    }
+    private String password;
 
     public void modifyPassword(String newPassword) {
-        this.AccountPassword = newPassword;
+        this.password = newPassword;
     }
 }
