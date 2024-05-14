@@ -39,11 +39,11 @@ public class ElasticCategoryServiceUnitTest {
     private static MockedStatic<BookServiceUtils> bookServiceUtilsMockedStatic;
 
     @BeforeAll
-    public static void beforeALl() {
+    public static void before() {
         bookServiceUtilsMockedStatic = mockStatic(BookServiceUtils.class);
     }
     @AfterAll
-    public static void afterAll() {
+    public static void after() {
         bookServiceUtilsMockedStatic.close();
     }
 
