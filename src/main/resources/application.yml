@@ -38,6 +38,9 @@ t3t:
     description: "t3t api documentation"
     version: "v1"
 
+  feignClient:
+    url: http://localhost:9090
+
   secretKeyManager:
     certKeyPath: ${secretKeyManagerCertKeyPath}
     certKeyType: ${secretKeyManagerCertKeyType}

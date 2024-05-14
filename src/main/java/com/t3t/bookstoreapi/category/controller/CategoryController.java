@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.category.controller;
 
+import com.t3t.bookstoreapi.category.model.response.CategoryIdResponse;
 import com.t3t.bookstoreapi.category.model.response.CategoryTreeResponse;
 import com.t3t.bookstoreapi.category.service.CategoryService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
@@ -7,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -44,5 +48,14 @@ public class CategoryController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<List<CategoryTreeResponse>>().data(categoryList));
+    }
+
+    /**
+     * 카테고리 리스트의 id값을 조회
+     * @author joohyun1996(이주현)
+     */
+    @GetMapping("/categories/{categoryId}/coupons")
+    public ResponseEntity<BaseResponse<CategoryIdResponse>> getGategoryId(@PathVariable("categoryId") Integer id){
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<CategoryIdResponse>().data(categoryService.getCategoryId(id)));
     }
 }

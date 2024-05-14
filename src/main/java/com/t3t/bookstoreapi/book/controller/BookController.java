@@ -3,13 +3,13 @@ package com.t3t.bookstoreapi.book.controller;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantMapDto;
 import com.t3t.bookstoreapi.book.model.request.BookRegisterRequest;
 import com.t3t.bookstoreapi.book.model.request.ModifyBookDetailRequest;
+import com.t3t.bookstoreapi.book.model.response.BookCouponResponse;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.model.response.BookListResponse;
 import com.t3t.bookstoreapi.book.service.BookService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.model.response.PageResponse;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -223,5 +223,23 @@ public class BookController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Void>().message("도서 삭제 요청이 정상적으로 처리되었습니다."));
+    }
+
+    /**
+     * 현재 BookList의 Id를 조회
+     * @author joohyun1996(이주현)
+     */
+    @GetMapping("/books/coupons")
+    public ResponseEntity<BaseResponse<List<BookCouponResponse>>> getAllBookId(){
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<List<BookCouponResponse>>().data(bookService.getAllBooksId()));
+    }
+
+    /**
+     * 특정 책의 id값 조회
+     * @author joohyun1996(이주현)
+     */
+    @GetMapping("/books/{bookId}/coupons")
+    public ResponseEntity<BaseResponse<BookCouponResponse>> getBookId(@PathVariable("bookId") Long bookId){
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<BookCouponResponse>().data(bookService.getBookId(bookId)));
     }
 }
