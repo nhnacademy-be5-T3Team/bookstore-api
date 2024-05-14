@@ -15,6 +15,7 @@ import com.t3t.bookstoreapi.participant.exception.ParticipantNotFoundException;
 import com.t3t.bookstoreapi.participant.exception.ParticipantRoleNotFoundException;
 import com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundException;
 import com.t3t.bookstoreapi.payment.exception.UnsupportedPaymentProviderTypeException;
+import com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException;
 import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException;
 import com.t3t.bookstoreapi.tag.exception.TagNotFoundException;
@@ -331,5 +332,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<Void>> handleBookAlreadyDeletedException(BookAlreadyDeletedException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+  
+    /**
+     * 존재하지 않는 배송에 대한 조회 시도 시 발생하는 예외 처리 핸들러
+     * @see com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException
+     * @param pointDetailNotFoundException 존재하지 않는 포인트 내역에 대한 조회 시도 시 발생하는 예외
+     * @return 404 NOT_FOUND - 예외 메시지 반환
+     * @author hydrationn(박수화)
+     */
+    @ExceptionHandler(PointDetailNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> pointDetailNotFoundException(PointDetailNotFoundException pointDetailNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(pointDetailNotFoundException.getMessage()));
     }
 }

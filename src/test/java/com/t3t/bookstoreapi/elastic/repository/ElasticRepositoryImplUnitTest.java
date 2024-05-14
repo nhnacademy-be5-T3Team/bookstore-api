@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.elastic.repository;
 
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 
 import java.math.BigDecimal;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -159,5 +162,17 @@ public class ElasticRepositoryImplUnitTest {
         assertTrue(result.hasSearchHits());
         verify(elasticsearchOperations).search(any(NativeSearchQuery.class), eq(ElasticDocument.class));
     }
+    @Test
+    public void testAutocomplete() {
+        String prefix = "test";
+        when(elasticsearchOperations.search(any(NativeSearchQuery.class), eq(ElasticDocument.class)))
+                .thenReturn(searchHits);
+        when(searchHits.hasSearchHits()).thenReturn(true);
 
+        BoolQueryBuilder result = elasticRepositoryImpl.autocomplete(prefix);
+
+        assertNotNull(result);
+        assertTrue(result.hasClauses());
+        assertEquals(2, result.should().size());
+    }
 }

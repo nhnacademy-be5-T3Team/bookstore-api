@@ -7,6 +7,12 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * 출판사 상세 정보를 전송하는 데 사용되는 Data Transfer Object(DTO)
+ * 출판사
+ *
+ * @author hydrationn(박수화)
+ */
 @Data
 @Getter
 @Builder
