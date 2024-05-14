@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.elastic.controller;
 import com.t3t.bookstoreapi.elastic.service.AutocompleteService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,7 +32,8 @@ class AutocompleteControllerTest {
     }
 
     @Test
-    void autocomplete_ReturnsExpectedResults() throws IOException {
+    @DisplayName("자동완성 test")
+    void autocompleteTest() throws IOException {
         // Given
         String prefix = "test";
         List<String> expectedData = Arrays.asList("example");
@@ -46,5 +48,19 @@ class AutocompleteControllerTest {
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedData, response.getBody().getData());
+    }
+    @Test
+    @DisplayName("자동완성 API 테스트 - 예외 처리")
+    public void testAutocompleteError() throws IOException {
+        // Given
+        String prefix = "test";
+        when(autocompleteService.autocomplete(prefix)).thenThrow(IOException.class);
+
+        // When
+        ResponseEntity<BaseResponse<List<String>>> responseEntity = autocompleteController.autocomplete(prefix);
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+        assertEquals("잘못된 접근입니다.", responseEntity.getBody().getMessage());
     }
 }
