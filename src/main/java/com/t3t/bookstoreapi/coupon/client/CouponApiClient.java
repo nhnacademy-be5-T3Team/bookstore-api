@@ -1,18 +1,19 @@
 package com.t3t.bookstoreapi.coupon.client;
 
+import com.t3t.bookstoreapi.coupon.model.response.CouponResponse;
+import com.t3t.bookstoreapi.model.response.BaseResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(name = "CouponApiClient", url = "${t3t.feignClient.url}")
 public interface CouponApiClient {
-    /*@GetMapping(value = "/t3t/coupon/categories/coupons")
-    ResponseEntity<BaseResponse<List<CategoryIdResponse>>> getCategoriesId();
+    @GetMapping("/t3t/coupon/coupons/book")
+    ResponseEntity<BaseResponse<CouponResponse>> getBookCoupon();
 
-    @GetMapping(value = "/t3t/bookstore/categories/{categoryId}/coupons")
-    ResponseEntity<BaseResponse<CategoryIdResponse>> getCategoryId(@PathVariable("categoryId") Integer categoryId);*/
+    @GetMapping("/t3t/coupon/coupons/category")
+    ResponseEntity<BaseResponse<CouponResponse>> getCategoryCoupon();
 
-    //todo 1 ) Gateway에서 쿠폰 등록
-    
-    // todo 2 ) book coupon, category coupon, general coupon FeignClient 이용해 가져오기
-
-    // todo 3 ) 가져온 것 db에 넣어놓기
+    @GetMapping("/t3t/coupon/coupons/general")
+    ResponseEntity<BaseResponse<CouponResponse>> getGeneralCoupon();
 }
