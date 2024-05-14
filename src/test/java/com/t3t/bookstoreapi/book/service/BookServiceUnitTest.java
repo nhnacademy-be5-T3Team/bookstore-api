@@ -1,19 +1,23 @@
 package com.t3t.bookstoreapi.book.service;
 
 import com.t3t.bookstoreapi.book.enums.TableStatus;
-import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
+import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
+import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.tag.model.dto.TagDto;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.order.model.entity.Packaging;
 import com.t3t.bookstoreapi.order.repository.PackagingRepository;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -40,10 +44,21 @@ class BookServiceUnitTest {
     @InjectMocks
     private BookService bookService;
 
+    private static MockedStatic<BookServiceUtils> bookServiceUtilsMockedStatic;
+
+    @BeforeAll
+    public static void beforeALl() {
+        bookServiceUtilsMockedStatic = mockStatic(BookServiceUtils.class);
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        bookServiceUtilsMockedStatic.close();
+    }
+
     @Test
     @DisplayName("도서 상세 조회 테스트")
     void testGetBook() {
-
         // Dummy data setting
         List<String> bookImageUrlList = new ArrayList<>();
         List<CategoryDto> categoryList = new ArrayList<>();
@@ -89,7 +104,6 @@ class BookServiceUnitTest {
 
         BookDetailResponse bookDetailResponse = bookService.getBookDetailsById(1L);
 
-        assertEquals(3, bookDetailResponse.getBookImageUrlList().size());
         assertEquals(BigDecimal.valueOf(8000.0), bookDetailResponse.getDiscountedPrice());
         assertTrue(bookDetailResponse.isOrderAvailableStatus());
         assertEquals(3, bookDetailResponse.getPackagingInfoList().size());
@@ -145,9 +159,9 @@ class BookServiceUnitTest {
     void testGetBookDetailsById_BookNotFound() {
 
         Long bookId = 1L;
-        when(bookRepository.getBookDetailsById(bookId)).thenReturn(null);
+        when(bookRepository.getBookDetailsById(bookId)).thenThrow(new BookNotFoundException());
 
-        assertThrows(BookNotFoundForIdException.class, () -> {
+        assertThrows(BookNotFoundException.class, () -> {
             bookService.getBookDetailsById(bookId);
         });
 

@@ -1,14 +1,18 @@
 package com.t3t.bookstoreapi.elastic.service;
 
+import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
 import com.t3t.bookstoreapi.elastic.model.response.ElasticResponse;
 import com.t3t.bookstoreapi.elastic.repository.ElasticRepository;
 import com.t3t.bookstoreapi.model.response.PageResponse;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -20,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -30,6 +35,17 @@ public class ElasticCategoryServiceUnitTest {
 
     @InjectMocks
     private ElasticCategoryService elasticService;
+
+    private static MockedStatic<BookServiceUtils> bookServiceUtilsMockedStatic;
+
+    @BeforeAll
+    public static void beforeALl() {
+        bookServiceUtilsMockedStatic = mockStatic(BookServiceUtils.class);
+    }
+    @AfterAll
+    public static void afterAll() {
+        bookServiceUtilsMockedStatic.close();
+    }
 
     @Test
     @DisplayName("엘라스틱서치 검색 기능 테스트")
