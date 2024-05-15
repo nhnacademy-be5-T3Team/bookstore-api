@@ -3,6 +3,11 @@ package com.t3t.bookstoreapi.order.service;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundForIdException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundException;
+import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundForIdException;
+import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
+import com.t3t.bookstoreapi.member.model.entity.MemberAddress;
+import com.t3t.bookstoreapi.member.repository.MemberAddressRepository;
 import com.t3t.bookstoreapi.order.constant.OrderStatusType;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundForNameException;
 import com.t3t.bookstoreapi.order.exception.PackagingNotFoundForIdException;
@@ -30,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -47,6 +53,7 @@ public class OrderServiceFacade {
     private final DeliveryService deliveryService;
     private final GuestOrderService guestOrderService;
     private final ProviderPaymentServiceFactory providerPaymentServiceFactory;
+    private final MemberAddressRepository memberAddressRepository;
 
     /**
      * 회원 임시 주문 생성<br>
@@ -74,11 +81,24 @@ public class OrderServiceFacade {
         /**
          * 배송 정보 생성
          */
+        Long memberAddressId = memberOrderPreparationRequest.getMemberAddressId();
+        Integer addressNumber = memberOrderPreparationRequest.getAddressNumber();
+        String roadnameAddress = memberOrderPreparationRequest.getRoadnameAddress();
+
+        // 회원 주소 목록에서 기존 주소를 선택한 경우
+        if (memberAddressId != null) {
+            MemberAddressDto memberAddress = memberAddressRepository.getMemberAddressDtoById(memberAddressId)
+                    .orElseThrow(() -> new MemberAddressNotFoundForIdException(memberAddressId));
+
+            addressNumber = memberAddress.getAddressNumber();
+            roadnameAddress = memberAddress.getRoadNameAddress();
+        }
+
         DeliveryDto deliveryDto = deliveryService.createDelivery(DeliveryCreationRequest.builder()
                 .price(DEFAULT_DELIVERY_PRICE)
                 .detailAddress(memberOrderPreparationRequest.getDetailAddress())
-                .addressNumber(memberOrderPreparationRequest.getAddressNumber())
-                .roadnameAddress(memberOrderPreparationRequest.getRoadnameAddress())
+                .addressNumber(addressNumber)
+                .roadnameAddress(roadnameAddress)
                 .deliveryDate(memberOrderPreparationRequest.getDeliveryDate())
                 .recipientName(memberOrderPreparationRequest.getRecipientName())
                 .recipientPhoneNumber(memberOrderPreparationRequest.getRecipientPhoneNumber())
