@@ -43,6 +43,9 @@ public class MemberOrderPreparationRequest {
      * 배송 정보
      */
     @Nullable
+    private Long memberAddressId; // 회원 주소록에서 주소를 선택한 경우 회원 주소 식별자
+
+    @Nullable
     private Integer addressNumber; // 배송 우편 주소
 
     @Nullable
@@ -64,7 +67,7 @@ public class MemberOrderPreparationRequest {
 
     @AssertTrue(message = "우편 주소와 도로명 주소 중 하나는 반드시 입력되어야 합니다.")
     private boolean isEitherAddressNotNull() {
-        return addressNumber != null || roadnameAddress != null;
+        return memberAddressId != null || addressNumber != null || roadnameAddress != null;
     }
 
     /**
