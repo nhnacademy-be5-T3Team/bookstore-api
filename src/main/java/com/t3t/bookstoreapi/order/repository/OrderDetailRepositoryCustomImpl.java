@@ -43,7 +43,7 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
                         orderDetail.quantity.as("quantity"),
                         orderDetail.price.as("price"),
                         orderDetail.createdAt.as("createdAt"),
-                        orderDetail.order.id.as("orderId"),
+                        order.id.as("orderId"),
                         book.bookId.as("bookId"),
                         book.bookName.as("bookName"),
                         book.publisher.publisherName.as("bookPublisherName"),
@@ -52,6 +52,7 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
                         packaging.price.as("packagingPrice"),
                         orderStatus.name.as("orderStatusName")))
                 .from(orderDetail)
+                .join(orderDetail.order, order)
                 .join(orderDetail.book, book)
                 .join(book.publisher, publisher)
                 .join(orderDetail.orderStatus, orderStatus)
@@ -73,7 +74,7 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
                                 orderDetail.quantity.as("quantity"),
                                 orderDetail.price.as("price"),
                                 orderDetail.createdAt.as("createdAt"),
-                                orderDetail.order.id.as("orderId"),
+                                order.id.as("orderId"),
                                 book.bookId.as("bookId"),
                                 book.bookName.as("bookName"),
                                 publisher.publisherName.as("bookPublisherName"),
@@ -88,6 +89,8 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
                                 delivery.deliveryDate.as("deliveryDate"),
                                 delivery.recipientName.as("recipientName"),
                                 delivery.recipientPhoneNumber.as("recipientPhoneNumber")))
+                .from(orderDetail)
+                .join(orderDetail.order, order)
                 .join(orderDetail.book, book)
                 .join(book.publisher, publisher)
                 .join(orderDetail.orderStatus, orderStatus)
