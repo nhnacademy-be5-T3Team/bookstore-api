@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.order.model.response;
 
+import com.t3t.bookstoreapi.payment.constant.PaymentProviderType;
 import com.t3t.bookstoreapi.payment.model.entity.PaymentProvider;
 import lombok.*;
 import org.springframework.lang.Nullable;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 회원의 주문 관련 정보에 대한 응답 객체
+ * 주문 관련 정보에 대한 응답 객체
  *
  * @author woody35545(구건모)
  */
@@ -43,7 +44,8 @@ public class OrderInfoResponse {
      * 결제 정보
      */
     private Long paymentId;
-    private PaymentProvider paymentProvider;
+    private Long paymentProviderId;
+    private PaymentProviderType paymentProviderType;
     private BigDecimal paymentTotalAmount;
     private LocalDateTime paymentCreatedAt;
 

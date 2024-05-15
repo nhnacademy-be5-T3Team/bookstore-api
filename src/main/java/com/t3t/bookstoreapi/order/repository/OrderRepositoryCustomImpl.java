@@ -41,10 +41,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                                 order.createdAt.as("orderCreatedAt"),
                                 member.id.as("memberId"),
                                 payment.id.as("paymentId"),
-                                paymentProvider.as("paymentProvider"),
+                                paymentProvider.id.as("paymentProviderId"),
+                                paymentProvider.name.as("paymentProviderType"),
                                 payment.totalAmount.as("paymentTotalAmount"),
-                                payment.createdAt.as("paymentCreatedAt")
-                        ))
+                                payment.createdAt.as("paymentCreatedAt")))
                         .from(order)
                             .join(order.member, member)
                             .leftJoin(payment).on(payment.order.id.eq(order.id))
