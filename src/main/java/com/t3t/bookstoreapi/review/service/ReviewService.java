@@ -6,8 +6,15 @@ import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
+import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.repository.MemberRepository;
+import com.t3t.bookstoreapi.order.exception.OrderDetailNotFoundException;
+import com.t3t.bookstoreapi.order.model.entity.OrderDetail;
+import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
+import com.t3t.bookstoreapi.pointdetail.model.entity.PointDetail;
+import com.t3t.bookstoreapi.pointdetail.repository.PointDetailRepository;
 import com.t3t.bookstoreapi.review.exception.ReviewAlreadyExistsException;
+import com.t3t.bookstoreapi.review.exception.ReviewForbiddenException;
 import com.t3t.bookstoreapi.review.exception.ReviewImageNotFoundException;
 import com.t3t.bookstoreapi.review.exception.ReviewNotFoundException;
 import com.t3t.bookstoreapi.review.model.entity.Review;
@@ -39,10 +46,13 @@ public class ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final BookRepository bookRepository;
     private final MemberRepository memberRepository;
+    private final OrderDetailRepository orderDetailRepository;
+    private final PointDetailRepository pointDetailRepository;
     private final ObjectStorageUploadService fileUploadService;
 
     private static final String CONTAINER_NAME = "t3team";
     private static final String REVIEWIMAGE_FOLDER_NAME = "review_images";
+    private static final String DELIVERED_NAME = "DELIVERED";
 
 
     /**
@@ -123,20 +133,28 @@ public class ReviewService {
     }
 
     /**
-     * 특정 회원과 특정 도서에 대한 리뷰가 이미 등록되어 있는지 확인
+     * 리뷰가 작성 가능한 지 확인
      * @param memberId 회원 ID
      * @param bookId   도서 ID
-     * @return 특정 회원이 특정 도서에 대한 리뷰가 이미 등록되어 있는지 여부
+     * @param orderDetailId 주문상세 ID
+     * @return 리뷰 작성 가능 여부
      * @author Yujin-nKim(김유진)
      */
-    public boolean existsReview(Long bookId, Long memberId) {
+    public boolean checkReviewCapability(Long bookId, Long memberId, Long orderDetailId) {
         if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException();
         }
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException();
         }
-        return reviewRepository.existsByBookBookIdAndAndMemberId(bookId, memberId);
+
+        OrderDetail orderDetail = orderDetailRepository.findByIdWithOrderStatus(orderDetailId).orElseThrow(OrderDetailNotFoundException::new);
+        // 주문이 리뷰 작성 가능한 상태인지 확인
+        if (!orderDetail.getOrderStatus().getName().equals(DELIVERED_NAME)) {
+            return false;
+        }
+
+        return !reviewRepository.existsByBookBookIdAndAndMemberId(bookId, memberId);
     }
 
     /**
@@ -149,9 +167,15 @@ public class ReviewService {
         if (reviewRepository.existsByBookBookIdAndAndMemberId(request.getBookId(), request.getMemberId())) {
             throw new ReviewAlreadyExistsException();
         }
-        log.info("리뷰 작성가능합니다");
+
+        OrderDetail orderDetail = orderDetailRepository.findByIdWithOrderStatus(request.getOrderDetailId()).orElseThrow(OrderDetailNotFoundException::new);
+        // 주문이 리뷰 작성 가능한 상태인지 확인
+        if (!orderDetail.getOrderStatus().getName().equals(DELIVERED_NAME)) {
+            throw new ReviewForbiddenException();
+        }
 
         Book book = bookRepository.findByBookId(request.getBookId()).orElseThrow(BookNotFoundException::new);
+        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(MemberNotFoundException::new);
 
         Review review = reviewRepository.save(Review.builder()
                 .reviewComment(request.getComment())
@@ -159,7 +183,7 @@ public class ReviewService {
                 .reviewCreatedAt(LocalDateTime.now())
                 .reviewUpdatedAt(LocalDateTime.now())
                 .book(book)
-                .member(memberRepository.findById(request.getMemberId()).orElseThrow(MemberNotFoundException::new))
+                .member(member)
                 .build());
 
         log.info("리뷰 저장");

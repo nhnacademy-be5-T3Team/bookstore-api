@@ -98,22 +98,23 @@ public class ReviewController {
     }
 
     /**
-     * 특정 회원과 특정 도서에 대한 리뷰가 이미 등록되어 있는지 확인
+     * 리뷰가 작성 가능한 지 확인
      * @param memberId 회원 ID
      * @param bookId   도서 ID
-     * @return 특정 회원이 특정 도서에 대한 리뷰가 이미 등록되어 있는지 여부
+     * @param orderDetailId 주문상세 ID
+     * @return 리뷰 작성 가능 여부
      * @author Yujin-nKim(김유진)
      */
-    @GetMapping("/reviews/members/{memberId}/exists")
-    public ResponseEntity<BaseResponse<Boolean>> existsReview(@PathVariable Long memberId,
-                                                              @RequestParam Long bookId) {
+    @GetMapping("/reviews/members/{memberId}/capability")
+    public ResponseEntity<BaseResponse<Boolean>> checkReviewCapability(@PathVariable Long memberId,
+                                                              @RequestParam Long bookId, @RequestParam Long orderDetailId) {
 
-        boolean response = reviewService.existsReview(bookId, memberId);
+        boolean response = reviewService.checkReviewCapability(bookId, memberId, orderDetailId);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<Boolean>()
                         .data(response)
-                        .message(response ? "이미 등록된 리뷰가 존재합니다." : "리뷰가 존재하지 않습니다."));
+                        .message(response ? "리뷰를 등록할 수 있습니다." : "리뷰를 등록할 수 없습니다."));
     }
 
     /**

@@ -20,6 +20,9 @@ public class ReviewRegisterRequest {
     @NotNull(message = "도서 id를 입력해주세요.")
     private Long bookId;
 
+    @NotNull
+    private Long orderDetailId;
+
     @NotBlank(message = "리뷰 내용을 입력해주세요.")
     private String comment; // 리뷰 내용
 
