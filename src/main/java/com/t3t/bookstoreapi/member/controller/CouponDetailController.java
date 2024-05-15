@@ -5,13 +5,16 @@ import com.t3t.bookstoreapi.member.model.response.CouponDetailResponse;
 import com.t3t.bookstoreapi.member.service.CouponDetailService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 public class CouponDetailController {
     private final CouponDetailService couponDetailService;
@@ -33,20 +36,34 @@ public class CouponDetailController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<Void>().message(couponDetailService.deleteCouponDetail(couponDetailRequest)));
     }
 
-    @PostMapping("/members/coupons/{memberId}/book")
-    public ResponseEntity<BaseResponse<Void>> saveBookCoupon(@PathVariable("memberId") Long memberId){
+    /**
+     * 회원이 도서 쿠폰 발급받기 위해 사용하는 서비스
+     * @param memberId
+     * @author joohyun1996(이주현)
+     */
+    @PostMapping("/members/coupons/book")
+    public ResponseEntity<BaseResponse<Void>> saveBookCoupon(HttpServletRequest request){
+        Long memberId = Long.valueOf(request.getHeader("memberId"));
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<Void>().message(couponDetailService.saveBookCoupon(memberId)));
     }
 
-    @PostMapping("/members/coupons/{memberId}/category")
-    public ResponseEntity<BaseResponse<Void>> saveCategoryCoupon(@PathVariable("memberId") Long memberId){
+    /**
+     * 회원이 카테고리 쿠폰 발급받기 위해 사용하는 서비스
+     * @param memberId
+     * @author joohyun1996(이주현)
+     */
+    @PostMapping("/members/coupons/category")
+    public ResponseEntity<BaseResponse<Void>> saveCategoryCoupon(HttpServletRequest request){
+        Long memberId = Long.valueOf(request.getHeader("memberId"));
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<Void>().message(couponDetailService.saveCategoryCoupon(memberId)));
     }
-    @PostMapping("/members/coupons/{memberId}/general")
-    public ResponseEntity<BaseResponse<Void>> saveGeneralCoupon(@PathVariable("memberId") Long memberId){
-        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<Void>().message(couponDetailService.saveGeneralCoupon(memberId)));
-    }
 
+    /**
+     * 관리자가 회원에게 쿠폰 지급하기 위해 사용하는 서비스
+     * @param couponType
+     * @param memberId
+     * @author joohyun1996(이주현)
+     */
     @PostMapping("/members/coupons/{memberId}/{couponType}")
     public ResponseEntity<BaseResponse<Void>> saveCoupons(@PathVariable("couponType") String couponType,
                                                           @PathVariable("memberId") Long memberId){

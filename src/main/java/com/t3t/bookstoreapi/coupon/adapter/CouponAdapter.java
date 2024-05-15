@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.coupon.adapter;
 
 import com.t3t.bookstoreapi.coupon.client.CouponApiClient;
 import com.t3t.bookstoreapi.coupon.exception.CouponApiClientException;
+import com.t3t.bookstoreapi.coupon.model.request.CouponIdRequest;
 import com.t3t.bookstoreapi.coupon.model.response.CouponResponse;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import feign.FeignException;
@@ -40,6 +41,22 @@ public class CouponAdapter {
             return Optional.ofNullable(couponApiClient.getCategoryCoupon().getBody())
                     .map(BaseResponse::getData)
                     .orElseThrow(CouponApiClientException::new);
+        }catch (FeignException e){
+            throw new CouponApiClientException();
+        }
+    }
+
+    public void deleteBookCouponServer(CouponIdRequest request){
+        try{
+            couponApiClient.deleteBookCoupon(request);
+        }catch (FeignException e){
+            throw new CouponApiClientException();
+        }
+    }
+
+    public void deleteCategoryCouponServer(CouponIdRequest request){
+        try{
+            couponApiClient.deleteCategoryCoupon(request);
         }catch (FeignException e){
             throw new CouponApiClientException();
         }

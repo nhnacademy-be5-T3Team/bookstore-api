@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.member.service;
 
 import com.t3t.bookstoreapi.coupon.adapter.CouponAdapter;
+import com.t3t.bookstoreapi.coupon.model.request.CouponIdRequest;
 import com.t3t.bookstoreapi.member.exception.CouponNotFoundException;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.member.model.entity.CouponDetail;
@@ -59,6 +60,11 @@ public class CouponDetailService {
                 .build();
 
         couponDetailRepository.save(couponDetail);
+
+        CouponIdRequest request = new CouponIdRequest();
+        request.setCouponId(couponDetail.getCouponId());
+
+        couponAdapter.deleteBookCouponServer(request);
         return "Book Coupon이 저장되었습니다";
     }
 
@@ -72,20 +78,14 @@ public class CouponDetailService {
                 .build();
 
         couponDetailRepository.save(couponDetail);
+
+
+        CouponIdRequest request = new CouponIdRequest();
+        request.setCouponId(couponDetail.getCouponId());
+
+        couponAdapter.deleteBookCouponServer(request);
+
         return "Category Coupon이 저장되었습니다";
-    }
-
-    public String saveGeneralCoupon(Long memberId){
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException());
-
-        CouponDetail couponDetail = CouponDetail.builder()
-                .couponId(couponAdapter.getGeneralCoupon().getCouponId())
-                .member(member)
-                .useType("issued")
-                .build();
-
-        couponDetailRepository.save(couponDetail);
-        return "일반 Coupon이 저장되었습니다";
     }
 
     public String saveCoupons(String couponType, Long memberId){
