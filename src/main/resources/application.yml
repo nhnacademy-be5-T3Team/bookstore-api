@@ -28,7 +28,11 @@ spring:
   mvc:
     path-match:
       matching-strategy: ant_path_matcher
-
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 t3t:
   message:
     hookUrl: "https://hook.dooray.com/services/3204376758577275363/3740692380402107577/BVSloNkTRAqQg_rv1asoNQ"
