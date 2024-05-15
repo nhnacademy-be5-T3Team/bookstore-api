@@ -48,6 +48,7 @@ public class OrderInfoResponse {
     private PaymentProviderType paymentProviderType;
     private BigDecimal paymentTotalAmount;
     private LocalDateTime paymentCreatedAt;
+    private String paymentProviderOrderId;
 
     @Data
     @Builder
@@ -64,16 +65,19 @@ public class OrderInfoResponse {
         private BigDecimal price; // 상품 최종 결제 금액
 
         private LocalDateTime createdAt; // 주문 상세 생성 일시
+
         /**
          * order
          */
         private Long orderId; // 주문 상세 항목이 속한 주문 정보 식별자
+
         /**
          * book
          */
         private Long bookId; // 주문한 책 식별자
         private String bookName; // 주문한 책 이름
         private String bookPublisherName; // 주문한 책 출판사 이름
+        private String bookImageUrl; // 책 이미지 URL
 
         /**
          * packaging
