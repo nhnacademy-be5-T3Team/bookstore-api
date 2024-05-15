@@ -20,7 +20,7 @@ public class CouponDetailController {
     private final CouponDetailService couponDetailService;
 
     @GetMapping("/members/coupons")
-    public ResponseEntity<BaseResponse<List<CouponDetailResponse>>> getAllCouponDetailByMemberId(@RequestHeader("memberId") Long memberId) {
+    public ResponseEntity<BaseResponse<List<CouponDetailResponse>>> getAllCouponDetailByMemberId(HttpServletRequest request) {
         /*
         try {
             List<CouponDetailResponse> couponDetails = couponDetailService.getCouponByMemberId(memberId);
@@ -28,6 +28,7 @@ public class CouponDetailController {
         } catch (MemberNotFoundException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>());
         }*/
+        Long memberId = Long.valueOf(request.getHeader("memberId"));
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<List<CouponDetailResponse>>().data(couponDetailService.getAllCouponByMemberId(memberId)));
     }
 
@@ -38,7 +39,6 @@ public class CouponDetailController {
 
     /**
      * 회원이 도서 쿠폰 발급받기 위해 사용하는 서비스
-     * @param memberId
      * @author joohyun1996(이주현)
      */
     @PostMapping("/members/coupons/book")
@@ -49,7 +49,6 @@ public class CouponDetailController {
 
     /**
      * 회원이 카테고리 쿠폰 발급받기 위해 사용하는 서비스
-     * @param memberId
      * @author joohyun1996(이주현)
      */
     @PostMapping("/members/coupons/category")
