@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +54,7 @@ public class ReviewService {
     private static final String CONTAINER_NAME = "t3team";
     private static final String REVIEWIMAGE_FOLDER_NAME = "review_images";
     private static final String DELIVERED_NAME = "DELIVERED";
+    private static final String POINT_MESSAGE = "리뷰 작성으로 포인트가 적립되었습니다.";
 
 
     /**
@@ -188,12 +190,26 @@ public class ReviewService {
 
         log.info("리뷰 저장");
 
-//        // 포인트 적립
-//        if (request.getReviewImageList().isEmpty()) {
-//            // 사진이 없는 경우 포인트 적립 200점
-//        } else {
-//            // 사진이 있는 경우 포인트 적립 200점
-//        }
+        // 포인트 적립
+        if (request.getReviewImageList().isEmpty()) {
+            // 사진이 없는 경우 포인트 적립 200점
+            pointDetailRepository.save(PointDetail.builder()
+                    .member(member)
+                    .content(POINT_MESSAGE)
+                    .pointDetailType("saved")
+                    .pointDetailDate(LocalDateTime.now())
+                    .pointAmount(BigDecimal.valueOf(200))
+                    .build());
+        } else {
+            // 사진이 있는 경우 포인트 적립 200점
+            pointDetailRepository.save(PointDetail.builder()
+                    .member(member)
+                    .content(POINT_MESSAGE)
+                    .pointDetailType("saved")
+                    .pointDetailDate(LocalDateTime.now())
+                    .pointAmount(BigDecimal.valueOf(500))
+                    .build());
+        }
 
         // 도서 평점 업데이트
         Integer reviewCount = reviewRepository.countByBookBookId(request.getBookId());
