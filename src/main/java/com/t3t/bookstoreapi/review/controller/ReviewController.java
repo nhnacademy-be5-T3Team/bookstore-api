@@ -175,7 +175,7 @@ public class ReviewController {
      */
     @PostMapping("/reviews/{reviewId}/image")
     public ResponseEntity<BaseResponse<Void>> addReviewImage(@PathVariable Long reviewId,
-                                                             @ModelAttribute List<MultipartFile> imageList) {
+                                                             @RequestPart List<MultipartFile> imageList) {
 
         reviewService.addReviewImage(reviewId, imageList);
 

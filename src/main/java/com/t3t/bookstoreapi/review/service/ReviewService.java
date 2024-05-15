@@ -266,10 +266,12 @@ public class ReviewService {
      */
     public void addReviewImage(Long reviewId, List<MultipartFile> imageList) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+        System.out.println(imageList.size());
         try {
             List<MultipartFile> bookImageList = BookServiceUtils.removeEmptyImages(imageList);
             if (!bookImageList.isEmpty()) {
                 for (MultipartFile image : bookImageList) {
+                    System.out.println(image.getOriginalFilename());
                     String uploadReviewImageName = BookServiceUtils.generateUploadFileName(image);
                     fileUploadService.uploadObject(CONTAINER_NAME, REVIEWIMAGE_FOLDER_NAME, uploadReviewImageName, image);
                     reviewImageRepository.save(ReviewImage.builder().review(review).reviewImageUrl(uploadReviewImageName).build());
