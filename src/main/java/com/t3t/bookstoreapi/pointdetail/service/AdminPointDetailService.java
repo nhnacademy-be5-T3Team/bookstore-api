@@ -67,10 +67,10 @@ public class AdminPointDetailService {
         if(pointDetailRepository.existsByMemberIdAndPointDetailType(memberId, pointDetailType))
             throw new PointDetailNotFoundException(pointDetailType);
 
-        List<PointDetail> pointDetails = (List<PointDetail>) pointDetailRepository.findByMemberIdAndPointDetailType(memberId, pointDetailType)
-                .orElseThrow(() -> new PointDetailNotFoundException(pointDetailType));
+        List<Optional<PointDetail>> pointDetails = pointDetailRepository.findByMemberIdAndPointDetailType(memberId, pointDetailType);
 
         return pointDetails.stream()
+                .map(optional -> optional.orElseThrow(() -> new PointDetailNotFoundException(pointDetailType)))
                 .map(PointDetailResponse::of)
                 .collect(Collectors.toList());
     }
