@@ -126,7 +126,6 @@ public class ReviewController {
     @PostMapping("/reviews")
     public ResponseEntity<BaseResponse<Void>> createReview(@ModelAttribute @Valid ReviewRegisterRequest request) {
 
-        log.info("리뷰 생성 요청 : {}", request.toString());
         reviewService.createReview(request);
 
         return ResponseEntity.status(HttpStatus.OK).body(

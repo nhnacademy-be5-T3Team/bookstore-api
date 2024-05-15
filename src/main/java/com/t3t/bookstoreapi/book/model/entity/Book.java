@@ -160,17 +160,10 @@ public class Book {
 
     /**
      * 도서의 평점을 업데이트
-     * @param userScore 사용자가 등록한 평점
-     * @param reviewCount 리뷰 총 개수
+     * @param score 업데이트 평점
+     * @author Yujin-nKim(김유진)
      */
-    public void updateAverageScore(Integer userScore, Integer reviewCount) {
-        Float currentAverageScore = this.bookAverageScore;
-        Float newAverageScore;
-        if (reviewCount == 0) {
-            newAverageScore = (float) userScore;
-        } else {
-            newAverageScore = ((currentAverageScore * reviewCount) + userScore) / (reviewCount+1);
-        }
-        this.bookAverageScore = newAverageScore;
+    public void updateAverageScore(Float score) {
+        this.bookAverageScore = score;
     }
 }

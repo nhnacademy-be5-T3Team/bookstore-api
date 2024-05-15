@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.review.repository;
 
 import com.t3t.bookstoreapi.review.model.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom{
     /**
@@ -20,4 +21,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
      * @author Yujin-nKim(김유진)
      */
     Integer countByBookBookId(Long bookId);
+
+    /**
+     * 리뷰 평점을 계산
+     * @param bookId   도서 ID
+     * @return 계산한 리뷰 평점
+     * @author Yujin-nKim(김유진)
+     */
+    @Query("SELECT AVG(r.reviewScore) FROM Review r WHERE r.book.bookId = :bookId")
+    Float getAverageScoreByBookId(Long bookId);
 }

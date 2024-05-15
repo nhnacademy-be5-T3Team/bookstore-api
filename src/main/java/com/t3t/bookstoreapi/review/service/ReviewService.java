@@ -180,8 +180,12 @@ public class ReviewService {
         Member member = memberRepository.findById(request.getMemberId()).orElseThrow(MemberNotFoundException::new);
 
         // 도서 평점 업데이트
-        Integer reviewCount = reviewRepository.countByBookBookId(request.getBookId());
-        book.updateAverageScore(request.getScore(), reviewCount);
+        Float averageScore = reviewRepository.getAverageScoreByBookId(book.getBookId());
+        if (averageScore != null) {
+            book.updateAverageScore(averageScore);
+        } else {
+            book.updateAverageScore(Float.valueOf(request.getScore()));
+        }
 
         Review review = reviewRepository.save(Review.builder()
                 .reviewComment(request.getComment())
@@ -203,7 +207,7 @@ public class ReviewService {
                     .pointAmount(BigDecimal.valueOf(200))
                     .build());
         } else {
-            // 사진이 있는 경우 포인트 적립 200점
+            // 사진이 있는 경우 포인트 적립 500점
             pointDetailRepository.save(PointDetail.builder()
                     .member(member)
                     .content(POINT_MESSAGE)
@@ -223,7 +227,6 @@ public class ReviewService {
                     reviewImageRepository.save(ReviewImage.builder().review(review).reviewImageUrl(uploadReviewImageName).build());
                 }
             }
-            log.info("이미지 저장 완료");
         } catch (Exception e) {
             log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
             throw new ImageDataStorageException(e);
@@ -251,9 +254,8 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
         Book book = bookRepository.findByBookId(review.getBook().getBookId()).orElseThrow(BookNotFoundException::new);
 
-        Integer reviewCount = reviewRepository.countByBookBookId(book.getBookId());
         review.updateReviewScore(score);
-        book.updateAverageScore(score, reviewCount);
+        book.updateAverageScore(reviewRepository.getAverageScoreByBookId(book.getBookId()));
     }
 
     /**
