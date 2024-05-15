@@ -3,6 +3,8 @@ package com.t3t.bookstoreapi.book.repository.impl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
+import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDtoByBookId;
@@ -81,8 +83,12 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                         book.bookPackage.as("packagingAvailableStatus")))
                 .from(book)
                 .leftJoin(bookThumbnail).on(book.bookId.eq(bookThumbnail.book.bookId))
-                .where(book.bookId.eq(bookId))
+                .where(book.bookId.eq(bookId).and(book.isDeleted.eq(TableStatus.FALSE)))
                 .fetchOne();
+
+        if (bookDetailResponse == null) {
+            throw new BookNotFoundException();
+        }
 
         bookDetailResponse.setBookImageUrlList(getBookImageDtoListById(bookId));
         bookDetailResponse.setTagList(getBookTagDtoListById(bookId));
@@ -235,7 +241,9 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                         book.bookName.as("name"),
                         bookThumbnail.thumbnailImageUrl.as("thumbnailImageUrl")))
                 .from(book)
-                .leftJoin(bookThumbnail).on(book.bookId.eq(bookThumbnail.book.bookId))
+                .leftJoin(bookThumbnail)
+                .on(book.bookId.eq(bookThumbnail.book.bookId)
+                        .and(book.isDeleted.eq(TableStatus.FALSE)))
                 .where(condition)
                 .limit(maxCount)
                 .fetch();
@@ -257,7 +265,9 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                         book.bookName.as("name"),
                         bookThumbnail.thumbnailImageUrl.as("thumbnailImageUrl")))
                 .from(book)
-                .leftJoin(bookThumbnail).on(book.bookId.eq(bookThumbnail.book.bookId))
+                .leftJoin(bookThumbnail)
+                .on(book.bookId.eq(bookThumbnail.book.bookId)
+                        .and(book.isDeleted.eq(TableStatus.FALSE)))
                 .orderBy(book.bookLikeCount.desc(), book.bookAverageScore.desc())
                 .limit(maxCount)
                 .fetch();

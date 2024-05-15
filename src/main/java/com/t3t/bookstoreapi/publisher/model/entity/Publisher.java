@@ -5,6 +5,11 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * 출판사 내역을 관리하는 Entity class
+ *
+ * @Author hydrationn(박수화)
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

@@ -33,4 +33,12 @@ public class Account {
     @Column(name = "deleted", columnDefinition = "TINYINT(1) DEFAULT 0", nullable = false)
     @Comment("삭제 여부")
     private boolean deleted;
+
+    /**
+     * 계정 삭제 (soft delete)
+     * @author woody35545
+     */
+    public void delete() {
+        this.deleted = true;
+    }
 }

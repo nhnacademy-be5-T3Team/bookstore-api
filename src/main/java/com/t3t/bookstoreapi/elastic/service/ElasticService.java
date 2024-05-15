@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.elastic.service;
 
+import com.t3t.bookstoreapi.book.util.BookImageUtils;
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
 import com.t3t.bookstoreapi.elastic.model.response.ElasticResponse;
 import com.t3t.bookstoreapi.elastic.repository.ElasticRepository;
@@ -80,7 +81,7 @@ public class ElasticService {
                 .averageScore(document.getAverageScore())
                 .likeCount(document.getLikeCount())
                 .publisher(document.getPublisher())
-                .coverImageUrl(document.getCoverImageUrl())
+                .coverImageUrl(BookImageUtils.setThumbnailImagePrefix(document.getCoverImageUrl()))
                 .authorName(document.getAuthorName())
                 .authorRole(document.getAuthorRole())
                 .score(score)

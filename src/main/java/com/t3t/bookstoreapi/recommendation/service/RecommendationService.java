@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.recommendation.service;
 
 import com.t3t.bookstoreapi.book.repository.BookRepository;
+import com.t3t.bookstoreapi.book.util.BookImageUtils;
 import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBriefResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -26,10 +28,15 @@ public class RecommendationService {
      * @return 최근에 출판된 도서 목록
      * @author Yujin-nKim(김유진)
      */
-    @Transactional(readOnly = true)
-    public List<BookInfoBriefResponse> getRecentlyPublishedBooks(LocalDate date, int maxCount) {
-        return bookRepository.getRecentlyPublishedBooks(date, maxCount);
-    }
+        @Transactional(readOnly = true)
+        public List<BookInfoBriefResponse> getRecentlyPublishedBooks(LocalDate date, int maxCount) {
+            return bookRepository.getRecentlyPublishedBooks(date, maxCount)
+                    .stream()
+                    .map(response -> {
+                        response.setThumbnailImageUrl(BookImageUtils.setThumbnailImagePrefix(response.getThumbnailImageUrl()));
+                        return response;})
+                    .collect(Collectors.toList());
+        }
 
     /**
      * 좋아요 수와 평균 평점이 높은 순서로 도서 목록을 조회
@@ -40,7 +47,12 @@ public class RecommendationService {
      */
     @Transactional(readOnly = true)
     public List<BookInfoBriefResponse> getBooksByMostLikedAndHighAverageScore(int maxCount) {
-        return bookRepository.getBooksByMostLikedAndHighAverageScore(maxCount);
+        return bookRepository.getBooksByMostLikedAndHighAverageScore(maxCount)
+                .stream()
+                .map(response -> {
+                    response.setThumbnailImageUrl(BookImageUtils.setThumbnailImagePrefix(response.getThumbnailImageUrl()));
+                    return response;})
+                .collect(Collectors.toList());
     }
 
     /**
@@ -52,6 +64,11 @@ public class RecommendationService {
      */
     @Transactional(readOnly = true)
     public List<BookInfoBriefResponse> getBestSellerBooks(int maxCount) {
-        return orderDetailRepository.getSalesCountPerBook(maxCount);
+        return orderDetailRepository.getSalesCountPerBook(maxCount)
+                .stream()
+                .map(response -> {
+                    response.setThumbnailImageUrl(BookImageUtils.setThumbnailImagePrefix(response.getThumbnailImageUrl()));
+                    return response;})
+                .collect(Collectors.toList());
     }
 }

@@ -23,12 +23,12 @@ public class Review {
     private Long reviewId;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -46,7 +46,24 @@ public class Review {
     @Column(name = "review_updated_at")
     private LocalDateTime reviewUpdatedAt;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY)
     List<ReviewImage> reviewImageList = new ArrayList<>();
 
+    /**
+     * 리뷰의 comment를 업데이트
+     * @param comment 수정할 comment
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateReviewComment(String comment) {
+        this.reviewComment = comment;
+    }
+
+    /**
+     * 리뷰의 score를 업데이트
+     * @param score 수정할 score
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateReviewScore(Integer score) {
+        this.reviewScore = score;
+    }
 }

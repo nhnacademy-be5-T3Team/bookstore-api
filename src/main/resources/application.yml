@@ -30,6 +30,9 @@ spring:
       matching-strategy: ant_path_matcher
 
 t3t:
+  message:
+    hookUrl: "https://hook.dooray.com/services/3204376758577275363/3740692380402107577/BVSloNkTRAqQg_rv1asoNQ"
+
   swagger:
     title: "t3t-swagger"
     description: "t3t api documentation"
@@ -58,8 +61,10 @@ t3t:
         keyId: "b3cfc1e3842342618d710531ff595fc1"
       objectStoragePassword:
         keyId: "346326f7e4da49369eea4472d2f99119"
-      objectStorageAuthUrl:
+      objectStorageUrl:
         keyId: "aa39f2ea0fa4424084baf657d34d1fc2"
+      objectStorageAuthUrl:
+        keyId: "7137a977e42f4c30a3c014732ed24ba3"
       redisServerIpAddress:
         keyId: "10ee8b6140cc49ffa9e7a7c8a2924a3e"
       redisServerPort:

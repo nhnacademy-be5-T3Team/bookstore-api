@@ -29,6 +29,8 @@ public class SecretKeyProperties {
     private String objectStorageUserNameKeyId;
     @Value("${t3t.secretKeyManager.secrets.objectStoragePassword.keyId}")
     private String objectStoragePasswordKeyId;
+    @Value("${t3t.secretKeyManager.secrets.objectStorageUrl.keyId}")
+    private String objectStorageUrlKeyId;
     @Value("${t3t.secretKeyManager.secrets.objectStorageAuthUrl.keyId}")
     private String objectStorageAuthUrlKeyId;
     @Value("${t3t.secretKeyManager.secrets.redisServerIpAddress.keyId}")

@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ObjectStorageProperties {
+    private String storageUrl;
     private String authUrl;
     private String tenantId;
     private String userName;
