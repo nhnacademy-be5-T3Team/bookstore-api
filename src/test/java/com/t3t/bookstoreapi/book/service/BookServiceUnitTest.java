@@ -4,6 +4,7 @@ import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.model.dto.CategoryDto;
 import com.t3t.bookstoreapi.book.model.dto.ParticipantRoleRegistrationDto;
+import com.t3t.bookstoreapi.book.util.BookImageUtils;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.tag.model.dto.TagDto;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
@@ -44,11 +45,11 @@ class BookServiceUnitTest {
     @InjectMocks
     private BookService bookService;
 
-    private static MockedStatic<BookServiceUtils> bookServiceUtilsMockedStatic;
+    private static MockedStatic<BookImageUtils> bookServiceUtilsMockedStatic;
 
     @BeforeAll
     public static void before() {
-        bookServiceUtilsMockedStatic = mockStatic(BookServiceUtils.class);
+        bookServiceUtilsMockedStatic = mockStatic(BookImageUtils.class);
     }
 
     @AfterAll

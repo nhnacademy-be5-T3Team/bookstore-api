@@ -1,5 +1,6 @@
 package com.t3t.bookstoreapi.elastic.service;
 
+import com.t3t.bookstoreapi.book.util.BookImageUtils;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.elastic.model.dto.ElasticDocument;
 import com.t3t.bookstoreapi.elastic.model.response.ElasticResponse;
@@ -35,11 +36,11 @@ public class ElasticServiceUnitTest {
     @InjectMocks
     private ElasticService elasticService;
 
-    private static MockedStatic<BookServiceUtils> bookServiceUtilsMockedStatic;
+    private static MockedStatic<BookImageUtils> bookServiceUtilsMockedStatic;
 
     @BeforeAll
     public static void before() {
-        bookServiceUtilsMockedStatic = mockStatic(BookServiceUtils.class);
+        bookServiceUtilsMockedStatic = mockStatic(BookImageUtils.class);
     }
 
     @AfterAll

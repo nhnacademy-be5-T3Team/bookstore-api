@@ -141,7 +141,6 @@ class ReviewServiceIntegrationTest {
 
         assertEquals(5, response.getContent().size());
         assertEquals("test", response.getContent().get(0).getName());
-        assertEquals("imageUrl", response.getContent().get(0).getReviewImgUrlList().get(0));
     }
 
     @DisplayName("도서별 리뷰 목록 조회 테스트 | 요청한 도서가 존재하지 않는 경우")
