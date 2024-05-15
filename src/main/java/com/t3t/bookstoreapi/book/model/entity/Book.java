@@ -157,4 +157,13 @@ public class Book {
     public void updateIsDeleted(TableStatus isDeleted) {
         this.isDeleted = isDeleted;
     }
+
+    /**
+     * 도서의 평점을 업데이트
+     * @param score 업데이트 평점
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateAverageScore(Float score) {
+        this.bookAverageScore = score;
+    }
 }

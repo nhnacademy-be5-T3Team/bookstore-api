@@ -30,4 +30,12 @@ public interface OrderDetailRepositoryCustom {
     List<OrderDetail> getOrderDetailListByOrderId(long orderId);
 
     List<BookInfoBriefResponse> getSalesCountPerBook(int maxCount);
+
+    /**
+     * 주문 상세 조회 (OrderStatus 함께 조회)
+     * @param orderDetailId 주문 상세 정보 ID
+     * @return 주문 상세 엔티티
+     * @author Yujin-nKim(김유진)
+     */
+    Optional<OrderDetail> findByIdWithOrderStatus(Long orderDetailId);
 }

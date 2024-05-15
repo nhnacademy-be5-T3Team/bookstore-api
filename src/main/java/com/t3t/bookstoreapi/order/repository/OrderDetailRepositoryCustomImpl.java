@@ -109,4 +109,18 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
                 .limit(maxCount)
                 .fetch();
     }
+
+    /**
+     * 주문 상세 조회 (OrderStatus 함께 조회)
+     * @param orderDetailId 주문 상세 정보 ID
+     * @return 주문 상세 엔티티
+     * @author Yujin-nKim(김유진)
+     */
+    @Override
+    public Optional<OrderDetail> findByIdWithOrderStatus(Long orderDetailId) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(orderDetail)
+                .join(orderDetail.orderStatus, orderStatus).fetchJoin()
+                .where(orderDetail.id.eq(orderDetailId))
+                .fetchOne());
+    }
 }
