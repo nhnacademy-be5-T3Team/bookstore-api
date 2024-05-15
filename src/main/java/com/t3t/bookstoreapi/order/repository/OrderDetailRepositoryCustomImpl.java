@@ -9,6 +9,7 @@ import com.t3t.bookstoreapi.order.constant.OrderStatusType;
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.t3t.bookstoreapi.order.model.entity.OrderDetail;
+import com.t3t.bookstoreapi.order.model.response.OrderDetailInfoResponse;
 import com.t3t.bookstoreapi.recommendation.model.response.BookInfoBriefResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 import static com.t3t.bookstoreapi.book.model.entity.QBook.book;
 import static com.t3t.bookstoreapi.book.model.entity.QBookThumbnail.bookThumbnail;
+import static com.t3t.bookstoreapi.order.model.entity.QDelivery.delivery;
 import static com.t3t.bookstoreapi.order.model.entity.QOrder.order;
 import static com.t3t.bookstoreapi.order.model.entity.QOrderDetail.orderDetail;
 import static com.t3t.bookstoreapi.order.model.entity.QOrderStatus.orderStatus;
@@ -29,35 +31,31 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
     private final JPAQueryFactory jpaQueryFactory;
 
     /**
-     * 추후 변경 예정
-     */
-    private static final QBean<OrderDetailDto> orderDetailDtoProjectionBean = Projections.bean(
-            OrderDetailDto.class,
-            orderDetail.id.as("id"),
-            orderDetail.quantity.as("quantity"),
-            orderDetail.price.as("price"),
-            orderDetail.createdAt.as("createdAt"),
-            orderDetail.order.id.as("orderId"),
-            orderDetail.book.bookId.as("bookId"),
-            orderDetail.book.bookName.as("bookName"),
-            orderDetail.book.publisher.publisherName.as("bookPublisherName"),
-//            orderDetail.book.bookPrice.as("bookPrice"),
-//            orderDetail.book.bookDiscount.as("bookDiscount"),
-            orderDetail.packaging.id.as("packagingId"),
-            orderDetail.packaging.name.as("packagingName"),
-            orderDetail.packaging.price.as("packagingPrice"),
-            orderDetail.orderStatus.name.as("orderStatusName")
-    );
-
-    /**
      * {@inheritDoc}
      *
      * @author woody35545(구건모)
      */
     @Override
     public Optional<OrderDetailDto> getOrderDetailDtoById(long orderDetailId) {
-        return Optional.ofNullable(jpaQueryFactory.select(orderDetailDtoProjectionBean)
+        return Optional.ofNullable(jpaQueryFactory.select(Projections.bean(
+                        OrderDetailDto.class,
+                        orderDetail.id.as("id"),
+                        orderDetail.quantity.as("quantity"),
+                        orderDetail.price.as("price"),
+                        orderDetail.createdAt.as("createdAt"),
+                        orderDetail.order.id.as("orderId"),
+                        book.bookId.as("bookId"),
+                        book.bookName.as("bookName"),
+                        book.publisher.publisherName.as("bookPublisherName"),
+                        packaging.id.as("packagingId"),
+                        packaging.name.as("packagingName"),
+                        packaging.price.as("packagingPrice"),
+                        orderStatus.name.as("orderStatusName")))
                 .from(orderDetail)
+                .join(orderDetail.book, book)
+                .join(book.publisher, publisher)
+                .join(orderDetail.orderStatus, orderStatus)
+                .leftJoin(orderDetail.packaging, packaging)
                 .where(orderDetail.id.eq(orderDetailId))
                 .fetchOne());
     }
@@ -67,28 +65,34 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
      *
      * @author woody35545(구건모)
      */
-    public List<OrderDetailDto> getOrderDetailDtoListByOrderId(long orderId) {
-        return jpaQueryFactory.select(Projections.bean(
-                        OrderDetailDto.class,
-                        orderDetail.id.as("id"),
-                        orderDetail.quantity.as("quantity"),
-                        orderDetail.price.as("price"),
-                        orderDetail.createdAt.as("createdAt"),
-                        orderDetail.order.id.as("orderId"),
-                        book.bookId.as("bookId"),
-                        book.bookName.as("bookName"),
-                        publisher.publisherName.as("bookPublisherName"),
-                        packaging.id.as("packagingId"),
-                        packaging.name.as("packagingName"),
-                        packaging.price.as("packagingPrice"),
-                        orderStatus.name.as("orderStatusName")
-                ))
-                .from(orderDetail)
-                .join(orderDetail.order, order)
+    public List<OrderDetailInfoResponse> getOrderDetailInfoResponseListByOrderId(long orderId) {
+        return jpaQueryFactory.select(
+                        Projections.fields(
+                                OrderDetailInfoResponse.class,
+                                orderDetail.id.as("id"),
+                                orderDetail.quantity.as("quantity"),
+                                orderDetail.price.as("price"),
+                                orderDetail.createdAt.as("createdAt"),
+                                orderDetail.order.id.as("orderId"),
+                                book.bookId.as("bookId"),
+                                book.bookName.as("bookName"),
+                                publisher.publisherName.as("bookPublisherName"),
+                                packaging.id.as("packagingId"),
+                                packaging.name.as("packagingName"),
+                                packaging.price.as("packagingPrice"),
+                                orderStatus.name.as("orderStatusName"),
+                                delivery.id.as("deliveryId"),
+                                delivery.price.as("deliveryPrice"),
+                                delivery.addressNumber.as("addressNumber"),
+                                delivery.roadnameAddress.as("roadnameAddress"),
+                                delivery.deliveryDate.as("deliveryDate"),
+                                delivery.recipientName.as("recipientName"),
+                                delivery.recipientPhoneNumber.as("recipientPhoneNumber")))
                 .join(orderDetail.book, book)
                 .join(book.publisher, publisher)
-                .leftJoin(orderDetail.packaging, packaging)
                 .join(orderDetail.orderStatus, orderStatus)
+                .join(order.delivery, delivery)
+                .leftJoin(orderDetail.packaging, packaging)
                 .where(order.id.eq(orderId))
                 .fetch();
     }

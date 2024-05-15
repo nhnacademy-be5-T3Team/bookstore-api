@@ -14,6 +14,7 @@ import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
 import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
 import com.t3t.bookstoreapi.order.model.entity.*;
+import com.t3t.bookstoreapi.order.model.response.OrderDetailInfoResponse;
 import com.t3t.bookstoreapi.property.SecretKeyManagerProperties;
 import com.t3t.bookstoreapi.property.SecretKeyProperties;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
@@ -192,7 +193,7 @@ public class OrderDetailRepositoryTest {
      * 주문 식별자로 주문 상세 조회 DTO 리스트 조회
      *
      * @author woody35545(구건모)
-     * @see OrderDetailRepositoryCustom#getOrderDetailDtoListByOrderId(long)
+     * @see OrderDetailRepositoryCustom#getOrderDetailInfoResponseListByOrderId(long)
      */
     @Disabled /* 다른 브랜치에서 작업하던 내용에서 데이터베이스 스키마가 변경됨에 따라서, 해당 브랜치가 merge 되기 전까지 테스트를 비활성화. */
     @Test
@@ -229,27 +230,27 @@ public class OrderDetailRepositoryTest {
 
 
         // when
-        final List<OrderDetailDto> orderDetailDtoList = orderDetailRepository.getOrderDetailDtoListByOrderId(testOrder.getId());
+        final List<OrderDetailInfoResponse> orderDetailInfoResponseList = orderDetailRepository.getOrderDetailInfoResponseListByOrderId(testOrder.getId());
 
-        orderDetailDtoList.sort((o1, o2) -> (int) (o1.getId() - o2.getId()));
+        orderDetailInfoResponseList.sort((o1, o2) -> (int) (o1.getId() - o2.getId()));
 
 
         // then
-        assertEquals(testOrderDetailList.size(), orderDetailDtoList.size());
+        assertEquals(testOrderDetailList.size(), orderDetailInfoResponseList.size());
         for (int i = 0; i < testOrderDetailList.size(); i++) {
-            log.info("OrderDetailDto => {}", orderDetailDtoList.get(i));
-            assertEquals(testOrderDetailList.get(i).getId(), orderDetailDtoList.get(i).getId());
-            assertEquals(testOrderDetailList.get(i).getQuantity(), orderDetailDtoList.get(i).getQuantity());
-            assertEquals(testOrderDetailList.get(i).getCreatedAt(), orderDetailDtoList.get(i).getCreatedAt());
-            assertEquals(testOrderDetailList.get(i).getOrder().getId(), orderDetailDtoList.get(i).getOrderId());
-            assertEquals(testOrderDetailList.get(i).getBook().getBookId(), orderDetailDtoList.get(i).getBookId());
-            assertEquals(testOrderDetailList.get(i).getBook().getBookName(), orderDetailDtoList.get(i).getBookName());
-            assertEquals(testOrderDetailList.get(i).getBook().getPublisher().getPublisherName(), orderDetailDtoList.get(i).getBookPublisherName());
+            log.info("OrderDetailDto => {}", orderDetailInfoResponseList.get(i));
+            assertEquals(testOrderDetailList.get(i).getId(), orderDetailInfoResponseList.get(i).getId());
+            assertEquals(testOrderDetailList.get(i).getQuantity(), orderDetailInfoResponseList.get(i).getQuantity());
+            assertEquals(testOrderDetailList.get(i).getCreatedAt(), orderDetailInfoResponseList.get(i).getCreatedAt());
+            assertEquals(testOrderDetailList.get(i).getOrder().getId(), orderDetailInfoResponseList.get(i).getOrderId());
+            assertEquals(testOrderDetailList.get(i).getBook().getBookId(), orderDetailInfoResponseList.get(i).getBookId());
+            assertEquals(testOrderDetailList.get(i).getBook().getBookName(), orderDetailInfoResponseList.get(i).getBookName());
+            assertEquals(testOrderDetailList.get(i).getBook().getPublisher().getPublisherName(), orderDetailInfoResponseList.get(i).getBookPublisherName());
 //            assertEquals(testOrderDetailList.get(i).getBook().getBookPrice(), orderDetailDtoList.get(i).getBookPrice());
 //            assertEquals(testOrderDetailList.get(i).getBook().getBookDiscount(), orderDetailDtoList.get(i).getBookDiscount());
-            assertEquals(testOrderDetailList.get(i).getPackaging().getName(), orderDetailDtoList.get(i).getPackagingName());
-            assertEquals(testOrderDetailList.get(i).getPackaging().getPrice(), orderDetailDtoList.get(i).getPackagingPrice());
-            assertEquals(testOrderDetailList.get(i).getOrderStatus().getName(), orderDetailDtoList.get(i).getOrderStatusName());
+            assertEquals(testOrderDetailList.get(i).getPackaging().getName(), orderDetailInfoResponseList.get(i).getPackagingName());
+            assertEquals(testOrderDetailList.get(i).getPackaging().getPrice(), orderDetailInfoResponseList.get(i).getPackagingPrice());
+            assertEquals(testOrderDetailList.get(i).getOrderStatus().getName(), orderDetailInfoResponseList.get(i).getOrderStatusName());
         }
     }
 

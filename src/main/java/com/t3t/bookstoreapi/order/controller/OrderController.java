@@ -1,12 +1,12 @@
 package com.t3t.bookstoreapi.order.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
-import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
 import com.t3t.bookstoreapi.order.model.request.MemberOrderPreparationRequest;
 import com.t3t.bookstoreapi.order.model.request.OrderConfirmRequest;
 import com.t3t.bookstoreapi.order.model.request.GuestOrderPreparationRequest;
 import com.t3t.bookstoreapi.order.model.response.GuestOrderPreparationResponse;
 import com.t3t.bookstoreapi.order.model.response.MemberOrderPreparationResponse;
+import com.t3t.bookstoreapi.order.model.response.OrderDetailInfoResponse;
 import com.t3t.bookstoreapi.order.service.OrderDetailService;
 import com.t3t.bookstoreapi.order.service.OrderServiceFacade;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +31,8 @@ public class OrderController {
      */
     @GetMapping("/orders/{orderId}/details")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse<List<OrderDetailDto>> getOrderDetailDtoListByOrderId(@PathVariable("orderId") long orderId) {
-        return new BaseResponse<List<OrderDetailDto>>().data(orderDetailService.getOrderDetailDtoListByOrderId(orderId));
+    public BaseResponse<List<OrderDetailInfoResponse>> getOrderDetailDtoListByOrderId(@PathVariable("orderId") long orderId) {
+        return new BaseResponse<List<OrderDetailInfoResponse>>().data(orderDetailService.getOrderDetailInfoResponse(orderId));
     }
 
     /**

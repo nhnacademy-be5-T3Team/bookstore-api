@@ -12,11 +12,11 @@ import com.t3t.bookstoreapi.order.exception.PackagingNotFoundForIdException;
 import com.t3t.bookstoreapi.order.exception.PaymentAmountMismatchException;
 import com.t3t.bookstoreapi.order.model.dto.DeliveryDto;
 import com.t3t.bookstoreapi.order.model.dto.GuestOrderDto;
-import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
 import com.t3t.bookstoreapi.order.model.dto.OrderDto;
 import com.t3t.bookstoreapi.order.model.request.*;
 import com.t3t.bookstoreapi.order.model.response.GuestOrderPreparationResponse;
 import com.t3t.bookstoreapi.order.model.response.MemberOrderPreparationResponse;
+import com.t3t.bookstoreapi.order.model.response.OrderDetailInfoResponse;
 import com.t3t.bookstoreapi.order.repository.OrderStatusRepository;
 import com.t3t.bookstoreapi.order.repository.PackagingRepository;
 import com.t3t.bookstoreapi.payment.model.request.PaymentConfirmRequest;
@@ -266,10 +266,10 @@ public class OrderServiceFacade {
 
         log.info("[*] paymentConfirmResponse => {}", paymentConfirmResponse);
 
-        List<OrderDetailDto> orderDetailDtoList = orderDetailService.getOrderDetailDtoListByOrderId(request.getOrderId());
+        List<OrderDetailInfoResponse> orderDetailInfoResponse = orderDetailService.getOrderDetailInfoResponse(request.getOrderId());
 
         // 주문된 상품들에 대한 가격 계산 (구매 시점 기준 총 금액)
-        BigDecimal totalPrice = orderDetailDtoList.stream()
+        BigDecimal totalPrice = orderDetailInfoResponse.stream()
                 .map(orderDetailDto -> orderDetailDto.getPrice().multiply(BigDecimal.valueOf(orderDetailDto.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
