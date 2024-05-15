@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.order.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
+import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.order.model.request.MemberOrderPreparationRequest;
 import com.t3t.bookstoreapi.order.model.request.OrderConfirmRequest;
 import com.t3t.bookstoreapi.order.model.request.GuestOrderPreparationRequest;
@@ -90,7 +91,18 @@ public class OrderController {
      * @author woody35545(구건모)
      */
     @GetMapping("/members/{memberId}/orders")
-    public BaseResponse<Page<OrderInfoResponse>> getMemberOrderInfoListByMemberId(@PathVariable("memberId") Long memberId, Pageable pageable) {
-        return new BaseResponse<Page<OrderInfoResponse>>().data(orderService.getMemberOrderInfoListByMemberId(memberId, pageable));
+    public BaseResponse<PageResponse<OrderInfoResponse>> getMemberOrderInfoListByMemberId(@PathVariable("memberId") Long memberId, Pageable pageable) {
+
+        Page<OrderInfoResponse> orderInfoResponsePage = orderService.getMemberOrderInfoListByMemberId(memberId, pageable);
+
+        PageResponse<OrderInfoResponse> pageResponse = PageResponse.<OrderInfoResponse>builder()
+                .content(orderInfoResponsePage.getContent())
+                .pageNo(orderInfoResponsePage.getNumber())
+                .pageSize(orderInfoResponsePage.getSize())
+                .totalElements(orderInfoResponsePage.getTotalElements())
+                .totalPages(orderInfoResponsePage.getTotalPages())
+                .build();
+
+        return new BaseResponse<PageResponse<OrderInfoResponse>>().data(pageResponse);
     }
 }
