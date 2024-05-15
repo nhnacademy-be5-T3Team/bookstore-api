@@ -39,7 +39,7 @@ public class TossPaymentService implements ProviderPaymentService {
     @Override
     public PaymentDto createPayment(PaymentCreationRequest request) {
 
-        PaymentProvider paymentProvider = paymentProviderRepository.findByName(PaymentProviderType.TOSS.toString())
+        PaymentProvider paymentProvider = paymentProviderRepository.findByName(PaymentProviderType.TOSS)
                 .orElseThrow(() -> new PaymentProviderNotFoundForNameException(PaymentProviderType.TOSS.toString()));
 
         Order order = orderRepository.findById(request.getOrderId())

@@ -284,6 +284,7 @@ public class OrderServiceFacade {
                 PaymentCreationRequest.builder()
                         .orderId(request.getOrderId())
                         .totalAmount(totalPrice)
+                        .providerType(request.getPaymentProviderType())
                         .providerPaymentKey(paymentConfirmResponse.getPaymentKey())
                         .providerOrderId(paymentConfirmResponse.getOrderId())
                         .providerPaymentStatus(paymentConfirmResponse.getStatus().toString())
