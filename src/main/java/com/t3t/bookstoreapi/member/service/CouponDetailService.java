@@ -87,4 +87,27 @@ public class CouponDetailService {
         couponDetailRepository.save(couponDetail);
         return "일반 Coupon이 저장되었습니다";
     }
+
+    public String saveCoupons(String couponType, Long memberId){
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException());
+
+        String couponId = null;
+
+        if("category_coupon".equals(couponType)){
+            couponId = couponAdapter.getCategoryCoupon().getCouponId();
+        }else if("book_coupon".equals(couponType)){
+            couponId = couponAdapter.getBookCoupon().getCouponId();
+        }else{
+            couponId = couponAdapter.getGeneralCoupon().getCouponId();
+        }
+
+        CouponDetail couponDetail = CouponDetail.builder()
+                .couponId(couponId)
+                .member(member)
+                .useType("issued")
+                .build();
+
+        couponDetailRepository.save(couponDetail);
+        return "Coupon이 저장되었습니다";
+    }
 }

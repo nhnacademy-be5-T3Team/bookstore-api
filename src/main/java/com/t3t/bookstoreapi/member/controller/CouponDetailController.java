@@ -33,13 +33,23 @@ public class CouponDetailController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<Void>().message(couponDetailService.deleteCouponDetail(couponDetailRequest)));
     }
 
-    @PostMapping("/members/coupons/book")
-    public ResponseEntity<BaseResponse<Void>> saveBookCoupon(@RequestHeader("memberId") Long memberId){
+    @PostMapping("/members/coupons/{memberId}/book")
+    public ResponseEntity<BaseResponse<Void>> saveBookCoupon(@PathVariable("memberId") Long memberId){
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<Void>().message(couponDetailService.saveBookCoupon(memberId)));
     }
 
-    @PostMapping("/members/coupons/category")
-    public ResponseEntity<BaseResponse<Void>> saveCategoryCoupon(@RequestHeader("memberId") Long memberId){
+    @PostMapping("/members/coupons/{memberId}/category")
+    public ResponseEntity<BaseResponse<Void>> saveCategoryCoupon(@PathVariable("memberId") Long memberId){
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<Void>().message(couponDetailService.saveCategoryCoupon(memberId)));
+    }
+    @PostMapping("/members/coupons/{memberId}/general")
+    public ResponseEntity<BaseResponse<Void>> saveGeneralCoupon(@PathVariable("memberId") Long memberId){
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<Void>().message(couponDetailService.saveGeneralCoupon(memberId)));
+    }
+
+    @PostMapping("/members/coupons/{memberId}/{couponType}")
+    public ResponseEntity<BaseResponse<Void>> saveCoupons(@PathVariable("couponType") String couponType,
+                                                          @PathVariable("memberId") Long memberId){
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<Void>().message(couponDetailService.saveCoupons(couponType, memberId)));
     }
 }
