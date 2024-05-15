@@ -30,4 +30,7 @@ public class CouponDetail {
     @Column(name = "coupon_use_type")
     private String useType;
 
+    public void deleteCoupon(){
+        this.useType = "used";
+    }
 }

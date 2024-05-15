@@ -35,7 +35,7 @@ public class CouponAdapter {
         }
     }
 
-    public CouponResponse getCategoryCOupon(){
+    public CouponResponse getCategoryCoupon(){
         try{
             return Optional.ofNullable(couponApiClient.getCategoryCoupon().getBody())
                     .map(BaseResponse::getData)

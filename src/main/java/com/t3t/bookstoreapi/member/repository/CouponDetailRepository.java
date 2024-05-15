@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CouponDetailRepository extends JpaRepository<CouponDetail, Long> {
+public interface CouponDetailRepository extends JpaRepository<CouponDetail, String> {
     List<CouponDetail> findByMemberId(Long memberId);
 }
 
