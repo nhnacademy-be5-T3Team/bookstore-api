@@ -10,9 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -48,5 +46,44 @@ public class TagController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseResponse<PageResponse<TagDto>>().data(tagList)
         );
+    }
+
+    /**
+     * 태그 생성 요청
+     * @param tagName 태그 이름
+     * @return 200 OK, 메세지
+     * @author Yujin-nKim(김유진)
+     */
+    @PostMapping("/tags")
+    public ResponseEntity<BaseResponse<Void>> createTag(@RequestParam String tagName) {
+        tagService.createTag(tagName);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("태그 생성 요청이 처리되었습니다."));
+    }
+
+    /**
+     * 태그 수정 요청
+     * @param tagId 수정할 태그의 식별자
+     * @param tagName 태그 이름
+     * @return 200 OK, 메세지
+     * @author Yujin-nKim(김유진)
+     */
+    @PutMapping("/tags/{tagId}")
+    public ResponseEntity<BaseResponse<Void>> modifyTag(@PathVariable Long tagId, @RequestParam String tagName) {
+        tagService.modifyTag(tagId, tagName);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<Void>().message("태그 수정 요청이 처리되었습니다."));
+    }
+
+    /**
+     * 태그 상세  조회
+     * @param tagId 수정할 태그의 식별자
+     * @return 태그 상세
+     * @author Yujin-nKim(김유진)
+     */
+    @GetMapping("/tags/{tagId}")
+    public ResponseEntity<BaseResponse<TagDto>> getTag(@PathVariable Long tagId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<TagDto>().data(tagService.getTag(tagId)));
     }
 }

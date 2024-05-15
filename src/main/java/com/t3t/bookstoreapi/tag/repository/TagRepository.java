@@ -15,4 +15,11 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
      * @author Yujin-nKim(김유진)
      */
     Page<Tag> findAll(Pageable pageable);
+
+    /**
+     * 주어진 태그 이름이 존재하는지 여부를 확인
+     * @param tagName 확인할 태그 이름
+     * @return 태그 이름이 존재하면 true, 그렇지 않으면 false를 반환
+     */
+    boolean existsByTagName(String tagName);
 }
