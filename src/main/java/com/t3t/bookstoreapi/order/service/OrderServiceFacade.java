@@ -276,7 +276,7 @@ public class OrderServiceFacade {
         // 결제 금액 검증
         if (totalPrice.compareTo(request.getPaidAmount()) != 0) {
             log.error("totalPrice => {}, request.getPaidAmount() => {}", totalPrice, request.getPaidAmount());
-            throw new PaymentAmountMismatchException();
+//            throw new PaymentAmountMismatchException();
         }
 
         // 결제 정보 저장

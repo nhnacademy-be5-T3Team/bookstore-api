@@ -10,9 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.t3t.bookstoreapi.book.model.entity.QBook.book;
+import static com.t3t.bookstoreapi.book.model.entity.QBookImage.bookImage;
 import static com.t3t.bookstoreapi.member.model.entity.QMember.member;
 import static com.t3t.bookstoreapi.order.model.entity.QDelivery.delivery;
 import static com.t3t.bookstoreapi.order.model.entity.QOrder.order;
@@ -21,6 +26,7 @@ import static com.t3t.bookstoreapi.order.model.entity.QOrderStatus.orderStatus;
 import static com.t3t.bookstoreapi.order.model.entity.QPackaging.packaging;
 import static com.t3t.bookstoreapi.payment.model.entity.QPayment.payment;
 import static com.t3t.bookstoreapi.payment.model.entity.QPaymentProvider.paymentProvider;
+import static com.t3t.bookstoreapi.payment.model.entity.QTossPayment.tossPayment;
 import static com.t3t.bookstoreapi.publisher.model.entity.QPublisher.publisher;
 
 @RequiredArgsConstructor
@@ -35,7 +41,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
     @Override
     public Page<OrderInfoResponse> getOrderInfoResponseByMemberIdWithPaging(Long memberId, Pageable pageable) {
         QueryResults<OrderInfoResponse> queryResultList =
-                queryFactory.select(Projections.fields(
+                queryFactory.selectDistinct(Projections.fields(
                                 OrderInfoResponse.class,
                                 order.id.as("orderId"),
                                 order.createdAt.as("orderCreatedAt"),
@@ -44,11 +50,15 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                                 paymentProvider.id.as("paymentProviderId"),
                                 paymentProvider.name.as("paymentProviderType"),
                                 payment.totalAmount.as("paymentTotalAmount"),
-                                payment.createdAt.as("paymentCreatedAt")))
+                                payment.createdAt.as("paymentCreatedAt"),
+                                tossPayment.tossOrderId.as("paymentProviderOrderId")
+                        ))
                         .from(order)
                             .join(order.member, member)
                             .leftJoin(payment).on(payment.order.id.eq(order.id))
                             .leftJoin(payment.paymentProvider, paymentProvider)
+                        // TODO : 추후 결제 수단에 따라 변경 되도록 수정 예정
+                            .leftJoin(tossPayment).on(tossPayment.id.eq(payment.id))
                         .where(member.id.eq(memberId))
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
@@ -57,9 +67,8 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         List<OrderInfoResponse> orderInfoResponseList = queryResultList.getResults();
 
         for (OrderInfoResponse orderInfoResponse : orderInfoResponseList) {
-
             List<OrderInfoResponse.OrderDetailInfo> orderDetailInfoList =
-                    queryFactory.select(Projections.fields(
+                    queryFactory.selectDistinct(Projections.fields(
                                     OrderInfoResponse.OrderDetailInfo.class,
                                     orderDetail.id.as("orderDetailId"),
                                     orderDetail.quantity.as("quantity"),
@@ -67,6 +76,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                                     order.id.as("orderId"),
                                     book.bookId.as("bookId"),
                                     book.bookName.as("bookName"),
+                                    bookImage.bookImageUrl.as("bookImageUrl"),
                                     publisher.publisherName.as("bookPublisherName"),
                                     packaging.id.as("packagingId"),
                                     packaging.name.as("packagingName"),
@@ -85,13 +95,23 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                                 .join(orderDetail.order, order)
                                 .join(orderDetail.book, book)
                                 .join(book.publisher, publisher)
+                                .leftJoin(bookImage).on(bookImage.book.bookId.eq(book.bookId))
                                 .join(order.delivery, delivery)
                                 .leftJoin(orderDetail.packaging, packaging)
                                 .join(orderDetail.orderStatus, orderStatus)
                             .where(orderDetail.order.id.eq(orderInfoResponse.getOrderId()))
                             .fetch();
 
-            orderInfoResponse.setOrderDetailInfoList(orderDetailInfoList);
+            List<OrderInfoResponse.OrderDetailInfo> uniqueOrderDetailInfoList = new ArrayList<>();
+            Set<Long> seenOrderDetailIds = new HashSet<>();
+
+            for (OrderInfoResponse.OrderDetailInfo orderDetailInfo : orderDetailInfoList) {
+                if (seenOrderDetailIds.add(orderDetailInfo.getOrderDetailId())) {
+                    uniqueOrderDetailInfoList.add(orderDetailInfo);
+                }
+            }
+
+            orderInfoResponse.setOrderDetailInfoList(uniqueOrderDetailInfoList);
         }
 
         return new PageImpl<>(orderInfoResponseList, pageable, queryResultList.getTotal());
