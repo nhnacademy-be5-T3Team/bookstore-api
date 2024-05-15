@@ -24,7 +24,7 @@ public class UserPointDetailController {
      * @return 해당 포인트 상세 내역을 포함한 200(OK) 상태 반환
      * @author hydrationn(박수화)
      */
-    @GetMapping("/members/point-details")
+    @GetMapping("/mypage/point-details")
     public BaseResponse<List<PointDetailResponse>> getPointDetailByPointDetailType(@RequestParam(name = "pointDetailType", required = false) String pointDetailType) {
         List<PointDetailResponse> pointDetailResponse = userPointDetailService.getPointDetailByPointDetailType(pointDetailType);
 
