@@ -32,8 +32,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     public Page<Review> findReviewsByBookId(Long bookId, Pageable pageable) {
 
         List<Review> reviewList = jpaQueryFactory.selectFrom(review)
-                .leftJoin(review.book, book).fetchJoin()
-                .leftJoin(review.member, member).fetchJoin()
+                .join(review.book, book).fetchJoin()
+                .join(review.member, member).fetchJoin()
                 .leftJoin(review.reviewImageList, reviewImage).fetchJoin()
                 .where(review.book.bookId.eq(bookId))
                 .offset(pageable.getOffset())
@@ -58,8 +58,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     @Override
     public Page<Review> findReviewsByMemberId(Long memberId, Pageable pageable) {
         List<Review> reviewList = jpaQueryFactory.selectFrom(review)
-                .leftJoin(review.book, book).fetchJoin()
-                .leftJoin(review.member, member).fetchJoin()
+                .join(review.book, book).fetchJoin()
+                .join(review.member, member).fetchJoin()
                 .leftJoin(review.reviewImageList, reviewImage).fetchJoin()
                 .where(review.member.id.eq(memberId))
                 .offset(pageable.getOffset())
@@ -72,5 +72,21 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .where(review.member.id.eq(memberId));
 
         return PageableExecutionUtils.getPage(reviewList, pageable, countQuery::fetchOne);
+    }
+
+    /**
+     * 리뷰 상세 조회
+     * @param reviewId 리뷰 ID
+     * @return 리뷰 상세
+     * @author Yujin-nKim(김유진)
+     */
+    @Override
+    public Review findReviewByReviewId(Long reviewId) {
+        return jpaQueryFactory.selectFrom(review)
+                .join(review.book, book).fetchJoin()
+                .join(review.member, member).fetchJoin()
+                .leftJoin(review.reviewImageList, reviewImage).fetchJoin()
+                .where(review.reviewId.eq(reviewId))
+                .fetchOne();
     }
 }

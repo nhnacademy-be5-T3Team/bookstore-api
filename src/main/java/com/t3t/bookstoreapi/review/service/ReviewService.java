@@ -1,11 +1,8 @@
 package com.t3t.bookstoreapi.review.service;
 
-import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
 import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
 import com.t3t.bookstoreapi.book.model.entity.Book;
-import com.t3t.bookstoreapi.book.model.entity.BookImage;
-import com.t3t.bookstoreapi.book.model.entity.BookThumbnail;
 import com.t3t.bookstoreapi.book.repository.BookRepository;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
@@ -17,7 +14,7 @@ import com.t3t.bookstoreapi.review.model.entity.Review;
 import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.review.model.entity.ReviewImage;
 import com.t3t.bookstoreapi.review.model.request.ReviewCommentUpdateRequest;
-import com.t3t.bookstoreapi.review.model.request.ReviewRequest;
+import com.t3t.bookstoreapi.review.model.request.ReviewRegisterRequest;
 import com.t3t.bookstoreapi.review.model.response.ReviewResponse;
 import com.t3t.bookstoreapi.review.repository.ReviewImageRepository;
 import com.t3t.bookstoreapi.review.repository.ReviewRepository;
@@ -110,6 +107,22 @@ public class ReviewService {
     }
 
     /**
+     * 리뷰 상세 조회
+     * @param reviewId 리뷰 ID
+     * @return 리뷰 상세
+     * @author Yujin-nKim(김유진)
+     */
+    public ReviewResponse findReviewByReviewId(Long reviewId) {
+
+        if (!reviewRepository.existsById(reviewId)) {
+            throw new ReviewNotFoundException();
+        }
+
+        Review review = reviewRepository.findReviewByReviewId(reviewId);
+        return ReviewResponse.of(review);
+    }
+
+    /**
      * 특정 회원과 특정 도서에 대한 리뷰가 이미 등록되어 있는지 확인
      * @param memberId 회원 ID
      * @param bookId   도서 ID
@@ -131,11 +144,12 @@ public class ReviewService {
      * @param request 리뷰 생성 요청 객체
      * @author Yujin-nKim(김유진)
      */
-    public void createReview(ReviewRequest request) {
+    public void createReview(ReviewRegisterRequest request) {
         // 리뷰 작성 가능 여부 확인
-        if (reviewRepository.existsByBookBookIdAndAndMemberId(request.getBookId(), request.getUserId())) {
+        if (reviewRepository.existsByBookBookIdAndAndMemberId(request.getBookId(), request.getMemberId())) {
             throw new ReviewAlreadyExistsException();
         }
+        log.info("리뷰 작성가능합니다");
 
         Book book = bookRepository.findByBookId(request.getBookId()).orElseThrow(BookNotFoundException::new);
 
@@ -145,8 +159,10 @@ public class ReviewService {
                 .reviewCreatedAt(LocalDateTime.now())
                 .reviewUpdatedAt(LocalDateTime.now())
                 .book(book)
-                .member(memberRepository.findById(request.getUserId()).orElseThrow(MemberNotFoundException::new))
+                .member(memberRepository.findById(request.getMemberId()).orElseThrow(MemberNotFoundException::new))
                 .build());
+
+        log.info("리뷰 저장");
 
 //        // 포인트 적립
 //        if (request.getReviewImageList().isEmpty()) {
@@ -158,7 +174,7 @@ public class ReviewService {
         // 도서 평점 업데이트
         Integer reviewCount = reviewRepository.countByBookBookId(request.getBookId());
         book.updateAverageScore(request.getScore(), reviewCount);
-
+        log.info("\"도서 평점 업데이트\"");
         // 이미지 업로드
         try {
             List<MultipartFile> reviewImageList = BookServiceUtils.removeEmptyImages(request.getReviewImageList());
@@ -169,6 +185,7 @@ public class ReviewService {
                     reviewImageRepository.save(ReviewImage.builder().review(review).reviewImageUrl(uploadReviewImageName).build());
                 }
             }
+            log.info("이미지 저장 완료우");
         } catch (Exception e) {
             log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
             throw new ImageDataStorageException(e);

@@ -22,4 +22,12 @@ public interface ReviewRepositoryCustom {
      * @author Yujin-nKim(김유진)
      */
     Page<Review> findReviewsByMemberId(Long memberId, Pageable pageable);
+
+    /**
+     * 리뷰 상세 조회
+     * @param reviewId 리뷰 ID
+     * @return 리뷰 상세
+     * @author Yujin-nKim(김유진)
+     */
+    Review findReviewByReviewId(Long reviewId);
 }

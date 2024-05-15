@@ -1,7 +1,7 @@
 package com.t3t.bookstoreapi.review.model.request;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
@@ -11,11 +11,11 @@ import java.util.List;
  * 리뷰 등록 요청을 나타내는 객체
  * @author Yujin-nKim(김유진)
  */
-@Getter
+@Data
 @Builder
-public class ReviewRequest {
+public class ReviewRegisterRequest {
     @NotNull(message = "사용자 id를 입력해주세요.")
-    private Long userId; // 리뷰 작성자 id
+    private Long memberId; // 리뷰 작성자 id
 
     @NotNull(message = "도서 id를 입력해주세요.")
     private Long bookId;

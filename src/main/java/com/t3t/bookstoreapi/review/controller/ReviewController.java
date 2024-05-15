@@ -3,10 +3,11 @@ package com.t3t.bookstoreapi.review.controller;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.review.model.request.ReviewCommentUpdateRequest;
-import com.t3t.bookstoreapi.review.model.request.ReviewRequest;
+import com.t3t.bookstoreapi.review.model.request.ReviewRegisterRequest;
 import com.t3t.bookstoreapi.review.model.response.ReviewResponse;
 import com.t3t.bookstoreapi.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class ReviewController {
@@ -84,6 +86,18 @@ public class ReviewController {
     }
 
     /**
+     * 리뷰 상세 조회
+     * @param reviewId 리뷰 ID
+     * @return 리뷰 상세
+     * @author Yujin-nKim(김유진)
+     */
+    @GetMapping("/reviews/{reviewId}")
+    public ResponseEntity<BaseResponse<ReviewResponse>> findReviewByReviewId(@PathVariable Long reviewId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new BaseResponse<ReviewResponse>().data(reviewService.findReviewByReviewId(reviewId)));
+    }
+
+    /**
      * 특정 회원과 특정 도서에 대한 리뷰가 이미 등록되어 있는지 확인
      * @param memberId 회원 ID
      * @param bookId   도서 ID
@@ -109,8 +123,9 @@ public class ReviewController {
      * @author Yujin-nKim(김유진)
      */
     @PostMapping("/reviews")
-    public ResponseEntity<BaseResponse<Void>> createReview(@ModelAttribute @Valid ReviewRequest request) {
+    public ResponseEntity<BaseResponse<Void>> createReview(@ModelAttribute @Valid ReviewRegisterRequest request) {
 
+        log.info("리뷰 생성 요청 : {}", request.toString());
         reviewService.createReview(request);
 
         return ResponseEntity.status(HttpStatus.OK).body(
