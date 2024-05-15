@@ -84,6 +84,7 @@ public class OrderServiceFacade {
         Long memberAddressId = memberOrderPreparationRequest.getMemberAddressId();
         Integer addressNumber = memberOrderPreparationRequest.getAddressNumber();
         String roadnameAddress = memberOrderPreparationRequest.getRoadnameAddress();
+        String detailAddress = memberOrderPreparationRequest.getDetailAddress();
 
         // 회원 주소 목록에서 기존 주소를 선택한 경우
         if (memberAddressId != null) {
@@ -92,11 +93,12 @@ public class OrderServiceFacade {
 
             addressNumber = memberAddress.getAddressNumber();
             roadnameAddress = memberAddress.getRoadNameAddress();
+            detailAddress = memberAddress.getAddressDetail();
         }
 
         DeliveryDto deliveryDto = deliveryService.createDelivery(DeliveryCreationRequest.builder()
                 .price(DEFAULT_DELIVERY_PRICE)
-                .detailAddress(memberOrderPreparationRequest.getDetailAddress())
+                .detailAddress(detailAddress)
                 .addressNumber(addressNumber)
                 .roadnameAddress(roadnameAddress)
                 .deliveryDate(memberOrderPreparationRequest.getDeliveryDate())
