@@ -21,12 +21,16 @@ import static com.t3t.bookstoreapi.order.model.entity.QOrder.order;
 import static com.t3t.bookstoreapi.order.model.entity.QOrderDetail.orderDetail;
 import static com.t3t.bookstoreapi.order.model.entity.QOrderStatus.orderStatus;
 import static com.t3t.bookstoreapi.order.model.entity.QPackaging.packaging;
+import static com.t3t.bookstoreapi.publisher.model.entity.QPublisher.publisher;
 
 @RequiredArgsConstructor
 public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    /**
+     * 추후 변경 예정
+     */
     private static final QBean<OrderDetailDto> orderDetailDtoProjectionBean = Projections.bean(
             OrderDetailDto.class,
             orderDetail.id.as("id"),
@@ -64,9 +68,28 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
      * @author woody35545(구건모)
      */
     public List<OrderDetailDto> getOrderDetailDtoListByOrderId(long orderId) {
-        return jpaQueryFactory.select(orderDetailDtoProjectionBean)
+        return jpaQueryFactory.select(Projections.bean(
+                        OrderDetailDto.class,
+                        orderDetail.id.as("id"),
+                        orderDetail.quantity.as("quantity"),
+                        orderDetail.price.as("price"),
+                        orderDetail.createdAt.as("createdAt"),
+                        orderDetail.order.id.as("orderId"),
+                        book.bookId.as("bookId"),
+                        book.bookName.as("bookName"),
+                        publisher.publisherName.as("bookPublisherName"),
+                        packaging.id.as("packagingId"),
+                        packaging.name.as("packagingName"),
+                        packaging.price.as("packagingPrice"),
+                        orderStatus.name.as("orderStatusName")
+                ))
                 .from(orderDetail)
-                .where(orderDetail.order.id.eq(orderId))
+                .join(orderDetail.order, order)
+                .join(orderDetail.book, book)
+                .join(book.publisher, publisher)
+                .leftJoin(orderDetail.packaging, packaging)
+                .join(orderDetail.orderStatus, orderStatus)
+                .where(order.id.eq(orderId))
                 .fetch();
     }
 
@@ -100,9 +123,9 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
                 .leftJoin(orderDetail.book, book)
                 .leftJoin(bookThumbnail).on(bookThumbnail.book.bookId.eq(book.bookId))
                 .where(orderStatus.name.in(
-                        OrderStatusType.PENDING.toString(),
-                        OrderStatusType.DELIVERING.toString(),
-                        OrderStatusType.DELIVERED.toString())
+                                OrderStatusType.PENDING.toString(),
+                                OrderStatusType.DELIVERING.toString(),
+                                OrderStatusType.DELIVERED.toString())
                         .and(book.isDeleted.eq(TableStatus.FALSE)))
                 .groupBy(book.bookId, bookThumbnail.thumbnailImageUrl)
                 .orderBy(orderDetail.quantity.sum().desc())
