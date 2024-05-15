@@ -1,7 +1,7 @@
 package com.t3t.bookstoreapi.payment.model.request;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
@@ -9,7 +9,9 @@ import java.math.BigDecimal;
  * 결제 제공처에서 결제 승인을 요청할 때 사용하는 요청 객체
  * @author woody35545(구건모)
  */
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class PaymentConfirmRequest {
     /**
@@ -17,7 +19,7 @@ public class PaymentConfirmRequest {
      * @author woody35545(구건모)
      */
     @NotBlank
-    private String paymentOrderId;
+    private String orderId;
     @NotBlank
     private String paymentKey;
     @NotBlank
