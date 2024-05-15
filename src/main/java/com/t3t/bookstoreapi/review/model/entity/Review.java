@@ -50,11 +50,20 @@ public class Review {
     List<ReviewImage> reviewImageList = new ArrayList<>();
 
     /**
-     * 도서의 comment를 업데이트
+     * 리뷰의 comment를 업데이트
      * @param comment 수정할 comment
      * @author Yujin-nKim(김유진)
      */
     public void updateReviewComment(String comment) {
         this.reviewComment = comment;
+    }
+
+    /**
+     * 리뷰의 score를 업데이트
+     * @param score 수정할 score
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateReviewScore(Integer score) {
+        this.reviewScore = score;
     }
 }

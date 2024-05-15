@@ -214,6 +214,7 @@ public class ReviewService {
         Book book = bookRepository.findByBookId(review.getBook().getBookId()).orElseThrow(BookNotFoundException::new);
 
         Integer reviewCount = reviewRepository.countByBookBookId(book.getBookId());
+        review.updateReviewScore(score);
         book.updateAverageScore(score, reviewCount);
     }
 
@@ -248,5 +249,13 @@ public class ReviewService {
     public void deleteReviewImage(String reviewImageName) {
         ReviewImage reviewImage = reviewImageRepository.findByReviewImageUrl(reviewImageName).orElseThrow(ReviewImageNotFoundException::new);
         reviewImageRepository.delete(reviewImage);
+
+        try {
+            fileUploadService.deleteObject(CONTAINER_NAME, REVIEWIMAGE_FOLDER_NAME, reviewImageName);
+            log.debug("ObjectStorage 이미지 삭제 완료");
+        } catch (Exception e) {
+            log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
+            throw new ImageDataStorageException(e);
+        }
     }
 }
