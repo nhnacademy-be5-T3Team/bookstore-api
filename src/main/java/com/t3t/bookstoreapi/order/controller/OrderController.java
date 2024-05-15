@@ -10,12 +10,14 @@ import com.t3t.bookstoreapi.order.model.response.MemberOrderPreparationResponse;
 import com.t3t.bookstoreapi.order.service.OrderDetailService;
 import com.t3t.bookstoreapi.order.service.OrderServiceFacade;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderDetailService orderDetailService;
@@ -41,7 +43,8 @@ public class OrderController {
      */
     @PostMapping("/orders/confirm")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse<Void> confirmOrder(OrderConfirmRequest orderConfirmRequest) {
+    public BaseResponse<Void> confirmOrder(@RequestBody OrderConfirmRequest orderConfirmRequest) {
+        log.info("[*] orderConfirmRequest => {}", orderConfirmRequest);
         orderServiceFacade.confirmOrder(orderConfirmRequest);
         return new BaseResponse<Void>().message("주문 승인이 완료되었습니다.");
     }
