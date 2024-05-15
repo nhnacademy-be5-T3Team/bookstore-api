@@ -179,6 +179,10 @@ public class ReviewService {
         Book book = bookRepository.findByBookId(request.getBookId()).orElseThrow(BookNotFoundException::new);
         Member member = memberRepository.findById(request.getMemberId()).orElseThrow(MemberNotFoundException::new);
 
+        // 도서 평점 업데이트
+        Integer reviewCount = reviewRepository.countByBookBookId(request.getBookId());
+        book.updateAverageScore(request.getScore(), reviewCount);
+
         Review review = reviewRepository.save(Review.builder()
                 .reviewComment(request.getComment())
                 .reviewScore(request.getScore())
@@ -187,8 +191,6 @@ public class ReviewService {
                 .book(book)
                 .member(member)
                 .build());
-
-        log.info("리뷰 저장");
 
         // 포인트 적립
         if (request.getReviewImageList().isEmpty()) {
@@ -211,10 +213,6 @@ public class ReviewService {
                     .build());
         }
 
-        // 도서 평점 업데이트
-        Integer reviewCount = reviewRepository.countByBookBookId(request.getBookId());
-        book.updateAverageScore(request.getScore(), reviewCount);
-        log.info("\"도서 평점 업데이트\"");
         // 이미지 업로드
         try {
             List<MultipartFile> reviewImageList = BookServiceUtils.removeEmptyImages(request.getReviewImageList());
@@ -225,7 +223,7 @@ public class ReviewService {
                     reviewImageRepository.save(ReviewImage.builder().review(review).reviewImageUrl(uploadReviewImageName).build());
                 }
             }
-            log.info("이미지 저장 완료우");
+            log.info("이미지 저장 완료");
         } catch (Exception e) {
             log.error("이미지 데이터 저장 중 오류 발생: {}", e.getMessage());
             throw new ImageDataStorageException(e);

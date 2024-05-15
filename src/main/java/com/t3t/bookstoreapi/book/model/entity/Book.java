@@ -169,7 +169,7 @@ public class Book {
         if (reviewCount == 0) {
             newAverageScore = (float) userScore;
         } else {
-            newAverageScore = ((currentAverageScore * reviewCount) + userScore) / reviewCount;
+            newAverageScore = ((currentAverageScore * reviewCount) + userScore) / (reviewCount+1);
         }
         this.bookAverageScore = newAverageScore;
     }
