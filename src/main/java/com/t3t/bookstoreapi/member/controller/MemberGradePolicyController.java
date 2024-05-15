@@ -26,7 +26,7 @@ public class MemberGradePolicyController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/policies")
+    @GetMapping("/admin/member-grade-policies")
     public ResponseEntity<BaseResponse<List<MemberGradePolicyDto>>> getMemberGradePolicyList() {
         List<MemberGradePolicyDto> memberGradePolicyDtoList = memberGradePolicyService.getMemberGradePolicyList();
         return ResponseEntity.ok(new BaseResponse<List<MemberGradePolicyDto>>().data(memberGradePolicyDtoList));
@@ -39,8 +39,8 @@ public class MemberGradePolicyController {
      *
      * @author hydrationn(박수화)
      */
-    @GetMapping("/policy")
-    public ResponseEntity<BaseResponse<MemberGradePolicyDto>> getMemberGradePolicy(@RequestParam Long policyId) {
+    @GetMapping("/admin/member-grade-policies/{policyId}")
+    public ResponseEntity<BaseResponse<MemberGradePolicyDto>> getMemberGradePolicy(@PathVariable("policyId") Long policyId) {
         MemberGradePolicyDto policy = memberGradePolicyService.getMemberGradePolicy(policyId);
         return ResponseEntity.ok(new BaseResponse<MemberGradePolicyDto>().data(policy));
     }
@@ -52,7 +52,7 @@ public class MemberGradePolicyController {
      *
      * @author hydrationn(박수화)
      */
-    @PostMapping("/policy")
+    @PostMapping("/admin/member-grade-policy")
     public ResponseEntity<BaseResponse<MemberGradePolicyDto>> createMemberGradePolicy(@RequestBody CreateMemberGradePolicyRequest request) {
         MemberGradePolicyDto createdPolicy = memberGradePolicyService.createMemberGradePolicy(request);
         return ResponseEntity.ok(new BaseResponse<MemberGradePolicyDto>().data(createdPolicy));
@@ -68,11 +68,11 @@ public class MemberGradePolicyController {
      *
      * @author hydrationn(박수화)
      */
-    @PutMapping("/policy/{policyId}")
-    public ResponseEntity<BaseResponse<MemberGradePolicyDto>> updateMemberGradePolicy(@PathVariable Long policyId,
-                                                                                      @RequestParam BigDecimal startAmount,
-                                                                                      @RequestParam BigDecimal endAmount,
-                                                                                      @RequestParam int rate) {
+    @PutMapping("/admin/member-grade-policy/{policyId}/default")
+    public ResponseEntity<BaseResponse<MemberGradePolicyDto>> updateMemberGradePolicy(@PathVariable("policyId") Long policyId,
+                                                                                      @RequestParam("startAmount") BigDecimal startAmount,
+                                                                                      @RequestParam("endAmount") BigDecimal endAmount,
+                                                                                      @RequestParam("rate") int rate) {
         MemberGradePolicyDto updatedPolicy = memberGradePolicyService.updateMemberGradePolicy(policyId, startAmount, endAmount, rate);
         return ResponseEntity.ok(new BaseResponse<MemberGradePolicyDto>().data(updatedPolicy));
     }
@@ -84,7 +84,7 @@ public class MemberGradePolicyController {
      *
      * @author hydrationn(박수화)
      */
-    @DeleteMapping("/policy/{policyId}")
+    @DeleteMapping("/admin/member-grade-policy/{policyId}")
     public ResponseEntity<BaseResponse<Void>> deleteMemberGradePolicy(@PathVariable Long policyId) {
         memberGradePolicyService.deleteMemberGradePolicy(policyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<Void>().message("해당 회원 등급 정책이 성공적으로 삭제되었습니다."));

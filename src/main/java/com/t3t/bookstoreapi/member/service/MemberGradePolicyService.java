@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -47,10 +48,8 @@ public class MemberGradePolicyService {
      */
     @Transactional(readOnly = true)
     public MemberGradePolicyDto getMemberGradePolicy(Long policyId) {
-        MemberGradePolicy policy = memberGradePolicyRepository.findById(policyId)
-                .orElseThrow(() -> new MemberGradePolicyNotFoundException(policyId));
-
-        return MemberGradePolicyDto.of(policy);
+        return MemberGradePolicyDto.of(memberGradePolicyRepository.findById(policyId)
+                .orElseThrow(() -> new MemberGradePolicyNotFoundException(policyId)));
     }
 
     /**

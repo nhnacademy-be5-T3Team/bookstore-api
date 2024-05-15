@@ -24,7 +24,7 @@ public class MemberGrade {
     @Comment("회원 등급 이름")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_grade_policy_id")
     @Comment("회원 등급 정책 식별자")
     private MemberGradePolicy policy;
