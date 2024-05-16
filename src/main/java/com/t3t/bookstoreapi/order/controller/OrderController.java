@@ -1,25 +1,33 @@
 package com.t3t.bookstoreapi.order.controller;
 
 import com.t3t.bookstoreapi.model.response.BaseResponse;
-import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
+import com.t3t.bookstoreapi.model.response.PageResponse;
 import com.t3t.bookstoreapi.order.model.request.MemberOrderPreparationRequest;
 import com.t3t.bookstoreapi.order.model.request.OrderConfirmRequest;
 import com.t3t.bookstoreapi.order.model.request.GuestOrderPreparationRequest;
 import com.t3t.bookstoreapi.order.model.response.GuestOrderPreparationResponse;
 import com.t3t.bookstoreapi.order.model.response.MemberOrderPreparationResponse;
+import com.t3t.bookstoreapi.order.model.response.OrderDetailInfoResponse;
+import com.t3t.bookstoreapi.order.model.response.OrderInfoResponse;
 import com.t3t.bookstoreapi.order.service.OrderDetailService;
+import com.t3t.bookstoreapi.order.service.OrderService;
 import com.t3t.bookstoreapi.order.service.OrderServiceFacade;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderDetailService orderDetailService;
     private final OrderServiceFacade orderServiceFacade;
+    private final OrderService orderService;
 
     /**
      * 주문 내에 속해있는 주문 상세 리스트 조회
@@ -29,8 +37,8 @@ public class OrderController {
      */
     @GetMapping("/orders/{orderId}/details")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse<List<OrderDetailDto>> getOrderDetailDtoListByOrderId(@PathVariable("orderId") long orderId) {
-        return new BaseResponse<List<OrderDetailDto>>().data(orderDetailService.getOrderDetailDtoListByOrderId(orderId));
+    public BaseResponse<List<OrderDetailInfoResponse>> getOrderDetailDtoListByOrderId(@PathVariable("orderId") long orderId) {
+        return new BaseResponse<List<OrderDetailInfoResponse>>().data(orderDetailService.getOrderDetailInfoResponse(orderId));
     }
 
     /**
@@ -41,7 +49,8 @@ public class OrderController {
      */
     @PostMapping("/orders/confirm")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse<Void> confirmOrder(OrderConfirmRequest orderConfirmRequest) {
+    public BaseResponse<Void> confirmOrder(@RequestBody OrderConfirmRequest orderConfirmRequest) {
+        log.info("[*] orderConfirmRequest => {}", orderConfirmRequest);
         orderServiceFacade.confirmOrder(orderConfirmRequest);
         return new BaseResponse<Void>().message("주문 승인이 완료되었습니다.");
     }
@@ -74,5 +83,26 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse<MemberOrderPreparationResponse> createMemberOrder(@RequestBody MemberOrderPreparationRequest request) {
         return new BaseResponse<MemberOrderPreparationResponse>().data(orderServiceFacade.prepareOrder(request));
+    }
+
+    /**
+     * 특정 회원의 모든 주문 관련 정보를 페이징을 통해 조회
+     *
+     * @author woody35545(구건모)
+     */
+    @GetMapping("/members/{memberId}/orders")
+    public BaseResponse<PageResponse<OrderInfoResponse>> getMemberOrderInfoListByMemberId(@PathVariable("memberId") Long memberId, Pageable pageable) {
+
+        Page<OrderInfoResponse> orderInfoResponsePage = orderService.getMemberOrderInfoListByMemberId(memberId, pageable);
+
+        PageResponse<OrderInfoResponse> pageResponse = PageResponse.<OrderInfoResponse>builder()
+                .content(orderInfoResponsePage.getContent())
+                .pageNo(orderInfoResponsePage.getNumber())
+                .pageSize(orderInfoResponsePage.getSize())
+                .totalElements(orderInfoResponsePage.getTotalElements())
+                .totalPages(orderInfoResponsePage.getTotalPages())
+                .build();
+
+        return new BaseResponse<PageResponse<OrderInfoResponse>>().data(pageResponse);
     }
 }

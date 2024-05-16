@@ -7,8 +7,8 @@ import com.t3t.bookstoreapi.order.exception.OrderNotFoundForIdException;
 import com.t3t.bookstoreapi.order.exception.PackagingNotFoundForIdException;
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
 import com.t3t.bookstoreapi.order.model.entity.OrderDetail;
-import com.t3t.bookstoreapi.order.model.entity.Packaging;
 import com.t3t.bookstoreapi.order.model.request.OrderDetailCreationRequest;
+import com.t3t.bookstoreapi.order.model.response.OrderDetailInfoResponse;
 import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
 import com.t3t.bookstoreapi.order.repository.OrderRepository;
 import com.t3t.bookstoreapi.order.repository.PackagingRepository;
@@ -51,8 +51,8 @@ public class OrderDetailService {
      * @author woody35545(구건모)
      */
     @Transactional(readOnly = true)
-    public List<OrderDetailDto> getOrderDetailDtoListByOrderId(long orderId) {
-        return orderDetailRepository.getOrderDetailDtoListByOrderId(orderId);
+    public List<OrderDetailInfoResponse> getOrderDetailInfoResponse(long orderId) {
+        return orderDetailRepository.getOrderDetailInfoResponseListByOrderId(orderId);
     }
 
     /**
