@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +49,12 @@ public class ElasticController {
             return ResponseEntity.badRequest().body(new BaseResponse<>());
         }
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Pageable pageable;
+        if(Objects.equals(sortBy, "discounted_price")){
+            pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        }else{
+            pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+        }
         PageResponse<ElasticResponse> searchList = elasticService.search(query, searchType, pageable);
 
         BaseResponse<PageResponse<ElasticResponse>> responseBody = new BaseResponse<>();
@@ -81,7 +87,13 @@ public class ElasticController {
             return ResponseEntity.badRequest().body(new BaseResponse<>());
         }
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Pageable pageable;
+        if(Objects.equals(sortBy, "discounted_price")){
+            pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        }else{
+            pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+        }
+
         PageResponse<ElasticResponse> searchList =
                 elasticCategoryService.search(query, searchType, categoryId, pageable);
 
