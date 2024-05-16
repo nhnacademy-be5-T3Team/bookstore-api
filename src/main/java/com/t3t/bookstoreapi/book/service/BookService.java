@@ -403,4 +403,36 @@ public class BookService {
         }
         book.updateIsDeleted(TableStatus.TRUE);
     }
+    /**
+     * 업로드할 파일의 이름을 생성
+     *
+     * @param file 업로드할 파일
+     * @return 생성된 파일 이름
+     * @author Yujin-nKim(김유진)
+     */
+    public String generateUploadFileName(MultipartFile file) {
+        UUID uuid = UUID.randomUUID(); // UUID 생성
+        String originalFilename = file.getOriginalFilename(); // 파일의 원본 이름 가져오기
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".")); // 파일 확장자 가져오기
+        return uuid.toString() + fileExtension; // 생성된 UUID와 확장자를 결합하여 파일 이름 반환
+    }
+
+    /**
+     * 책 목록 전체의 id 값 조회
+     * @author joohyun1996(이주현)
+     */
+    public List<BookCouponResponse> getAllBooksId(){
+        List<Book> bookList = bookRepository.findAll();
+        return bookList.stream()
+                .map(book -> new BookCouponResponse(book.getBookId()))
+                .collect(Collectors.toList());
+    }
+    /**
+     * 특정 책의 Id값 조회
+     * @author joohyun1996(이주현)
+     */
+    public BookCouponResponse getBookId(Long bookId){
+        Book book = bookRepository.findByBookId(bookId).orElseThrow(() -> new BookNotFoundException());
+        return BookCouponResponse.builder().bookId(book.getBookId()).build();
+    }
 }

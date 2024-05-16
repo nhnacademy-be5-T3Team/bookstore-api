@@ -32,7 +32,7 @@ public class CouponDetailServiceTest {
     private CouponDetailService couponDetailService;
 
     @Test
-    void getCouponByMemberId() {
+    void getAllCouponByMemberId() {
         Long memberId = 1L;
         Member member = memberRepository.findById(memberId).orElse(null);
         memberRepository.save(member);
@@ -50,7 +50,7 @@ public class CouponDetailServiceTest {
                 .useType("issued")
                 .build());
 
-        List<CouponDetailResponse> couponDetailResponses = couponDetailService.getCouponByMemberId(memberId);
+        List<CouponDetailResponse> couponDetailResponses = couponDetailService.getAllCouponByMemberId(memberId);
 
         assertNotNull(couponDetailResponses);
         assertEquals(2, couponDetailResponses.size());

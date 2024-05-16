@@ -1,6 +1,8 @@
 package com.t3t.bookstoreapi.category.service;
 
+import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.category.model.entity.Category;
+import com.t3t.bookstoreapi.category.model.response.CategoryIdResponse;
 import com.t3t.bookstoreapi.category.model.response.CategoryTreeResponse;
 import com.t3t.bookstoreapi.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -79,5 +81,14 @@ public class CategoryService {
                 buildTree(childCategory, childCategoryList);
             }
         }
+    }
+
+    /**
+     * category Id를 조회하는 메소드
+     * @author joohyun1996(이주현)
+     */
+    public CategoryIdResponse getCategoryId(Integer id){
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException());
+        return CategoryIdResponse.builder().categoryId(category.getCategoryId()).build();
     }
 }

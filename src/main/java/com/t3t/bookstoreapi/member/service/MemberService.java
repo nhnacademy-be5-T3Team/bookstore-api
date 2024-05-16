@@ -2,6 +2,7 @@ package com.t3t.bookstoreapi.member.service;
 
 import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsForIdException;
 import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException;
+import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
 import com.t3t.bookstoreapi.member.exception.MemberNotFoundForIdException;
 import com.t3t.bookstoreapi.member.model.constant.MemberGradeType;
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
@@ -11,6 +12,7 @@ import com.t3t.bookstoreapi.member.model.entity.BookstoreAccount;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.model.request.MemberPasswordModifyRequest;
 import com.t3t.bookstoreapi.member.model.request.MemberRegistrationRequest;
+import com.t3t.bookstoreapi.member.model.response.MemberAdminResponse;
 import com.t3t.bookstoreapi.member.model.response.MemberInfoResponse;
 import com.t3t.bookstoreapi.member.model.response.MemberRegistrationResponse;
 import com.t3t.bookstoreapi.member.repository.AccountRepository;
@@ -21,6 +23,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -113,5 +118,26 @@ public class MemberService {
         account.delete();
 
         member.withdraw();
+    }
+
+    /**
+     * 이름으로 회원 검색하는 api
+     * @author joohyun1996(이주현)
+     */
+    public List<MemberAdminResponse> findMemberByName(String name){
+        List<Member> memberList = memberRepository.findByName(name);
+        List<MemberAdminResponse> responseList = new ArrayList<>();
+        if(memberList.isEmpty()){
+            throw new MemberNotFoundException();
+        }
+        for (Member member : memberList) {
+            MemberAdminResponse response = MemberAdminResponse.builder()
+                    .id(member.getId())
+                    .name(member.getName())
+                    .email(member.getEmail())
+                    .build();
+            responseList.add(response);
+        }
+        return responseList;
     }
 }

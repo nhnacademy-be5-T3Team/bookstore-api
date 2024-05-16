@@ -2,7 +2,7 @@ name: feature-test
 on:
   push:
     branches:
-      - 'feature/**'
+      - ' feature/**'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,6 +21,6 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
-        
+
     - name: test with Maven
       run: mvn test ${{ secrets.MAVEN_PACKAGE_OPTIONS }}

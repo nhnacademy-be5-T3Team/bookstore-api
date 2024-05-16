@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.member.controller;
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
 import com.t3t.bookstoreapi.member.model.request.MemberPasswordModifyRequest;
 import com.t3t.bookstoreapi.member.model.request.MemberRegistrationRequest;
+import com.t3t.bookstoreapi.member.model.response.MemberAdminResponse;
 import com.t3t.bookstoreapi.member.model.response.MemberInfoResponse;
 import com.t3t.bookstoreapi.member.model.response.MemberRegistrationResponse;
 import com.t3t.bookstoreapi.member.service.MemberAddressService;
@@ -10,6 +11,7 @@ import com.t3t.bookstoreapi.member.service.MemberService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -96,5 +98,15 @@ public class MemberController {
     public BaseResponse<Void> withdrawMember(@PathVariable("memberId") long memberId) {
         memberService.withdrawMember(memberId);
         return new BaseResponse<Void>().message("회원 탈퇴가 완료되었습니다.");
+    }
+
+    /**
+     * 이름으로 회원 검색하는 api
+     * @param name
+     * @author joohyun1996(이주현)
+     */
+    @GetMapping("/members")
+    public ResponseEntity<BaseResponse<List<MemberAdminResponse>>> getMemberByAdmin(@RequestParam("name") String name){
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<List<MemberAdminResponse>>().data(memberService.findMemberByName(name)));
     }
 }
