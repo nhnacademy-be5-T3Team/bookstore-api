@@ -105,17 +105,20 @@ class BookRepositoryCustomImplUnitTest {
                 .bookAverageScore(4.5f)
                 .bookLikeCount(500)
                 .publisher(publisher)
+                .isDeleted(TableStatus.FALSE)
                 .build());
 
         BookThumbnail thumbnail = bookThumbnailRepository.save(BookThumbnail.builder()
                 .book(book)
                 .thumbnailImageUrl("TestThumbnailImageUrl")
+                .isDeleted(TableStatus.FALSE)
                 .build());
 
         for(int i = 0; i < 3; i++) {
             bookImageRepository.save(BookImage.builder()
                             .book(book)
                             .bookImageUrl("TestBookImageUrl" + i)
+                            .isDeleted(TableStatus.FALSE)
                             .build());
 
             Tag tag = tagRepository.save(Tag.builder()
@@ -125,6 +128,7 @@ class BookRepositoryCustomImplUnitTest {
             bookTagRepository.save(BookTag.builder()
                     .book(book)
                     .tag(tag)
+                    .isDeleted(TableStatus.FALSE)
                     .build());
 
             Category category = categoryRepository.save(Category.builder()
@@ -135,6 +139,7 @@ class BookRepositoryCustomImplUnitTest {
             bookCategoryRepository.save(BookCategory.builder()
                     .book(book)
                     .category(category)
+                    .isDeleted(TableStatus.FALSE)
                     .build());
 
             Participant participant = participantRepository.save(Participant.builder()
@@ -151,6 +156,7 @@ class BookRepositoryCustomImplUnitTest {
                     .book(book)
                     .participant(participant)
                     .participantRole(participantRole)
+                    .isDeleted(TableStatus.FALSE)
                     .build());
         }
 
@@ -195,6 +201,7 @@ class BookRepositoryCustomImplUnitTest {
                     .bookAverageScore(4.5f)
                     .bookLikeCount(500)
                     .publisher(publisher)
+                    .isDeleted(TableStatus.FALSE)
                     .build());
 
             dummybookIdList.add(book.getBookId());
@@ -214,6 +221,7 @@ class BookRepositoryCustomImplUnitTest {
                         .book(book)
                         .participant(participant)
                         .participantRole(participantRole)
+                        .isDeleted(TableStatus.FALSE)
                         .build());
             }
         }
@@ -262,10 +270,12 @@ class BookRepositoryCustomImplUnitTest {
                     .bookAverageScore(4.5f)
                     .bookLikeCount(500)
                     .publisher(publisher)
+                    .isDeleted(TableStatus.FALSE)
                     .build());
             bookThumbnailRepository.save(BookThumbnail.builder()
                     .book(book)
                     .thumbnailImageUrl("TestThumbnailImageUrl"+i)
+                    .isDeleted(TableStatus.FALSE)
                     .build());
             recentBooks.add(book);
         }
@@ -284,6 +294,7 @@ class BookRepositoryCustomImplUnitTest {
                     .bookAverageScore(4.5f)
                     .bookLikeCount(500)
                     .publisher(publisher)
+                    .isDeleted(TableStatus.FALSE)
                     .build());
             pastBooks.add(book);
         }
@@ -303,6 +314,7 @@ class BookRepositoryCustomImplUnitTest {
                     .bookAverageScore(4.5f)
                     .bookLikeCount(500)
                     .publisher(publisher)
+                    .isDeleted(TableStatus.FALSE)
                     .build());
             futureBooks.add(book);
         }
@@ -342,6 +354,7 @@ class BookRepositoryCustomImplUnitTest {
                     .bookAverageScore(5.0f - i*0.1f)
                     .bookLikeCount(500 - i)
                     .publisher(publisher)
+                    .isDeleted(TableStatus.FALSE)
                     .build());
             bookList.add(book);
         }

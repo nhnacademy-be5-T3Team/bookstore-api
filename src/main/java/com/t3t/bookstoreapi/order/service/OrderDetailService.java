@@ -7,6 +7,7 @@ import com.t3t.bookstoreapi.order.exception.OrderNotFoundForIdException;
 import com.t3t.bookstoreapi.order.exception.PackagingNotFoundForIdException;
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
 import com.t3t.bookstoreapi.order.model.entity.OrderDetail;
+import com.t3t.bookstoreapi.order.model.entity.Packaging;
 import com.t3t.bookstoreapi.order.model.request.OrderDetailCreationRequest;
 import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
 import com.t3t.bookstoreapi.order.repository.OrderRepository;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -43,6 +45,7 @@ public class OrderDetailService {
 
     /**
      * 주문에 대한 주문 상세 DTO 리스트 조회
+     *
      * @param orderId 조회하려는 주문 식별자
      * @return 주문 상세 DTO 리스트
      * @author woody35545(구건모)
@@ -54,6 +57,7 @@ public class OrderDetailService {
 
     /**
      * 주문 상세 생성
+     *
      * @param request 주문 상세 생성 요청 객체
      * @return 생성된 주문 상세 DTO
      * @author woody35545(구건모)
@@ -69,8 +73,11 @@ public class OrderDetailService {
                         .quantity(request.getQuantity())
                         .orderStatus(request.getOrderStatus())
                         .price(request.getPrice())
-                        .packaging(packagingRepository.findById(request.getPackagingId())
-                                .orElseThrow(() -> new PackagingNotFoundForIdException(request.getPackagingId())))
+                        .packaging(Optional.ofNullable(request.getPackagingId())
+                                .map(packagingId -> packagingRepository.findById(packagingId)
+                                        .orElseThrow(() -> new PackagingNotFoundForIdException(request.getPackagingId())))
+                                .orElse(null)
+                        )
                         .createdAt(LocalDateTime.now())
                         .build()));
     }

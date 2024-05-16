@@ -4,9 +4,11 @@ import javax.validation.constraints.NotNull;
 
 import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.book.model.request.ModifyBookDetailRequest;
 import com.t3t.bookstoreapi.order.exception.BookStockShortageException;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import lombok.*;
+import org.springframework.data.jpa.repository.Lock;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -79,6 +81,11 @@ public class Book {
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
 
+    @NotNull
+    @Column(name = "is_deleted")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus isDeleted;
+
     // todo : 도서 좋아요 동시성 문제 관련해 수정해야함
     public void incrementLikes() {
         this.bookLikeCount++;
@@ -114,5 +121,49 @@ public class Book {
         }
 
         this.bookStock -= quantity;
+    }
+
+    /**
+     * 요청에 따라 도서 정보를 수정
+     * @param request 수정할 도서의 상세 정보를 담은 요청 객체
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateBookDetails(ModifyBookDetailRequest request) {
+        this.bookName = request.getBookTitle();
+        this.bookIsbn = request.getBookIsbn();
+        this.bookPrice = request.getBookPrice();
+        this.bookDiscount = request.getBookDiscountRate();
+        this.bookPackage = TableStatus.ofCode(request.getPackagingAvailableStatus());
+        this.bookPublished = request.getBookPublished();
+        this.bookStock = request.getBookStock();
+        this.bookIndex = request.getBookIndex();
+        this.bookDesc = request.getBookDesc();
+    }
+
+    /**
+     * 도서의 출판사를 수정
+     * @param publisher 수정할 출판사 객체
+     * @author Yujin-nKim(김유진)
+     */
+    public void updatePublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
+    /**
+     * 도서의 삭제 여부를 업데이트
+     * @param isDeleted 삭제 여부를 나타내는 TableStatus
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateIsDeleted(TableStatus isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    /**
+     * 도서의 평점을 업데이트
+     * @param score 업데이트 평점
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateAverageScore(Float score) {
+        this.bookAverageScore = score;
     }
 }

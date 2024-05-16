@@ -1,13 +1,17 @@
 package com.t3t.bookstoreapi.member.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+
+/**
+ * 회원 등금 정책 를 관리하는 Entity class
+ * 회원 등급 정책에 대한 상세한 정보 저장
+ *
+ * @Author hydrationn(박수화)
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,4 +36,31 @@ public class MemberGradePolicy {
     @Column(name = "point_rate", nullable = false)
     @Comment("포인트 적립 비율")
     private int rate;
+
+    /**
+     * 회원 등급 정책 변경에 따른 기준 시작 금액 업데이트 처리
+     * @param updateStartAmount
+     * @author hydrationn(박수화)
+     */
+    public void updateStartAmount(BigDecimal updateStartAmount) {
+        this.startAmount = updateStartAmount;
+    }
+
+    /**
+     * 회원 등급 정책 변경에 따른 기준 종료 금액 업데이트 처리
+     * @param updateEndAmount
+     * @author hydrationn(박수화)
+     */
+    public void updateEndAmount(BigDecimal updateEndAmount) {
+        this.endAmount = updateEndAmount;
+    }
+
+    /**
+     * 회원 등급 정책 변경에 따른 포인트 적립 비율 업데이트 처리
+     * @param updateRate
+     * @author hydrationn(박수화)
+     */
+    public void updateRate(int updateRate) {
+        this.rate = updateRate;
+    }
 }

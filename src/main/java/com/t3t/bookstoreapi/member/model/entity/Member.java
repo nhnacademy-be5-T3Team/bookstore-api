@@ -2,10 +2,7 @@ package com.t3t.bookstoreapi.member.model.entity;
 
 import com.t3t.bookstoreapi.member.model.constant.MemberRole;
 import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -24,7 +21,7 @@ public class Member {
     @Comment("회원 식별자")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_grade_id", nullable = false)
     @Comment("회원 등급 식별자")
     private MemberGrade grade;
@@ -62,4 +59,29 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Comment("회원 역할")
     private MemberRole role;
+
+     /**회원 탈퇴 처리
+     * @author wooody35545(구건모)
+     */
+    public void withdraw() {
+        this.status = MemberStatus.WITHDRAWAL;
+    }
+
+    /**
+     * 회원 활성화
+     * @author wooody35545(구건모)
+     */
+    public void activate(){
+        this.status = MemberStatus.ACTIVE;
+
+    }
+  
+    /**
+     * 회원 포인트 내역 생성 시 업데이트 처리
+     * @param updatePoints
+     * @author hydrationn(박수화)
+     */
+    public void updatePoint(Long updatePoints) {
+        this.point = updatePoints;
+    }
 }

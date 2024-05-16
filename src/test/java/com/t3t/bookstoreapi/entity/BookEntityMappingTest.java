@@ -161,6 +161,7 @@ class BookEntityMappingTest {
                 .bookStock(100)
                 .bookAverageScore(4.5f)
                 .bookLikeCount(500)
+                .isDeleted(TableStatus.FALSE)
                 .build();
 
         bookRepository.save(book);

@@ -1,18 +1,25 @@
 package com.t3t.bookstoreapi.common.exception;
 
+import com.t3t.bookstoreapi.book.exception.BookAlreadyDeletedException;
+import com.t3t.bookstoreapi.book.exception.BookAlreadyExistsException;
 import com.t3t.bookstoreapi.book.exception.BookNotFoundException;
+import com.t3t.bookstoreapi.book.exception.ImageDataStorageException;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
-import com.t3t.bookstoreapi.member.exception.AccountAlreadyExistsException;
-import com.t3t.bookstoreapi.member.exception.MemberAddressCountLimitExceededException;
-import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundException;
-import com.t3t.bookstoreapi.member.exception.MemberGradeNotFoundForNameException;
-import com.t3t.bookstoreapi.member.exception.MemberNotFoundException;
+import com.t3t.bookstoreapi.certcode.exception.CertCodeNotExistsException;
+import com.t3t.bookstoreapi.certcode.exception.CertCodeNotMatchesException;
+import com.t3t.bookstoreapi.member.exception.*;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import com.t3t.bookstoreapi.order.exception.DeliveryNotFoundException;
 import com.t3t.bookstoreapi.order.exception.OrderStatusNotFoundException;
+import com.t3t.bookstoreapi.participant.exception.ParticipantNotFoundException;
+import com.t3t.bookstoreapi.participant.exception.ParticipantRoleNotFoundException;
 import com.t3t.bookstoreapi.payment.exception.PaymentProviderNotFoundException;
 import com.t3t.bookstoreapi.payment.exception.UnsupportedPaymentProviderTypeException;
+import com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException;
+import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.shoppingcart.exception.ShoppingCartNotFoundException;
+import com.t3t.bookstoreapi.tag.exception.TagNotFoundException;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -25,6 +32,41 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+
+    /**
+     * 인증 코드가 일치하지 않을 때 발생하는 예외 처리 핸들러
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(CertCodeNotMatchesException.class)
+    public ResponseEntity<BaseResponse<Void>> handleCertCodeNotMatchesException(CertCodeNotMatchesException certCodeNotMatchesException) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new BaseResponse<Void>().message(certCodeNotMatchesException.getMessage()));
+    }
+
+    /**
+     * 인증 코드가 존재하지 않을 때 발생하는 예외 처리 핸들러
+     * @author woody35545(구건모)
+     */
+    @ExceptionHandler(CertCodeNotExistsException.class)
+    public ResponseEntity<BaseResponse<Void>> handleCertCodeNotExistsException(CertCodeNotExistsException certCodeNotExistsException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(certCodeNotExistsException.getMessage()));
+    }
+
+    /**
+     * 회원 계정의 비밀번호 검증 시, 비밀번호가 일치하지 않을 때 발생하는 예외 처리 핸들러
+     *
+     * @param accountPasswordNotMatchException 비밀번호가 일치하지 않을 때 발생하는 예외
+     * @return 401 UNAUTHORIZED - 예외 메시지 반환
+     * @author woody35545(구건모)
+     * @see com.t3t.bookstoreapi.member.exception.AccountPasswordNotMatchException
+     */
+    @ExceptionHandler(AccountPasswordNotMatchException.class)
+    public ResponseEntity<BaseResponse<Void>> handleAccountPasswordNotMatchException(AccountPasswordNotMatchException accountPasswordNotMatchException) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new BaseResponse<Void>().message(accountPasswordNotMatchException.getMessage()));
+    }
 
     /**
      * 주문 상태가 존재하지 않는 경우에 대한 예외 처리 핸들러
@@ -166,7 +208,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new BaseResponse<Void>().message(unsupportedPaymentProviderTypeException.getMessage()));
     }
-    
+
     /**
      * 회원이 존재하지 않는 경우에 대한 예외 처리 핸들러
      * @param memberNotFoundException 회원이 존재하지 않는 경우 발생하는 예외
@@ -242,5 +284,66 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<Void>> handleMissingServletRequestParameterException(MissingServletRequestParameterException missingParamException) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new BaseResponse<Void>().message(missingParamException.getMessage()));
+    }
+
+    @ExceptionHandler(RedisConnectionFailureException.class)
+    public ResponseEntity<BaseResponse<Void>> handleRedisConnectionFailureException(RedisConnectionFailureException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ImageDataStorageException.class)
+    public ResponseEntity<BaseResponse<Void>> handleImageDataStorageException(ImageDataStorageException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(BookAlreadyExistsException.class)
+    public ResponseEntity<BaseResponse<Void>> handleBookAlreadyExistsException(BookAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(PublisherNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handlePublisherNotFoundException(PublisherNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(TagNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleTagNotFoundException(TagNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ParticipantNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleParticipantNotFoundException(ParticipantNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ParticipantRoleNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleParticipantRoleNotFoundException(ParticipantRoleNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+
+    @ExceptionHandler(BookAlreadyDeletedException.class)
+    public ResponseEntity<BaseResponse<Void>> handleBookAlreadyDeletedException(BookAlreadyDeletedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new BaseResponse<Void>().message(ex.getMessage()));
+    }
+  
+    /**
+     * 존재하지 않는 배송에 대한 조회 시도 시 발생하는 예외 처리 핸들러
+     * @see com.t3t.bookstoreapi.pointdetail.exception.PointDetailNotFoundException
+     * @param pointDetailNotFoundException 존재하지 않는 포인트 내역에 대한 조회 시도 시 발생하는 예외
+     * @return 404 NOT_FOUND - 예외 메시지 반환
+     * @author hydrationn(박수화)
+     */
+    @ExceptionHandler(PointDetailNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> pointDetailNotFoundException(PointDetailNotFoundException pointDetailNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<Void>().message(pointDetailNotFoundException.getMessage()));
     }
 }

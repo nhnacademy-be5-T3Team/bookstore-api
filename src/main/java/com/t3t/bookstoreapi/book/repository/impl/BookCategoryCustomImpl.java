@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.book.repository.impl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.response.BookDetailResponse;
 import com.t3t.bookstoreapi.book.repository.BookCategoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,8 @@ public class BookCategoryCustomImpl implements BookCategoryCustom {
                 .from(bookCategory)
                 .leftJoin(bookCategory.book, book)
                 .leftJoin(bookThumbnail).on(book.bookId.eq(bookThumbnail.book.bookId))
-                .where(bookCategory.category.categoryId.in(categoryIdList))
+                .where(bookCategory.category.categoryId.in(categoryIdList)
+                        .and(book.isDeleted.eq(TableStatus.FALSE)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

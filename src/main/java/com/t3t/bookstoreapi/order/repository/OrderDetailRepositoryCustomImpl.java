@@ -3,6 +3,7 @@ package com.t3t.bookstoreapi.order.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.QBean;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import com.t3t.bookstoreapi.book.model.entity.Book;
 import com.t3t.bookstoreapi.order.constant.OrderStatusType;
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
@@ -101,10 +102,25 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
                 .where(orderStatus.name.in(
                         OrderStatusType.PENDING.toString(),
                         OrderStatusType.DELIVERING.toString(),
-                        OrderStatusType.DELIVERED.toString()))
+                        OrderStatusType.DELIVERED.toString())
+                        .and(book.isDeleted.eq(TableStatus.FALSE)))
                 .groupBy(book.bookId, bookThumbnail.thumbnailImageUrl)
                 .orderBy(orderDetail.quantity.sum().desc())
                 .limit(maxCount)
                 .fetch();
+    }
+
+    /**
+     * 주문 상세 조회 (OrderStatus 함께 조회)
+     * @param orderDetailId 주문 상세 정보 ID
+     * @return 주문 상세 엔티티
+     * @author Yujin-nKim(김유진)
+     */
+    @Override
+    public Optional<OrderDetail> findByIdWithOrderStatus(Long orderDetailId) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(orderDetail)
+                .join(orderDetail.orderStatus, orderStatus).fetchJoin()
+                .where(orderDetail.id.eq(orderDetailId))
+                .fetchOne());
     }
 }

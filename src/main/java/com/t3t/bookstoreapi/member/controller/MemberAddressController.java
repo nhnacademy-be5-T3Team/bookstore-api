@@ -41,4 +41,44 @@ public class MemberAddressController {
         return new BaseResponse<MemberAddressDto>()
                 .data(memberAddressService.createMemberAddress(request));
     }
+
+
+    /**
+     * 기본 주소 설정 및 변경 API
+     *
+     * @author woody35545(구건모)
+     */
+    @PatchMapping("/member-addresses/{memberAddressId}/default")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<Void> modifyDefaultAddress(@PathVariable("memberAddressId") long memberAddressId) {
+
+        memberAddressService.modifyDefaultAddress(memberAddressId);
+
+        return new BaseResponse<Void>().message("기본 주소가 변경되었습니다.");
+    }
+
+    /**
+     * 회원 주소 삭제 API
+     *
+     * @param memberAddressId 삭제할 회원 주소 식별자
+     * @author woody35545(구건모)
+     */
+    @DeleteMapping("/member-addresses/{memberAddressId}")
+    public BaseResponse<Void> deleteMemberAddress(@PathVariable("memberAddressId") long memberAddressId) {
+        memberAddressService.deleteMemberAddress(memberAddressId);
+        return new BaseResponse<Void>().message("주소가 삭제되었습니다.");
+    }
+
+    /**
+     * 회원 주소 별칭 변경 API
+     * @author woody35545(구건모)
+     */
+    @PatchMapping("/member-addresses/{memberAddressId}/nickname")
+    public BaseResponse<Void> modifyNickname(@PathVariable("memberAddressId") Long memberAddressId,
+                                             @RequestParam("newNickname") String newNickname) {
+
+        memberAddressService.modifyAddressNickname(memberAddressId, newNickname);
+
+        return new BaseResponse<Void>().message("주소 별칭이 변경되었습니다.");
+    }
 }

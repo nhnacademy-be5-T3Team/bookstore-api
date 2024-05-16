@@ -85,6 +85,7 @@ public class MemberAddressRepositoryTest {
                 .address(testAddress)
                 .addressDetail("test")
                 .addressNickname("test")
+                .isDefaultAddress(true)
                 .build());
 
         // when
@@ -150,6 +151,7 @@ public class MemberAddressRepositoryTest {
                     .address(testAddress)
                     .addressDetail("testAddressDetail" + i)
                     .addressNickname("testAddressNickname" + i)
+                    .isDefaultAddress(true)
                     .build()));
         }
 

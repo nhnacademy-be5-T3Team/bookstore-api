@@ -1,6 +1,9 @@
 package com.t3t.bookstoreapi.book.model.entity;
 
 import javax.validation.constraints.NotNull;
+
+import com.t3t.bookstoreapi.book.converter.TableStatusConverter;
+import com.t3t.bookstoreapi.book.enums.TableStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,4 +33,18 @@ public class BookThumbnail {
     @NotNull
     @Column(name = "thumbnail_image_url")
     private String thumbnailImageUrl;
+
+    @NotNull
+    @Column(name = "is_deleted")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus isDeleted;
+
+    /**
+     * 도서-썸네일 삭제 여부를 업데이트
+     * @param isDeleted 삭제 여부를 나타내는 TableStatus
+     * @author Yujin-nKim(김유진)
+     */
+    public void updateIsDeleted(TableStatus isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

@@ -1,9 +1,6 @@
 package com.t3t.bookstoreapi.recommendation.model.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * 도서 추천 목록 조회시에 사용되는 간단한 도서 정보를 담는 데이터 전송 객체(DTO) <br>
@@ -11,6 +8,7 @@ import lombok.NoArgsConstructor;
  * @author Yujin-nKim(김유진)
  */
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
