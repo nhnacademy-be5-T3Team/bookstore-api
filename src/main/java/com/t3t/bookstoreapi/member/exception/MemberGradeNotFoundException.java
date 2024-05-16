@@ -6,11 +6,11 @@ package com.t3t.bookstoreapi.member.exception;
  */
 public class MemberGradeNotFoundException extends RuntimeException{
     private static final String DEFAULT_MESSAGE = "존재하지 않는 회원 등급입니다.";
-    public MemberGradeNotFoundException() {
+    public MemberGradeNotFoundException(Long policyId) {
         super(DEFAULT_MESSAGE);
     }
 
-    protected MemberGradeNotFoundException(String forTarget) {
+    public MemberGradeNotFoundException(String forTarget) {
         super(String.format("%s (%s)", DEFAULT_MESSAGE, forTarget));
     }
 }

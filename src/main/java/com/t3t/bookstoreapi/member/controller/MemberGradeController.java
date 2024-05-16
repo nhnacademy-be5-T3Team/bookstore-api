@@ -1,8 +1,12 @@
 package com.t3t.bookstoreapi.member.controller;
 
+import com.t3t.bookstoreapi.member.model.dto.MemberGradeDto;
+import com.t3t.bookstoreapi.member.model.dto.MemberGradePolicyDto;
+import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
 import com.t3t.bookstoreapi.member.model.request.CreateMemberGradePolicyRequest;
+import com.t3t.bookstoreapi.member.model.request.MemberGradeCreationRequest;
 import com.t3t.bookstoreapi.member.model.response.MemberGradePolicyResponse;
-import com.t3t.bookstoreapi.member.service.MemberGradePolicyService;
+import com.t3t.bookstoreapi.member.service.MemberGradeService;
 import com.t3t.bookstoreapi.model.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,24 +16,14 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * 회원 등급 정책에 관한 HTTP 요청을 처리하는 컨트롤러
- */
 @RestController
 @RequiredArgsConstructor
-public class MemberGradePolicyController {
-    private final MemberGradePolicyService memberGradePolicyService;
-
-    /**
-     * 모든 회원 등급 정책 조회
-     * @return 회원 등급 정책 목록을 포함한 BaseResponse 객체 반환
-     *
-     * @author hydrationn(박수화)
-     */
-    @GetMapping("/admin/member-grade-policies")
-    public ResponseEntity<BaseResponse<List<MemberGradePolicyResponse>>> getMemberGradePolicyList() {
-        List<MemberGradePolicyResponse> memberGradePolicyList = memberGradePolicyService.getMemberGradePolicyList();
-        return ResponseEntity.ok(new BaseResponse<List<MemberGradePolicyResponse>>().data(memberGradePolicyList));
+public class MemberGradeController {
+    private final MemberGradeService memberGradeService;
+    @GetMapping("/admin/member-grades")
+    public ResponseEntity<BaseResponse<List<MemberGradeDto>>> getMemberGradeList() {
+        List<MemberGradeDto> memberGradePolicyList = memberGradeService.getMemberGradeList();
+        return ResponseEntity.ok(new BaseResponse<List<MemberGradeDto>>().data(memberGradePolicyList));
     }
 
     /**
@@ -40,9 +34,9 @@ public class MemberGradePolicyController {
      * @author hydrationn(박수화)
      */
     @GetMapping("/admin/member-grade-policies/{policyId}")
-    public ResponseEntity<BaseResponse<MemberGradePolicyResponse>> getMemberGradePolicy(@PathVariable("policyId") Long policyId) {
-        MemberGradePolicyResponse policy = memberGradePolicyService.getMemberGradePolicy(policyId);
-        return ResponseEntity.ok(new BaseResponse<MemberGradePolicyResponse>().data(policy));
+    public ResponseEntity<BaseResponse<MemberGradeDto>> getMemberGrade(@PathVariable("policyId") Long policyId) {
+        MemberGradeDto memberGrade = memberGradeService.getMemberGrade(policyId);
+        return ResponseEntity.ok(new BaseResponse<MemberGradeDto>().data(memberGrade));
     }
 
     /**
@@ -53,9 +47,9 @@ public class MemberGradePolicyController {
      * @author hydrationn(박수화)
      */
     @PostMapping("/admin/member-grade-policy")
-    public ResponseEntity<BaseResponse<MemberGradePolicyResponse>> createMemberGradePolicy(@RequestBody CreateMemberGradePolicyRequest request) {
-        MemberGradePolicyResponse createdPolicy = memberGradePolicyService.createMemberGradePolicy(request);
-        return ResponseEntity.ok(new BaseResponse<MemberGradePolicyResponse>().data(createdPolicy));
+    public ResponseEntity<BaseResponse<MemberGradeDto>> createMemberGrade(@RequestBody MemberGradeCreationRequest request) {
+        MemberGradeDto memberGrade = memberGradeService.createMemberGrade(request);
+        return ResponseEntity.ok(new BaseResponse<MemberGradeDto>().data(memberGrade));
     }
 
     /**
@@ -69,11 +63,11 @@ public class MemberGradePolicyController {
      * @author hydrationn(박수화)
      */
     @PutMapping("/admin/member-grade-policy/{policyId}/default")
-    public ResponseEntity<BaseResponse<Void>> updateMemberGradePolicy(@PathVariable("policyId") Long policyId,
+    public ResponseEntity<BaseResponse<Void>> updateMemberGrade(@PathVariable("policyId") Long policyId,
                                                                       @RequestParam("startAmount") BigDecimal startAmount,
                                                                       @RequestParam("endAmount") BigDecimal endAmount,
                                                                       @RequestParam("rate") int rate) {
-        memberGradePolicyService.updateMemberGradePolicy(policyId, startAmount, endAmount, rate);
+        memberGradeService.updateMemberGrade(policyId, startAmount, endAmount, rate);
         return ResponseEntity.ok(new BaseResponse<Void>().message("회원 등급 정책 업데이트 요청이 정상적으로 처리되었습니다. "));
     }
 
@@ -86,7 +80,7 @@ public class MemberGradePolicyController {
      */
     @DeleteMapping("/admin/member-grade-policy/{policyId}")
     public ResponseEntity<BaseResponse<Void>> deleteMemberGradePolicy(@PathVariable("policyId") Long policyId) {
-        memberGradePolicyService.deleteMemberGradePolicy(policyId);
+        memberGradeService.deleteMemberGrade(policyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<Void>().message("회원 등급 정책 삭제 요청이 성공적으로 처리되었습니다. "));
     }
 }

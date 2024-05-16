@@ -1,9 +1,9 @@
 package com.t3t.bookstoreapi.member.service;
 
 import com.t3t.bookstoreapi.member.exception.MemberGradePolicyNotFoundException;
-import com.t3t.bookstoreapi.member.model.dto.MemberGradePolicyDto;
 import com.t3t.bookstoreapi.member.model.entity.MemberGradePolicy;
 import com.t3t.bookstoreapi.member.model.request.CreateMemberGradePolicyRequest;
+import com.t3t.bookstoreapi.member.model.response.MemberGradePolicyResponse;
 import com.t3t.bookstoreapi.member.repository.MemberGradePolicyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,14 +27,14 @@ public class MemberGradePolicyService {
     /**
      * 모든 회원 등급 정책 조회
      * @return 등록된 모든 회원 등급 정책의 리스트 반환
-     *
      * @author hydrationn(박수화)
      */
     @Transactional(readOnly = true)
-    public List<MemberGradePolicyDto> getMemberGradePolicyList() {
+    public List<MemberGradePolicyResponse> getMemberGradePolicyList() {
         List<MemberGradePolicy> policies = memberGradePolicyRepository.findAll();
+
         return policies.stream()
-                .map(MemberGradePolicyDto::of)
+                .map(MemberGradePolicyResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -47,8 +47,8 @@ public class MemberGradePolicyService {
      * @author hydrationn(박수화)
      */
     @Transactional(readOnly = true)
-    public MemberGradePolicyDto getMemberGradePolicy(Long policyId) {
-        return MemberGradePolicyDto.of(memberGradePolicyRepository.findById(policyId)
+    public MemberGradePolicyResponse getMemberGradePolicy(Long policyId) {
+        return MemberGradePolicyResponse.of(memberGradePolicyRepository.findByPolicyId(policyId)
                 .orElseThrow(() -> new MemberGradePolicyNotFoundException(policyId)));
     }
 
@@ -59,14 +59,14 @@ public class MemberGradePolicyService {
      *
      * @author hydrationn(박수화)
      */
-    public MemberGradePolicyDto createMemberGradePolicy(CreateMemberGradePolicyRequest request) {
+    public MemberGradePolicyResponse createMemberGradePolicy(CreateMemberGradePolicyRequest request) {
         MemberGradePolicy newMemberGradePolicy = MemberGradePolicy.builder()
                 .startAmount(request.getStartAmount())
                 .endAmount(request.getEndAmount())
                 .rate(request.getRate())
                 .build();
 
-        return MemberGradePolicyDto.of(memberGradePolicyRepository.save(newMemberGradePolicy));
+        return MemberGradePolicyResponse.of(memberGradePolicyRepository.save(newMemberGradePolicy));
     }
 
     /**
@@ -79,15 +79,13 @@ public class MemberGradePolicyService {
      * @return 수정된 회원 등급 정책의 DTO
      * @throws MemberGradePolicyNotFoundException 해당 ID의 정책을 찾을 수 없을 경우 예외 발생
      */
-    public MemberGradePolicyDto updateMemberGradePolicy(Long policyId, BigDecimal startAmount, BigDecimal endAmount, int rate) {
-        MemberGradePolicy policy = memberGradePolicyRepository.findById(policyId)
+    public void updateMemberGradePolicy(Long policyId, BigDecimal startAmount, BigDecimal endAmount, int rate) {
+        MemberGradePolicy policy = memberGradePolicyRepository.findByPolicyId(policyId)
                 .orElseThrow(() -> new MemberGradePolicyNotFoundException(policyId));
 
         policy.updateStartAmount(startAmount);
         policy.updateEndAmount(endAmount);
         policy.updateRate(rate);
-
-        return MemberGradePolicyDto.of(memberGradePolicyRepository.save(policy));
     }
 
     /**
@@ -97,7 +95,7 @@ public class MemberGradePolicyService {
      * @throws MemberGradePolicyNotFoundException 해당 ID의 정책을 찾을 수 없을 경우 예외 발생
      */
     public void deleteMemberGradePolicy(Long policyId) {
-        memberGradePolicyRepository.delete(memberGradePolicyRepository.findById(policyId)
+        memberGradePolicyRepository.delete(memberGradePolicyRepository.findByPolicyId(policyId)
                 .orElseThrow(() -> new MemberGradePolicyNotFoundException(policyId)));
     }
 

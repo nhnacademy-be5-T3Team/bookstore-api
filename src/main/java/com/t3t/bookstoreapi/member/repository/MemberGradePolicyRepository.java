@@ -9,10 +9,10 @@ import java.util.Optional;
 
 public interface MemberGradePolicyRepository extends JpaRepository<MemberGradePolicy, Long> {
 
-    @Query("SELECT m FROM MemberGrade m JOIN FETCH m.policy")
+    @Query("SELECT g.policy FROM MemberGrade m JOIN FETCH MemberGrade g")
     List<MemberGradePolicy> findAll();
 
     @Query("SELECT m FROM MemberGrade m JOIN FETCH m.policy WHERE m.policy.policyId = :policyId")
-    Optional<MemberGradePolicy> findById(Long policyId);
+    Optional<MemberGradePolicy> findByPolicyId(Long policyId);
 
 }
