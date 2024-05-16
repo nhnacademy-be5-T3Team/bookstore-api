@@ -8,7 +8,6 @@ import com.t3t.bookstoreapi.book.model.request.ModifyBookDetailRequest;
 import com.t3t.bookstoreapi.order.exception.BookStockShortageException;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import lombok.*;
-import org.springframework.data.jpa.repository.Lock;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
