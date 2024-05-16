@@ -11,11 +11,14 @@ import com.t3t.bookstoreapi.order.model.entity.Order;
 import com.t3t.bookstoreapi.order.model.entity.OrderDetail;
 import com.t3t.bookstoreapi.order.model.entity.OrderStatus;
 import com.t3t.bookstoreapi.order.model.request.MemberOrderCreationRequest;
+import com.t3t.bookstoreapi.order.model.response.OrderInfoResponse;
 import com.t3t.bookstoreapi.order.repository.DeliveryRepository;
 import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
 import com.t3t.bookstoreapi.order.repository.OrderRepository;
 import com.t3t.bookstoreapi.order.repository.OrderStatusRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +70,22 @@ public class OrderService {
 
         orderDetailRepository.getOrderDetailListByOrderId(orderId)
                 .forEach(orderDetail -> orderDetail.setOrderStatus(orderStatus));
+    }
+
+    /**
+     * 회원 식별자로 회원의 모든 주문 정보를 페이징을 통해 조회한다.
+     *
+     * @autor woody35545(구건모)
+     * @see OrderInfoResponse
+     */
+
+    public Page<OrderInfoResponse> getMemberOrderInfoListByMemberId(Long memberId, Pageable pageable) {
+
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundForIdException(memberId);
+        }
+
+        return orderRepository.getOrderInfoResponseByMemberIdWithPaging(memberId, pageable);
     }
 
 }

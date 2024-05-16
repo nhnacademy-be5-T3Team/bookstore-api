@@ -21,7 +21,7 @@ public class Member {
     @Comment("회원 식별자")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_grade_id", nullable = false)
     @Comment("회원 등급 식별자")
     private MemberGrade grade;

@@ -1,6 +1,7 @@
 package com.t3t.bookstoreapi.order.servcie;
 
 import com.t3t.bookstoreapi.order.model.dto.OrderDetailDto;
+import com.t3t.bookstoreapi.order.model.response.OrderDetailInfoResponse;
 import com.t3t.bookstoreapi.order.repository.OrderDetailRepository;
 import com.t3t.bookstoreapi.order.service.OrderDetailService;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -75,16 +77,16 @@ public class OrderDetailServiceUnitTest {
 
 
     /**
-     * 주문 상세 조회 - 주문 식별자로 주문 상세 리스트 조회
-     * @see OrderDetailService#getOrderDetailDtoListByOrderId(long)
+     * 주문 상세 조회 - 주문 식별자로 주문 상세에 대한 정보 리스트 조회
+     *
      * @author woody35545(구건모)
      */
     @Test
     @DisplayName("주문 상세 조회 - 주문 식별자로 주문 상세 리스트 조회")
-    void getOrderDetailDtoListByOrderIdTest() {
+    void getOrderDetailInfoResponseListByOrderIdTest() {
         // given
         long orderId = 0L;
-        OrderDetailDto testOrderDetailDto = OrderDetailDto.builder()
+        OrderDetailInfoResponse testOrderDetailDto = OrderDetailInfoResponse.builder()
                 .id(0L)
                 .quantity(1)
                 .createdAt(LocalDateTime.now())
@@ -92,33 +94,36 @@ public class OrderDetailServiceUnitTest {
                 .bookId(0L)
                 .bookName("testBookName")
                 .bookPublisherName("testPublisherName")
-//                .bookDiscount(new BigDecimal("0"))
-//                .bookPrice(new BigDecimal("10000"))
                 .packagingName("testPackagingName")
                 .packagingPrice(new BigDecimal("1000"))
                 .orderStatusName("testOrderStatusName")
+                .deliveryId(0L)
+                .deliveryPrice(new BigDecimal("3000"))
+                .addressNumber(12345)
+                .recipientName("testRecipientName")
+                .roadnameAddress("testRoadnameAddress")
+                .deliveryDate(LocalDate.of(2030, 5, 1))
+                .recipientPhoneNumber("010-1234-5678")
                 .build();
 
-        when(orderDetailRepository.getOrderDetailDtoListByOrderId(orderId)).thenReturn(
+        when(orderDetailRepository.getOrderDetailInfoResponseListByOrderId(orderId)).thenReturn(
                 List.of(testOrderDetailDto));
 
         // when
-        List<OrderDetailDto> resultOrderDetailDtoList = orderDetailService.getOrderDetailDtoListByOrderId(orderId);
+        List<OrderDetailInfoResponse> resultOrderDetailInfoResponseList = orderDetailService.getOrderDetailInfoResponse(orderId);
 
         // then
-        assertEquals(1, resultOrderDetailDtoList.size());
-        assertEquals(testOrderDetailDto, resultOrderDetailDtoList.get(0));
-        assertEquals(testOrderDetailDto.getId(), resultOrderDetailDtoList.get(0).getId());
-        assertEquals(testOrderDetailDto.getQuantity(), resultOrderDetailDtoList.get(0).getQuantity());
-        assertEquals(testOrderDetailDto.getCreatedAt(), resultOrderDetailDtoList.get(0).getCreatedAt());
-        assertEquals(testOrderDetailDto.getOrderId(), resultOrderDetailDtoList.get(0).getOrderId());
-        assertEquals(testOrderDetailDto.getBookId(), resultOrderDetailDtoList.get(0).getBookId());
-        assertEquals(testOrderDetailDto.getBookName(), resultOrderDetailDtoList.get(0).getBookName());
-        assertEquals(testOrderDetailDto.getBookPublisherName(), resultOrderDetailDtoList.get(0).getBookPublisherName());
-//        assertEquals(testOrderDetailDto.getBookPrice(), resultOrderDetailDtoList.get(0).getBookPrice());
-//        assertEquals(testOrderDetailDto.getBookDiscount(), resultOrderDetailDtoList.get(0).getBookDiscount());
-        assertEquals(testOrderDetailDto.getPackagingName(), resultOrderDetailDtoList.get(0).getPackagingName());
-        assertEquals(testOrderDetailDto.getPackagingPrice(), resultOrderDetailDtoList.get(0).getPackagingPrice());
-        assertEquals(testOrderDetailDto.getOrderStatusName(), resultOrderDetailDtoList.get(0).getOrderStatusName());
+        assertEquals(1, resultOrderDetailInfoResponseList.size());
+        assertEquals(testOrderDetailDto, resultOrderDetailInfoResponseList.get(0));
+        assertEquals(testOrderDetailDto.getId(), resultOrderDetailInfoResponseList.get(0).getId());
+        assertEquals(testOrderDetailDto.getQuantity(), resultOrderDetailInfoResponseList.get(0).getQuantity());
+        assertEquals(testOrderDetailDto.getCreatedAt(), resultOrderDetailInfoResponseList.get(0).getCreatedAt());
+        assertEquals(testOrderDetailDto.getOrderId(), resultOrderDetailInfoResponseList.get(0).getOrderId());
+        assertEquals(testOrderDetailDto.getBookId(), resultOrderDetailInfoResponseList.get(0).getBookId());
+        assertEquals(testOrderDetailDto.getBookName(), resultOrderDetailInfoResponseList.get(0).getBookName());
+        assertEquals(testOrderDetailDto.getBookPublisherName(), resultOrderDetailInfoResponseList.get(0).getBookPublisherName());
+        assertEquals(testOrderDetailDto.getPackagingName(), resultOrderDetailInfoResponseList.get(0).getPackagingName());
+        assertEquals(testOrderDetailDto.getPackagingPrice(), resultOrderDetailInfoResponseList.get(0).getPackagingPrice());
+        assertEquals(testOrderDetailDto.getOrderStatusName(), resultOrderDetailInfoResponseList.get(0).getOrderStatusName());
     }
 }

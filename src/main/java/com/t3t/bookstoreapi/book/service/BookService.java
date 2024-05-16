@@ -9,6 +9,7 @@ import com.t3t.bookstoreapi.book.model.request.BookRegisterRequest;
 import com.t3t.bookstoreapi.book.model.request.ModifyBookDetailRequest;
 import com.t3t.bookstoreapi.book.model.response.*;
 import com.t3t.bookstoreapi.book.repository.*;
+import com.t3t.bookstoreapi.book.util.BookImageUtils;
 import com.t3t.bookstoreapi.book.util.BookServiceUtils;
 import com.t3t.bookstoreapi.category.exception.CategoryNotFoundException;
 import com.t3t.bookstoreapi.category.model.entity.Category;
@@ -22,7 +23,6 @@ import com.t3t.bookstoreapi.participant.model.entity.Participant;
 import com.t3t.bookstoreapi.participant.model.entity.ParticipantRole;
 import com.t3t.bookstoreapi.participant.repository.ParticipantRepository;
 import com.t3t.bookstoreapi.participant.repository.ParticipantRoleRepository;
-import com.t3t.bookstoreapi.property.ObjectStorageProperties;
 import com.t3t.bookstoreapi.publisher.exception.PublisherNotFoundException;
 import com.t3t.bookstoreapi.publisher.model.entity.Publisher;
 import com.t3t.bookstoreapi.publisher.repository.PublisherRepository;
@@ -40,7 +40,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -60,7 +59,6 @@ public class BookService {
     private final ParticipantRoleRegistrationRepository registrationRepository;
     private final BookThumbnailRepository bookThumbnailRepository;
     private final BookImageRepository bookImageRepository;
-    private final ObjectStorageProperties objectStorageProperties;
     private final ObjectStorageUploadService fileUploadService;
 
     private static final String CONTAINER_NAME = "t3team";
@@ -81,8 +79,8 @@ public class BookService {
         BookDetailResponse bookDetails = bookRepository.getBookDetailsById(bookId);
 
         // 이미지 prefix 추가
-        bookDetails.setThumbnailImageUrl(BookServiceUtils.setThumbnailImagePrefix(bookDetails.getThumbnailImageUrl()));
-        bookDetails.setBookImageUrlList(BookServiceUtils.setBookImagePrefix(bookDetails.getBookImageUrlList()));
+        bookDetails.setThumbnailImageUrl(BookImageUtils.setThumbnailImagePrefix(bookDetails.getThumbnailImageUrl()));
+        bookDetails.setBookImageUrlList(BookImageUtils.setBookImagePrefix(bookDetails.getBookImageUrlList()));
         bookDetails.setDiscountedPrice();
         bookDetails.setBookStock();
 
@@ -184,18 +182,17 @@ public class BookService {
 
         try {
             MultipartFile bookThumbnailImage = request.getThumbnailImage();
-            String uploadFileName = generateUploadFileName(bookThumbnailImage);
+            String uploadFileName = BookServiceUtils.generateUploadFileName(bookThumbnailImage);
             // Object Storage에 이미지 업로드
             fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, bookThumbnailImage);
             // book_thumbnail 테이블에 이미지 이름 저장
             bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
             log.info("book_thumbnail table insert 완료");
 
-            request.removeEmptyImages();
-            List<MultipartFile> bookImageList = request.getBookImageList();
+            List<MultipartFile> bookImageList = BookServiceUtils.removeEmptyImages(request.getBookImageList());
             if (!bookImageList.isEmpty()) {
                 for (MultipartFile file : bookImageList) {
-                    String uploadBookImageName = generateUploadFileName(file);
+                    String uploadBookImageName = BookServiceUtils.generateUploadFileName(file);
                     fileUploadService.uploadObject(CONTAINER_NAME, BOOKIMAGE_FOLDER_NAME, uploadBookImageName, file);
                     bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadBookImageName).isDeleted(TableStatus.ofCode(0)).build());
                     log.info("book_image table insert 완료");
@@ -251,7 +248,7 @@ public class BookService {
             fileUploadService.deleteObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, fileName);
             bookThumbnailRepository.delete(bookThumbnail);
 
-            String uploadFileName = generateUploadFileName(image);
+            String uploadFileName = BookServiceUtils.generateUploadFileName(image);
             // Object Storage 새로운 이미지 업로드 요청
             fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, image);
             bookThumbnailRepository.save(BookThumbnail.builder().book(book).thumbnailImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
@@ -279,7 +276,7 @@ public class BookService {
                 bookImageRepository.delete(image);
             }
             for(MultipartFile file : imageList) {
-                String uploadFileName = generateUploadFileName(file);
+                String uploadFileName = BookServiceUtils.generateUploadFileName(file);
                 fileUploadService.uploadObject(CONTAINER_NAME, BOOKTHUMBNAIL_FOLDER_NAME, uploadFileName, file);
                 bookImageRepository.save(BookImage.builder().book(book).bookImageUrl(uploadFileName).isDeleted(TableStatus.ofCode(0)).build());
             }
@@ -406,7 +403,6 @@ public class BookService {
         }
         book.updateIsDeleted(TableStatus.TRUE);
     }
-
     /**
      * 업로드할 파일의 이름을 생성
      *
