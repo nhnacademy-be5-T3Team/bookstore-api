@@ -2,10 +2,14 @@ package com.t3t.bookstoreapi.member.service;
 
 import com.t3t.bookstoreapi.member.exception.MemberAddressCountLimitExceededException;
 import com.t3t.bookstoreapi.member.exception.MemberAddressNotFoundForIdException;
+import com.t3t.bookstoreapi.member.model.constant.MemberGradeType;
+import com.t3t.bookstoreapi.member.model.constant.MemberRole;
+import com.t3t.bookstoreapi.member.model.constant.MemberStatus;
 import com.t3t.bookstoreapi.member.model.dto.MemberAddressDto;
 import com.t3t.bookstoreapi.member.model.entity.Address;
 import com.t3t.bookstoreapi.member.model.entity.Member;
 import com.t3t.bookstoreapi.member.model.entity.MemberAddress;
+import com.t3t.bookstoreapi.member.model.entity.MemberGrade;
 import com.t3t.bookstoreapi.member.model.request.MemberAddressCreationRequest;
 import com.t3t.bookstoreapi.member.repository.AddressRepository;
 import com.t3t.bookstoreapi.member.repository.MemberAddressRepository;
@@ -16,14 +20,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -230,5 +235,56 @@ class MemberAddressServiceUnitTest {
             assertThrows(MemberAddressCountLimitExceededException.class,
                     () -> memberAddressService.createMemberAddress(testMemberAddressCreationRequest));
         }
+    }
+
+    /**
+     * 회원 기본주소 변경 테스트
+     *
+     * @author woody35545(구건모)
+     * @see MemberAddressService#modifyDefaultAddress(long)
+     */
+    @Test
+    @DisplayName("회원 주소 변경 테스트")
+    void modifyDefaultAddressTest() {
+        // given
+        MemberGrade testMemberGrade = MemberGrade.builder()
+                .name(MemberGradeType.NORMAL.toString())
+                .build();
+
+        Member testMember = Member.builder()
+                .id(1L)
+                .name("testName")
+                .birthDate(LocalDate.of(2023, 6, 13))
+                .phone("010-1234-5678")
+                .email("test@mail.com")
+                .grade(testMemberGrade)
+                .role(MemberRole.USER)
+                .status(MemberStatus.ACTIVE)
+                .point(0L)
+                .build();
+
+        Address testAddress = Address.builder()
+                .id(0L)
+                .addressNumber(12345)
+                .roadNameAddress("testRoadNameAddress")
+                .build();
+
+        MemberAddress testMemberAddress = MemberAddress.builder()
+                .id(0L)
+                .addressNickname("testAddressNickname")
+                .addressDetail("testAddressDetail")
+                .member(testMember)
+                .address(testAddress)
+                .isDefaultAddress(false)
+                .build();
+
+        when(memberAddressRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testMemberAddress));
+        when(memberAddressRepository.findByMemberId(testMember.getId())).thenReturn(List.of(testMemberAddress));
+
+        // when
+        memberAddressService.modifyDefaultAddress(testMemberAddress.getId());
+
+        // then
+        assertTrue(testMemberAddress.getIsDefaultAddress());
     }
 }
